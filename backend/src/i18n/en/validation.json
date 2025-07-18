@@ -1,0 +1,12 @@
+{
+  "emailRequired": "Email is required",
+  "emailInvalid": "Please enter a valid email address",
+  "passwordRequired": "Password is required",
+  "passwordMinLength": "Password must be at least 8 characters long",
+  "usernameRequired": "Username is required",
+  "usernameMinLength": "Username must be at least 3 characters long",
+  "phoneRequired": "Phone number is required",
+  "phoneInvalid": "Please enter a valid phone number",
+  "validLogin": "The login must be a valid email address or phone number.",
+  "stringRequired": "The value for '$property' is required and must be a valid string."
+}

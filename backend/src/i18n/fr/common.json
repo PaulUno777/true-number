@@ -1,0 +1,18 @@
+{
+  "errors": {
+    "badRequest": "Requête incorrecte",
+    "unauthorized": "Non autorisé",
+    "forbidden": "Interdit",
+    "notFound": "Introuvable",
+    "conflict": "Conflit",
+    "internalServerError": "Erreur interne du serveur",
+    "validationFailed": "Validation échouée"
+  },
+  "success": {
+    "operationSuccessful": "Opération terminée avec succès",
+    "dataRetrieved": "Données récupérées avec succès",
+    "dataCreated": "Données créées avec succès",
+    "dataUpdated": "Données mises à jour avec succès",
+    "dataDeleted": "Données supprimées avec succès"
+  }
+}

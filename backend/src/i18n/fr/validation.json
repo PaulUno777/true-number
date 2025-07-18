@@ -1,0 +1,12 @@
+{
+  "emailRequired": "L'email est requis",
+  "emailInvalid": "Veuillez entrer une adresse email valide",
+  "passwordRequired": "Le mot de passe est requis",
+  "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+  "usernameRequired": "Le nom d'utilisateur est requis",
+  "usernameMinLength": "Le nom d'utilisateur doit contenir au moins 3 caractères",
+  "phoneRequired": "Le numéro de téléphone est requis",
+  "phoneInvalid": "Veuillez entrer un numéro de téléphone valide",
+  "validLogin": "L'identifiant doit être une adresse email ou un numéro de téléphone valide.",
+  "stringRequired": "La valeur pour '$property' est requise et doit être une chaîne de caractères valide."
+}

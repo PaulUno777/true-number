@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  username     String   @unique
+  email        String   @unique
+  password     String
+  phone        String
+  role         Role     @default(CLIENT)
+  balance      Int      @default(0)
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  gameHistory GameHistory[]
+
+  @@map("users")
+}
+
+model GameHistory {
+  id              String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String     @db.ObjectId
+  generatedNumber Int
+  result          GameResult
+  balanceChange   Int
+  newBalance      Int
+  playedAt        DateTime   @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("game_history")
+}
+
+enum Role {
+  CLIENT
+  ADMIN
+}
+
+enum GameResult {
+  WON
+  LOST
+}

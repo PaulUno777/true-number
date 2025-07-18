@@ -1,0 +1,6 @@
+{
+  "gameWon": "Félicitations ! Vous avez gagné le jeu !",
+  "gameLost": "Bonne chance pour la prochaine fois ! Vous avez perdu.",
+  "balanceUpdated": "Solde mis à jour avec succès",
+  "historyRetrieved": "Historique des parties récupéré avec succès"
+}

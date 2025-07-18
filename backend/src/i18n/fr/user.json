@@ -1,0 +1,7 @@
+{
+  "userCreated": "Utilisateur créé avec succès",
+  "userUpdated": "Utilisateur mis à jour avec succès",
+  "userDeleted": "Utilisateur supprimé avec succès",
+  "userNotFound": "Utilisateur introuvable",
+  "profileRetrieved": "Profil récupéré avec succès"
+}
