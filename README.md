@@ -1,37 +1,46 @@
-# TrueNumber Game
+# TrueNumber
 
-A modern full-stack web application built with Next.js, NestJS, and TypeScript.
+Application web full-stack JavaScript développée avec Next.js pour le frontend et NestJS pour le backend.
 
-## Features
+## Objectif Principal
 
-### Frontend (Next.js 15.4.1)
+Implémenter le Frontend et le Backend d'une application nommée "TrueNumber" en utilisant les technologies JavaScript. L'application permet aux utilisateurs de jouer à un jeu de génération de nombres aléatoires avec un système de points.
 
-- Modern UI with Tailwind CSS v4
-- Internationalization (English/French)
-- Dark/Light theme support
-- Fully responsive design
-- Gamification with animations and confetti
-- Real-time updates with React Query
-- TypeScript for type safety
+## Fonctionnalités Implémentées
 
-### Backend (NestJS)
+### 1. Système d'Authentification ✅
 
-- JWT Authentication with refresh tokens
-- Internationalization support
-- Pagination with custom service
-- Swagger API documentation
-- MongoDB with Prisma ORM
-- Role-based access control
-- Validation with class-validator
+- **Création de compte** : Interface d'inscription avec collecte du numéro de téléphone
+- **Connexion** : Authentification avec email/téléphone et mot de passe
+- **Déconnexion** : Système de déconnexion sécurisé
+- **JWT avec refresh tokens** pour la sécurité
 
-### Game Features
+### 2. Interface Client "Jeu TrueNumber" ✅
 
-- Random number generation (0-100)
-- Points system (+50 for win, -35 for loss)
-- Statistics tracking
-- Game history with pagination
-- Admin dashboard
-- User management
+- **Bouton "Générer un nombre"** : Génère un nombre aléatoire entre 0 et 100
+- **Règles du jeu** :
+  - Si le nombre ≤ 70 : L'utilisateur perd (-35 points)
+  - Si le nombre > 70 : L'utilisateur gagne (+50 points)
+- **Affichage du solde** : Compteur de points initialisé à 0
+- **Historique des parties** : Visualisation complète des parties jouées avec résultats
+
+### 3. Interface Administrateur ✅
+
+L'administrateur peut :
+- **Effectuer toutes les actions d'un utilisateur normal** (jouer, voir solde, historique)
+- **Voir tous les utilisateurs** de l'application
+- **Créer un nouvel utilisateur** avec formulaire dédié
+- **Modifier les informations d'un utilisateur** (notamment changer le rôle CLIENT ↔ ADMIN)
+- **Supprimer un utilisateur** (sauf lui-même)
+- **Consulter les statistiques globales** de l'application
+
+### Fonctionnalités Bonus
+
+- **Interface ludique et gamifiée** avec animations et effets visuels
+- **Système d'achievements/trophées** pour motiver les joueurs
+- **Internationalisation** (Français/Anglais)
+- **Interface responsive** pour tous les appareils
+- **Thème sombre/clair** (désactivé temporairement pour le style ludique)
 
 ## Tech Stack
 
@@ -64,14 +73,14 @@ A modern full-stack web application built with Next.js, NestJS, and TypeScript.
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB (cluster setup for prisma)
+- MongoDB (cluster setup like atlas for prisma)
 
 ### Backend Setup
 
 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/PaulUno777/true-number.git
 cd backend
 ```
 

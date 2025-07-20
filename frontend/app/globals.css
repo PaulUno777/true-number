@@ -1,26 +1,314 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #1a1c20;
+  --foreground: #e8edf2;
+  --card: #2b2f36;
+  --card-foreground: #e8edf2;
+  --popover: #3c424c;
+  --popover-foreground: #e8edf2;
+  --input: #3c424c;
+  --border: #4d5660;
+  --ring: var(--primary);
+  --primary: #007bff;
+  --primary-foreground: #ffffff;
+  --secondary: #ffa726;
+  --secondary-foreground: #1a1c20;
+  --muted: #3c424c;
+  --muted-foreground: #9fa8b4;
+  --accent: #ffca28;
+  --accent-foreground: #1a1c20;
+  --destructive: #f44336;
+  --destructive-foreground: #ffffff;
+  --success: #4caf50;
+  --success-foreground: #ffffff;
+  --warning: #ffb300;
+  --warning-foreground: #1a1c20;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+[data-theme='light'] { /* Apply these variables when a 'light' data-theme is set */
+  --background: #F0F2F5; 
+  --foreground: #2A3642; 
+  --card: #FFFFFF;
+  --card-foreground: #2A3642;
+  --popover: #E8ECF1;
+  --popover-foreground: #2A3642;
+  --input: #E8ECF1;
+  --border: #D4DAE0;
+  --ring: var(--primary);
+  --primary: #4CAF50; 
+  --primary-foreground: #FFFFFF; 
+  --secondary: #DAA520; 
+  --secondary-foreground: #FFFFFF;
+  --muted: #E8ECF1;
+  --muted-foreground: #7C8D9E;
+  --accent: #FFD700; 
+  --accent-foreground: #2A3642;
+  --destructive: #D32F2F; 
+  --destructive-foreground: #FFFFFF;
+  --success: #4CAF50; 
+  --success-foreground: #FFFFFF;
+  --warning: #FB8C00; 
+  --warning-foreground: #FFFFFF;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
+  color: hsl(var(--foreground));
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+/* Animations */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)),
+      0 0 15px hsl(var(--primary));
+  }
+  50% {
+    box-shadow: 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary)),
+      0 0 30px hsl(var(--primary));
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-x {
+  0%,
+  100% {
+    transform: translateX(0%) scale(1);
+  }
+  50% {
+    transform: translateX(100%) scale(1.05);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+.bounce-in {
+  animation: bounce-in 0.6s ease-out;
+}
+.animate-gradient-x {
+  animation: gradient-x 3s ease infinite;
+}
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out;
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out;
+}
+
+.rainbow-bg {
+  background: linear-gradient(
+    -45deg,
+    #ff6b6b,
+    #4ecdc4,
+    #45b7d1,
+    #f9ca24,
+    #ff6b6b
+  );
+  background-size: 400% 400%;
+  animation: rainbow 3s ease infinite;
+}
+
+.glass-effect {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.neon-text {
+  text-shadow: 0 0 5px currentColor, 0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+.game-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  border-color: hsl(var(--primary));
+}
+
+/* Modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--secondary));
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+/* Modern gradient borders */
+.gradient-border {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary)),
+    hsl(var(--secondary))
+  );
+  border-radius: 1rem;
+  padding: 2px;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: calc(1rem - 2px);
+  backdrop-filter: blur(20px);
+}
+
+/* Modern grid layout utilities */
+.grid-auto-fit {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Enhanced glass morphism */
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none;
+  }
+  .game-card {
+    margin: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-responsive {
+    font-size: 0.875rem;
+  }
+  .padding-responsive {
+    padding: 1rem;
+  }
 }

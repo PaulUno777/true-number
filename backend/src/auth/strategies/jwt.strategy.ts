@@ -3,12 +3,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@shared/prisma';
+import { I18nTranslations } from '@generated/i18n.generated';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private config: ConfigService,
     private prisma: PrismaService,
+    private i18n: I18nService<I18nTranslations>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -30,7 +33,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     });
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        this.i18n.t('auth.unauthorized')
+      );
     }
 
     return user;

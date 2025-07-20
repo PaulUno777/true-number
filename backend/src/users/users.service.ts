@@ -5,12 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@shared/prisma';
 import { CreateUserDto, UpdateUserDto } from './dto/user-input.dto';
-import { 
-  CreateUserResponseDto, 
-  UpdateUserResponseDto, 
-  DeleteUserResponseDto, 
-  GetUserResponseDto, 
-  GetUserWithStatsResponseDto 
+import {
+  CreateUserResponseDto,
+  UpdateUserResponseDto,
+  DeleteUserResponseDto,
+  GetUserResponseDto,
+  GetUserWithStatsResponseDto,
+  GetUsersResponseDto,
+  UserWithCountDto,
 } from './dto/user-output.dto';
 import { hashData } from '@shared/utils';
 import { I18nTranslations } from '@generated/i18n.generated';
@@ -25,7 +27,10 @@ export class UsersService {
     private i18n: I18nService<I18nTranslations>,
   ) {}
 
-  async create(createUserDto: CreateUserDto, lang: string): Promise<CreateUserResponseDto> {
+  async create(
+    createUserDto: CreateUserDto,
+    lang: string,
+  ): Promise<CreateUserResponseDto> {
     const { username, email, password, phone, role } = createUserDto;
 
     // Check if user exists
@@ -69,7 +74,7 @@ export class UsersService {
     };
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<GetUsersResponseDto> {
     const pageOption: PageOption = {
       page: paginationDto.page || 1,
       size: paginationDto.size || 10,
@@ -94,7 +99,15 @@ export class UsersService {
       },
     };
 
-    return await this.prisma.paginate<any>('user', pageOption, prismaParams);
+    const result = await this.prisma.paginate<UserWithCountDto>(
+      'user',
+      pageOption,
+      prismaParams,
+    );
+    return {
+      data: result.content,
+      meta: result.metaData,
+    };
   }
 
   async findOne(id: string, lang?: string): Promise<GetUserResponseDto> {
@@ -149,10 +162,14 @@ export class UsersService {
       );
     }
 
-    return {data: user};
+    return { data: user };
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto, lang?: string): Promise<UpdateUserResponseDto> {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+    lang?: string,
+  ): Promise<UpdateUserResponseDto> {
     const { username, email, phone, role } = updateUserDto;
 
     // Check if user exists
@@ -240,7 +257,10 @@ export class UsersService {
     };
   }
 
-  async getUserWithGameStats(id: string, lang?: string): Promise<GetUserWithStatsResponseDto> {
+  async getUserWithGameStats(
+    id: string,
+    lang?: string,
+  ): Promise<GetUserWithStatsResponseDto> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
