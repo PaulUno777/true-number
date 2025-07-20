@@ -21,7 +21,7 @@ import { AxiosError } from "axios";
 import { GamePlayResponse } from "@/types/game";
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
   const t = useTranslations("dashboard");
@@ -39,7 +39,8 @@ export default function DashboardPage() {
     onSuccess: (data) => {
       setLastResult(data);
 
-      queryClient.invalidateQueries({ queryKey: ["balance"] });
+      // Refresh user data to update balance
+      refreshUser();
       queryClient.invalidateQueries({ queryKey: ["history"] });
 
       if (data.result === "WON") {
@@ -95,7 +96,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold text-accent">
-              ${user?.balance || 0}
+              ${lastResult?.newBalance || 0}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               {t("accumulatedFortune")}

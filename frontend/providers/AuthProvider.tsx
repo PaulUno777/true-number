@@ -15,6 +15,7 @@ interface AuthContextType {
     phone: string;
   }) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -80,12 +81,31 @@ export default function AuthProvider({
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    try {
+      if (typeof window !== 'undefined') {
+        const token = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('accessToken='))
+          ?.split('=')[1];
+        
+        if (token) {
+          const userData = await authService.me();
+          setUser(userData);
+        }
+      }
+    } catch (error) {
+      console.error('User refresh failed:', error);
+    }
+  };
+
   const value = {
     user,
     isLoading,
     login,
     register,
     logout,
+    refreshUser,
   };
 
   return (<AuthContext.Provider value={value}>{children}</AuthContext.Provider>);
