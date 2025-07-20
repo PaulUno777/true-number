@@ -2,8 +2,11 @@ export interface User {
   id: string;
   username: string;
   email: string;
-  role: 'CLIENT' | 'ADMIN';
+  phone: string;
+  role: "CLIENT" | "ADMIN";
   balance: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthResponse {

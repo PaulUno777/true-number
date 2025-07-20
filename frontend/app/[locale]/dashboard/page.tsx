@@ -27,7 +27,6 @@ export default function DashboardPage() {
   const t = useTranslations("dashboard");
   const [lastResult, setLastResult] = useState<GamePlayResponse | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [gameAnimation, setGameAnimation] = useState("");
 
 
   const { data: history } = useQuery({
@@ -39,7 +38,6 @@ export default function DashboardPage() {
     mutationFn: gameService.playGame,
     onSuccess: (data) => {
       setLastResult(data);
-      setGameAnimation(data.result === "WON" ? "bounce-in" : "shake");
 
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       queryClient.invalidateQueries({ queryKey: ["history"] });
@@ -55,16 +53,12 @@ export default function DashboardPage() {
       } else {
         toast.error(`${t("defeat")} -$${Math.abs(data.balanceChange)}`);
       }
-
-      // Reset animation after delay
-      setTimeout(() => setGameAnimation(""), 600);
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError)
         toast.error(error.response?.data?.message || "Game error");
       console.error(error);
-      setGameAnimation("shake");
-      setTimeout(() => setGameAnimation(""), 500);
+     
     },
   });
 
@@ -82,7 +76,7 @@ export default function DashboardPage() {
       />
 
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold neon-text bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold text-white">
           {t("title")}
         </h1>
         <p className="text-lg text-muted-foreground">{t("subtitle")}</p>
@@ -166,15 +160,15 @@ export default function DashboardPage() {
             </div>
 
             {lastResult && (
-              <div className={`p-6 rounded-2xl glass-effect ${gameAnimation}`}>
-                <div className="text-4xl font-bold mb-3 text-white">
+              <div className="p-6 rounded-2xl glass-effect">
+                <div className="text-3xl font-bold mb-3 text-white">
                   {t("lastNumber")}: {lastResult.generatedNumber}
                 </div>
                 <div
-                  className={`text-2xl font-bold mb-2 ${
+                  className={`text-xl font-bold mb-2 ${
                     lastResult.result === "WON"
-                      ? "text-green-400"
-                      : "text-red-400"
+                      ? "text-green-300"
+                      : "text-red-300"
                   }`}
                 >
                   {lastResult.result === "WON" ? t("victory") : t("defeat")}
@@ -192,7 +186,7 @@ export default function DashboardPage() {
               isLoading={playGameMutation.isPending}
               disabled={!user}
               size="lg"
-              className="w-full h-16 text-xl rainbow-bg hover:scale-105 transition-transform font-bold text-white border-2 border-white/30"
+              className="w-full h-16 text-xl bg-primary hover:bg-primary/90 transition-colors font-bold text-white border-2 border-white/30"
             >
               {playGameMutation.isPending ? (
                 <div className="flex items-center space-x-2">
@@ -232,27 +226,25 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {history?.data.map((game, index) => (
+            {history?.data.map((game) => (
               <div
                 key={game.id}
-                className={`p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300 ${
-                  index === 0 ? "float" : ""
-                }`}
+                className="p-4 rounded-lg glass-effect border border-white/20 hover:border-white/30 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-12 h-12 rounded-lg bg-gray-700 flex items-center justify-center text-white font-semibold text-lg">
                       {game.generatedNumber}
                     </div>
                     <div className="flex flex-col">
                       <div
-                        className={`text-lg font-bold ${
+                        className={`font-medium ${
                           game.result === "WON"
-                            ? "text-green-400"
-                            : "text-red-400"
+                            ? "text-green-300"
+                            : "text-red-300"
                         }`}
                       >
-                        {game.result === "WON" ? t("victory") : t("defeat")}
+                        {game.result === "WON" ? "WIN" : "LOSS"}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {new Date(game.playedAt).toLocaleString("fr-FR")}
@@ -260,8 +252,8 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <div
-                    className={`text-xl font-bold ${
-                      game.balanceChange > 0 ? "text-green-400" : "text-red-400"
+                    className={`font-medium ${
+                      game.balanceChange > 0 ? "text-green-300" : "text-red-300"
                     }`}
                   >
                     {game.balanceChange > 0 ? "+" : ""}${game.balanceChange}

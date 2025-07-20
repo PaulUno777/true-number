@@ -9,11 +9,9 @@ import {
   BarChart3,
   Dices,
   ChevronDown,
-  Home,
   History,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { LanguageSelector } from "@/components/ui/LanguageSelector";
 import { useTranslations } from "next-intl";
 import { useState, useRef, useEffect } from "react";
 
@@ -49,7 +47,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="glass-effect border-b border-white/20">
+    <nav className="glass-effect border-b border-white/20 relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <button
@@ -89,9 +87,8 @@ export default function Navbar() {
                     </Button>
                   )}
                 </div>
-                <LanguageSelector />
                 {/* Profile Dropdown */}
-                <div className="relative z-auto" ref={profileMenuRef}>
+                <div className="relative z-[100]" ref={profileMenuRef}>
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                     className="flex items-center space-x-2 bg-white/10 rounded-full px-3 py-2 backdrop-blur-sm hover:bg-white/20 transition-colors"
@@ -111,7 +108,7 @@ export default function Navbar() {
 
                   {/* Profile Dropdown Menu */}
                   {showProfileMenu && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl z-50 overflow-hidden">
+                    <div className="absolute right-0 mt-2 w-64 bg-gray-900/95 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl z-[9999] overflow-hidden">
                       <div className="p-4 border-b border-white/20">
                         <div className="flex items-center space-x-3">
                           <div className="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center">
@@ -133,37 +130,13 @@ export default function Navbar() {
 
                       <div className="p-2">
                         <button
-                          onClick={() => {
-                            router.push("/history");
-                            setShowProfileMenu(false);
-                          }}
-                          className="w-full flex items-center space-x-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                        >
-                          <History className="h-4 w-4" />
-                          <span>{t("history")}</span>
-                        </button>
-
-                        {user.role === "ADMIN" && (
-                          <button
-                            onClick={() => {
-                              router.push("/admin");
-                              setShowProfileMenu(false);
-                            }}
-                            className="w-full flex items-center space-x-3 px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                          >
-                            <BarChart3 className="h-4 w-4" />
-                            <span>{t("admin")}</span>
-                          </button>
-                        )}
-
-                        <div className="border-t border-white/20 my-2"></div>
-
-                        <button
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             handleLogout();
                             setShowProfileMenu(false);
                           }}
-                          className="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+                          className="w-full flex items-center space-x-3 px-3 py-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors cursor-pointer"
                         >
                           <LogOut className="h-4 w-4" />
                           <span>{t("logout")}</span>

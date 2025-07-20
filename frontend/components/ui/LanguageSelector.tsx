@@ -1,16 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/routing";
 import { Globe, ChevronDown } from "lucide-react";
 
 export function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const languages = [
     { code: "en", name: t("english") },
@@ -25,7 +36,7 @@ export function LanguageSelector() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 text-white"
@@ -41,29 +52,21 @@ export function LanguageSelector() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 right-0 z-50 min-w-[140px] bg-white/95 backdrop-blur-lg rounded-xl border border-white/20 shadow-xl overflow-hidden">
+        <div className="absolute top-full mt-2 right-0 z-[90] min-w-[140px] bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-2xl overflow-hidden">
           {languages.map((language) => (
             <button
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className={`w-full px-4 py-3 text-left hover:bg-primary/10 transition-colors duration-200 flex items-center gap-3 ${
+              className={`w-full px-4 py-3 text-left hover:bg-white/10 transition-colors duration-200 flex items-center gap-3 ${
                 language.code === locale
-                  ? "bg-primary/20 text-primary font-medium"
-                  : "text-gray-700"
+                  ? "bg-accent/20 text-accent font-medium"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               <span className="text-sm">{language.name}</span>
             </button>
           ))}
         </div>
-      )}
-
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
       )}
     </div>
   );

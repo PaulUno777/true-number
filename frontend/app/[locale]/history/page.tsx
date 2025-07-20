@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { format } from "date-fns";
-import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Calendar, Dice1, Trophy, Target, ArrowUp, ArrowDown } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, Calendar, Dice1, Trophy, Target } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 
@@ -134,61 +134,44 @@ export default function HistoryPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {history?.data.map((game, index) => (
+            {history?.data.map((game) => (
               <div
                 key={game.id}
-                className={`group p-6 rounded-xl glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
-                  index === 0 ? 'ring-2 ring-accent/30 shadow-accent/20' : ''
-                }`}
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  animation: 'slideInUp 0.6s ease-out forwards'
-                }}
+                className="p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-6">
                     {/* Generated Number */}
-                    <div className="relative">
-                      <div className={`w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-xl bg-gradient-to-r ${
-                        game.result === "WON" 
-                          ? 'from-green-500 to-emerald-600 shadow-green-500/30' 
-                          : 'from-red-500 to-rose-600 shadow-red-500/30'
-                      } shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                        {game.generatedNumber}
-                      </div>
-                      <div className={`absolute inset-0 rounded-full bg-gradient-to-r ${
-                        game.result === "WON" ? 'from-green-500 to-emerald-600' : 'from-red-500 to-rose-600'
-                      } opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300`}></div>
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-lg bg-gray-700">
+                      {game.generatedNumber}
                     </div>
                     
                     {/* Game Result */}
-                    <div className="text-center">
-                      <div className={`text-lg font-bold flex items-center space-x-1 ${
-                        game.result === "WON" ? "text-green-400" : "text-red-400"
+                    <div>
+                      <div className={`font-medium ${
+                        game.result === "WON" ? "text-green-300" : "text-red-300"
                       }`}>
-                        {game.result === "WON" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
-                        <span>{game.result === "WON" ? "VICTORY" : "DEFEAT"}</span>
+                        {game.result === "WON" ? "WIN" : "LOSS"}
                       </div>
-                      <div className="text-xs text-muted-foreground">{t("result")}</div>
+                      <div className="text-xs text-gray-400">{t("result")}</div>
                     </div>
                     
                     {/* Balance Change */}
-                    <div className="text-center">
-                      <div className={`text-lg font-bold ${
-                        game.balanceChange > 0 ? "text-green-400" : "text-red-400"
+                    <div>
+                      <div className={`font-medium ${
+                        game.balanceChange > 0 ? "text-green-300" : "text-red-300"
                       }`}>
                         {game.balanceChange > 0 ? "+" : ""}${game.balanceChange}
                       </div>
-                      <div className="text-xs text-muted-foreground">{t("change")}</div>
+                      <div className="text-xs text-gray-400">{t("change")}</div>
                     </div>
                   </div>
                   
                   {/* Right side info */}
                   <div className="text-right space-y-1">
-                    <div className="text-lg font-semibold text-accent">${game.newBalance}</div>
-                    <div className="text-sm text-muted-foreground flex items-center space-x-1">
-                      <Calendar className="h-3 w-3" />
-                      <span>{format(new Date(game.playedAt), "MMM dd, HH:mm")}</span>
+                    <div className="font-medium text-white">${game.newBalance}</div>
+                    <div className="text-sm text-gray-400">
+                      {format(new Date(game.playedAt), "MMM dd, HH:mm")}
                     </div>
                   </div>
                 </div>
@@ -257,18 +240,6 @@ export default function HistoryPage() {
         </CardContent>
       </Card>
 
-      <style jsx>{`
-        @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   );
 }
