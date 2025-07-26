@@ -120,20 +120,69 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   phone: 'phone',
   role: 'role',
-  balance: 'balance',
   refreshToken: 'refreshToken',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.GameHistoryScalarFieldEnum = {
+exports.Prisma.SoloGameScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  bet: 'bet',
+  chosenNumber: 'chosenNumber',
   generatedNumber: 'generatedNumber',
   result: 'result',
   balanceChange: 'balanceChange',
-  newBalance: 'newBalance',
-  playedAt: 'playedAt'
+  multiplier: 'multiplier',
+  playedAt: 'playedAt',
+  transactionId: 'transactionId'
+};
+
+exports.Prisma.MultiplayerGameScalarFieldEnum = {
+  id: 'id',
+  bet: 'bet',
+  thinkingTime: 'thinkingTime',
+  status: 'status',
+  createdBy: 'createdBy',
+  winnerId: 'winnerId',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt'
+};
+
+exports.Prisma.MultiplayerParticipantScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  playerId: 'playerId',
+  generatedNumber: 'generatedNumber',
+  playedAt: 'playedAt',
+  isWinner: 'isWinner',
+  balanceChange: 'balanceChange',
+  joinedAt: 'joinedAt',
+  transactionId: 'transactionId'
+};
+
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  amount: 'amount',
+  description: 'description',
+  reference: 'reference',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RechargeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  amount: 'amount',
+  method: 'method',
+  status: 'status',
+  transactionId: 'transactionId',
+  billingData: 'billingData',
+  createdAt: 'createdAt',
+  completedAt: 'completedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -150,14 +199,53 @@ exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN'
 };
 
-exports.GameResult = exports.$Enums.GameResult = {
-  WON: 'WON',
-  LOST: 'LOST'
+exports.SoloGameResult = exports.$Enums.SoloGameResult = {
+  EXACT_MATCH: 'EXACT_MATCH',
+  HIGHER: 'HIGHER',
+  LOWER: 'LOWER'
+};
+
+exports.GameStatus = exports.$Enums.GameStatus = {
+  WAITING: 'WAITING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.TransactionType = exports.$Enums.TransactionType = {
+  CREDIT: 'CREDIT',
+  DEBIT: 'DEBIT'
+};
+
+exports.TransactionStatus = exports.$Enums.TransactionStatus = {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CREDIT_CARD: 'CREDIT_CARD',
+  PAYPAL: 'PAYPAL',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CRYPTO: 'CRYPTO'
+};
+
+exports.RechargeStatus = exports.$Enums.RechargeStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
-  GameHistory: 'GameHistory'
+  SoloGame: 'SoloGame',
+  MultiplayerGame: 'MultiplayerGame',
+  MultiplayerParticipant: 'MultiplayerParticipant',
+  Transaction: 'Transaction',
+  Recharge: 'Recharge'
 };
 
 /**

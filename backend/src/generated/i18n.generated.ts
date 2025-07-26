@@ -38,6 +38,32 @@ export type I18nTranslations = {
         "gameLost": string;
         "balanceUpdated": string;
         "historyRetrieved": string;
+        "gameCreated": string;
+        "gameJoined": string;
+        "turnPlayed": string;
+        "waitingGamesRetrieved": string;
+        "gameDetailsRetrieved": string;
+        "userGamesRetrieved": string;
+        "gameNotFound": string;
+        "gameNotWaiting": string;
+        "cannotJoinOwnGame": string;
+        "gameFull": string;
+        "gameNotInProgress": string;
+        "notParticipant": string;
+        "alreadyPlayed": string;
+        "insufficientBalance": string;
+        "statsRetrieved": string;
+        "lastGameRetrieved": string;
+        "activeGameRetrieved": string;
+        "gameLeft": string;
+        "alreadyHasActiveGame": string;
+        "solo": {
+            "exactMatch": string;
+            "higher": string;
+            "lower": string;
+            "historyRetrieved": string;
+            "statsRetrieved": string;
+        };
     };
     "user": {
         "userCreated": string;

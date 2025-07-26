@@ -1,12 +1,12 @@
-import { GameResult } from '@generated/prisma';
+import { SoloGameResult } from '@generated/prisma';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GamePlayResponseDto {
   @ApiProperty({ description: 'Message' })
   message: string;
 
-  @ApiProperty({ enum: GameResult, description: 'Game result' })
-  result: GameResult;
+  @ApiProperty({ enum: SoloGameResult, description: 'Game result' })
+  result: SoloGameResult;
 
   @ApiProperty({ description: 'Generated number (0-100)' })
   generatedNumber: number;
@@ -30,8 +30,8 @@ export class GameHistoryItemDto {
   @ApiProperty({ description: 'Generated number (0-100)' })
   generatedNumber: number;
 
-  @ApiProperty({ enum: GameResult, description: 'Game result' })
-  result: GameResult;
+  @ApiProperty({ enum: SoloGameResult, description: 'Game result' })
+  result: SoloGameResult;
 
   @ApiProperty({ description: 'Balance change (+50 for win, -35 for loss)' })
   balanceChange: number;

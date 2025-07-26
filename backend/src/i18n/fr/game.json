@@ -2,5 +2,31 @@
   "gameWon": "Félicitations ! Vous avez gagné le jeu !",
   "gameLost": "Bonne chance pour la prochaine fois ! Vous avez perdu.",
   "balanceUpdated": "Solde mis à jour avec succès",
-  "historyRetrieved": "Historique des parties récupéré avec succès"
+  "historyRetrieved": "Historique des parties récupéré avec succès",
+  "gameCreated": "Partie créée avec succès",
+  "gameJoined": "Partie rejointe avec succès",
+  "turnPlayed": "Tour joué avec succès",
+  "waitingGamesRetrieved": "Parties en attente récupérées avec succès",
+  "gameDetailsRetrieved": "Détails de la partie récupérés avec succès",
+  "userGamesRetrieved": "Historique des parties récupéré avec succès",
+  "gameNotFound": "Partie introuvable",
+  "gameNotWaiting": "Cette partie n'attend plus de joueurs",
+  "cannotJoinOwnGame": "Vous ne pouvez pas rejoindre votre propre partie",
+  "gameFull": "Cette partie est déjà complète",
+  "gameNotInProgress": "Cette partie n'est pas en cours",
+  "notParticipant": "Vous ne participez pas à cette partie",
+  "alreadyPlayed": "Vous avez déjà joué votre tour",
+  "insufficientBalance": "Solde insuffisant pour rejoindre cette partie",
+  "statsRetrieved": "Statistiques multijoueur récupérées avec succès",
+  "lastGameRetrieved": "Dernière partie créée récupérée avec succès",
+  "activeGameRetrieved": "Partie active récupérée avec succès",
+  "gameLeft": "Partie quittée avec succès",
+  "alreadyHasActiveGame": "Vous avez déjà une partie active. Veuillez la terminer ou la quitter avant d'en créer une nouvelle.",
+  "solo": {
+    "exactMatch": "🎯 Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
+    "higher": "🎉 Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",
+    "lower": "😞 Dommage ! Le nombre généré est plus faible. Vous perdez {{points}} points.",
+    "historyRetrieved": "Historique des parties solo récupéré avec succès",
+    "statsRetrieved": "Statistiques des parties solo récupérées avec succès"
+  }
 }

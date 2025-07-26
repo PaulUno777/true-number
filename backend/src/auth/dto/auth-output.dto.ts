@@ -17,7 +17,6 @@ export class AuthResponseDto {
     username: string;
     email: string;
     role: Role;
-    balance: number;
   };
 }
 

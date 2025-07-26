@@ -67,7 +67,6 @@ export class AuthService {
         username: user.username,
         email: user.email,
         role: user.role,
-        balance: user.balance,
       },
     };
   }
@@ -109,7 +108,6 @@ export class AuthService {
         username: user.username,
         email: user.email,
         role: user.role,
-        balance: user.balance,
       },
       message: this.i18n.t('auth.loginSuccess', { lang }),
     };
@@ -156,7 +154,6 @@ export class AuthService {
           username: user.username,
           email: user.email,
           role: user.role,
-          balance: user.balance,
         },
         message: this.i18n.t('auth.tokenRefreshed', { lang }),
       };

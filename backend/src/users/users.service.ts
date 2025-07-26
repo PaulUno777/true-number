@@ -15,16 +15,18 @@ import {
   UserWithCountDto,
 } from './dto/user-output.dto';
 import { hashData } from '@shared/utils';
-import { I18nTranslations } from '@generated/i18n.generated';
 import { I18nService } from 'nestjs-i18n';
 import { PaginationDto } from '@shared/dtos';
 import { PageOption, PrismaParams } from 'prisma-paginator';
+import { I18nTranslations } from '@generated/i18n.generated';
+import { TransactionService } from '../transaction/transaction.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private i18n: I18nService<I18nTranslations>,
+    private transactionService: TransactionService,
   ) {}
 
   async create(
@@ -63,13 +65,14 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
       },
     });
 
+    const balance = await this.transactionService.getUserBalance(user.id);
+
     return {
-      data: user,
+      data: { ...user, balance },
       message: this.i18n.translate('user.userCreated', { lang }),
     };
   }
@@ -93,7 +96,7 @@ export class UsersService {
         createdAt: true,
         _count: {
           select: {
-            gameHistory: true,
+            soloGames: true,
           },
         },
       },
@@ -119,11 +122,10 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
         _count: {
           select: {
-            gameHistory: true,
+            soloGames: true,
           },
         },
       },
@@ -134,8 +136,9 @@ export class UsersService {
         this.i18n.translate('user.userNotFound', { lang }),
       );
     }
+    const balance = await this.transactionService.getUserBalance(user.id);
 
-    return { data: user };
+    return { data: { ...user, balance } };
   }
 
   async findMe(id: string, lang?: string): Promise<GetUserResponseDto> {
@@ -147,22 +150,18 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
       },
     });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
 
     if (!user) {
       throw new NotFoundException(
         this.i18n.translate('user.userNotFound', { lang }),
       );
     }
+    const balance = await this.transactionService.getUserBalance(user.id);
 
-    return { data: user };
+    return { data: { ...user, balance } };
   }
 
   async update(
@@ -225,14 +224,15 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
         updatedAt: true,
       },
     });
 
+    const balance = await this.transactionService.getUserBalance(id);
+
     return {
-      data: updatedUser,
+      data: { ...updatedUser, balance },
       message: this.i18n.translate('user.userUpdated', { lang }),
     };
   }
@@ -269,9 +269,8 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
-        gameHistory: {
+        soloGames: {
           select: {
             result: true,
           },
@@ -285,17 +284,20 @@ export class UsersService {
       );
     }
 
-    const totalGames = user.gameHistory.length;
-    const wonGames = user.gameHistory.filter(
-      (game) => game.result === 'WON',
+    const balance = await this.transactionService.getUserBalance(user.id);
+
+    const totalGames = user.soloGames.length;
+    const wonGames = user.soloGames.filter(
+      (game) => game.result === 'EXACT_MATCH' || game.result === 'HIGHER',
     ).length;
     const lostGames = totalGames - wonGames;
     const winRate = totalGames > 0 ? (wonGames / totalGames) * 100 : 0;
 
-    const { gameHistory, ...userWithoutHistory } = user;
+    const { soloGames, ...userWithoutHistory } = user;
 
     return {
       data: {
+        balance,
         ...userWithoutHistory,
         stats: {
           totalGames,

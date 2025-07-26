@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/providers/QueryProvider";
 import AuthProvider from "@/providers/AuthProvider";
@@ -26,17 +25,15 @@ export default async function RootLayout({ children, params }: Props) {
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} className="dark">
+      <body className="dark bg-gray-900 text-white">
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <QueryProvider>
-              <AuthProvider>
-                {children}
-                <Toaster position="top-right" />
-              </AuthProvider>
-            </QueryProvider>
-          </ThemeProvider>
+          <QueryProvider>
+            <AuthProvider>
+              {children}
+              <Toaster position="top-right" />
+            </AuthProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
         </body>
     </html>

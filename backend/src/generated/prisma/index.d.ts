@@ -19,10 +19,30 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
- * Model GameHistory
+ * Model SoloGame
  * 
  */
-export type GameHistory = $Result.DefaultSelection<Prisma.$GameHistoryPayload>
+export type SoloGame = $Result.DefaultSelection<Prisma.$SoloGamePayload>
+/**
+ * Model MultiplayerGame
+ * 
+ */
+export type MultiplayerGame = $Result.DefaultSelection<Prisma.$MultiplayerGamePayload>
+/**
+ * Model MultiplayerParticipant
+ * 
+ */
+export type MultiplayerParticipant = $Result.DefaultSelection<Prisma.$MultiplayerParticipantPayload>
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
+/**
+ * Model Recharge
+ * 
+ */
+export type Recharge = $Result.DefaultSelection<Prisma.$RechargePayload>
 
 /**
  * Enums
@@ -36,12 +56,62 @@ export namespace $Enums {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
-export const GameResult: {
-  WON: 'WON',
-  LOST: 'LOST'
+export const SoloGameResult: {
+  EXACT_MATCH: 'EXACT_MATCH',
+  HIGHER: 'HIGHER',
+  LOWER: 'LOWER'
 };
 
-export type GameResult = (typeof GameResult)[keyof typeof GameResult]
+export type SoloGameResult = (typeof SoloGameResult)[keyof typeof SoloGameResult]
+
+
+export const GameStatus: {
+  WAITING: 'WAITING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type GameStatus = (typeof GameStatus)[keyof typeof GameStatus]
+
+
+export const TransactionType: {
+  CREDIT: 'CREDIT',
+  DEBIT: 'DEBIT'
+};
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType]
+
+
+export const TransactionStatus: {
+  PENDING: 'PENDING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type TransactionStatus = (typeof TransactionStatus)[keyof typeof TransactionStatus]
+
+
+export const PaymentMethod: {
+  CREDIT_CARD: 'CREDIT_CARD',
+  PAYPAL: 'PAYPAL',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CRYPTO: 'CRYPTO'
+};
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const RechargeStatus: {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
+};
+
+export type RechargeStatus = (typeof RechargeStatus)[keyof typeof RechargeStatus]
 
 }
 
@@ -49,9 +119,29 @@ export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
 
-export type GameResult = $Enums.GameResult
+export type SoloGameResult = $Enums.SoloGameResult
 
-export const GameResult: typeof $Enums.GameResult
+export const SoloGameResult: typeof $Enums.SoloGameResult
+
+export type GameStatus = $Enums.GameStatus
+
+export const GameStatus: typeof $Enums.GameStatus
+
+export type TransactionType = $Enums.TransactionType
+
+export const TransactionType: typeof $Enums.TransactionType
+
+export type TransactionStatus = $Enums.TransactionStatus
+
+export const TransactionStatus: typeof $Enums.TransactionStatus
+
+export type PaymentMethod = $Enums.PaymentMethod
+
+export const PaymentMethod: typeof $Enums.PaymentMethod
+
+export type RechargeStatus = $Enums.RechargeStatus
+
+export const RechargeStatus: typeof $Enums.RechargeStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -156,14 +246,54 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.gameHistory`: Exposes CRUD operations for the **GameHistory** model.
+   * `prisma.soloGame`: Exposes CRUD operations for the **SoloGame** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more GameHistories
-    * const gameHistories = await prisma.gameHistory.findMany()
+    * // Fetch zero or more SoloGames
+    * const soloGames = await prisma.soloGame.findMany()
     * ```
     */
-  get gameHistory(): Prisma.GameHistoryDelegate<ExtArgs, ClientOptions>;
+  get soloGame(): Prisma.SoloGameDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.multiplayerGame`: Exposes CRUD operations for the **MultiplayerGame** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MultiplayerGames
+    * const multiplayerGames = await prisma.multiplayerGame.findMany()
+    * ```
+    */
+  get multiplayerGame(): Prisma.MultiplayerGameDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.multiplayerParticipant`: Exposes CRUD operations for the **MultiplayerParticipant** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MultiplayerParticipants
+    * const multiplayerParticipants = await prisma.multiplayerParticipant.findMany()
+    * ```
+    */
+  get multiplayerParticipant(): Prisma.MultiplayerParticipantDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.recharge`: Exposes CRUD operations for the **Recharge** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Recharges
+    * const recharges = await prisma.recharge.findMany()
+    * ```
+    */
+  get recharge(): Prisma.RechargeDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -605,7 +735,11 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    GameHistory: 'GameHistory'
+    SoloGame: 'SoloGame',
+    MultiplayerGame: 'MultiplayerGame',
+    MultiplayerParticipant: 'MultiplayerParticipant',
+    Transaction: 'Transaction',
+    Recharge: 'Recharge'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -624,7 +758,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "gameHistory"
+      modelProps: "user" | "soloGame" | "multiplayerGame" | "multiplayerParticipant" | "transaction" | "recharge"
       txIsolationLevel: never
     }
     model: {
@@ -702,77 +836,373 @@ export namespace Prisma {
           }
         }
       }
-      GameHistory: {
-        payload: Prisma.$GameHistoryPayload<ExtArgs>
-        fields: Prisma.GameHistoryFieldRefs
+      SoloGame: {
+        payload: Prisma.$SoloGamePayload<ExtArgs>
+        fields: Prisma.SoloGameFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.GameHistoryFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload> | null
+            args: Prisma.SoloGameFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.GameHistoryFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           findFirst: {
-            args: Prisma.GameHistoryFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload> | null
+            args: Prisma.SoloGameFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.GameHistoryFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           findMany: {
-            args: Prisma.GameHistoryFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>[]
+            args: Prisma.SoloGameFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>[]
           }
           create: {
-            args: Prisma.GameHistoryCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           createMany: {
-            args: Prisma.GameHistoryCreateManyArgs<ExtArgs>
+            args: Prisma.SoloGameCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           delete: {
-            args: Prisma.GameHistoryDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           update: {
-            args: Prisma.GameHistoryUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           deleteMany: {
-            args: Prisma.GameHistoryDeleteManyArgs<ExtArgs>
+            args: Prisma.SoloGameDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.GameHistoryUpdateManyArgs<ExtArgs>
+            args: Prisma.SoloGameUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           upsert: {
-            args: Prisma.GameHistoryUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$GameHistoryPayload>
+            args: Prisma.SoloGameUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SoloGamePayload>
           }
           aggregate: {
-            args: Prisma.GameHistoryAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateGameHistory>
+            args: Prisma.SoloGameAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSoloGame>
           }
           groupBy: {
-            args: Prisma.GameHistoryGroupByArgs<ExtArgs>
-            result: $Utils.Optional<GameHistoryGroupByOutputType>[]
+            args: Prisma.SoloGameGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SoloGameGroupByOutputType>[]
           }
           findRaw: {
-            args: Prisma.GameHistoryFindRawArgs<ExtArgs>
+            args: Prisma.SoloGameFindRawArgs<ExtArgs>
             result: JsonObject
           }
           aggregateRaw: {
-            args: Prisma.GameHistoryAggregateRawArgs<ExtArgs>
+            args: Prisma.SoloGameAggregateRawArgs<ExtArgs>
             result: JsonObject
           }
           count: {
-            args: Prisma.GameHistoryCountArgs<ExtArgs>
-            result: $Utils.Optional<GameHistoryCountAggregateOutputType> | number
+            args: Prisma.SoloGameCountArgs<ExtArgs>
+            result: $Utils.Optional<SoloGameCountAggregateOutputType> | number
+          }
+        }
+      }
+      MultiplayerGame: {
+        payload: Prisma.$MultiplayerGamePayload<ExtArgs>
+        fields: Prisma.MultiplayerGameFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MultiplayerGameFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MultiplayerGameFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          findFirst: {
+            args: Prisma.MultiplayerGameFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MultiplayerGameFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          findMany: {
+            args: Prisma.MultiplayerGameFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>[]
+          }
+          create: {
+            args: Prisma.MultiplayerGameCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          createMany: {
+            args: Prisma.MultiplayerGameCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.MultiplayerGameDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          update: {
+            args: Prisma.MultiplayerGameUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          deleteMany: {
+            args: Prisma.MultiplayerGameDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MultiplayerGameUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.MultiplayerGameUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerGamePayload>
+          }
+          aggregate: {
+            args: Prisma.MultiplayerGameAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMultiplayerGame>
+          }
+          groupBy: {
+            args: Prisma.MultiplayerGameGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MultiplayerGameGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.MultiplayerGameFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.MultiplayerGameAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.MultiplayerGameCountArgs<ExtArgs>
+            result: $Utils.Optional<MultiplayerGameCountAggregateOutputType> | number
+          }
+        }
+      }
+      MultiplayerParticipant: {
+        payload: Prisma.$MultiplayerParticipantPayload<ExtArgs>
+        fields: Prisma.MultiplayerParticipantFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MultiplayerParticipantFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MultiplayerParticipantFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          findFirst: {
+            args: Prisma.MultiplayerParticipantFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MultiplayerParticipantFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          findMany: {
+            args: Prisma.MultiplayerParticipantFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>[]
+          }
+          create: {
+            args: Prisma.MultiplayerParticipantCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          createMany: {
+            args: Prisma.MultiplayerParticipantCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.MultiplayerParticipantDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          update: {
+            args: Prisma.MultiplayerParticipantUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          deleteMany: {
+            args: Prisma.MultiplayerParticipantDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MultiplayerParticipantUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.MultiplayerParticipantUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MultiplayerParticipantPayload>
+          }
+          aggregate: {
+            args: Prisma.MultiplayerParticipantAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMultiplayerParticipant>
+          }
+          groupBy: {
+            args: Prisma.MultiplayerParticipantGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MultiplayerParticipantGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.MultiplayerParticipantFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.MultiplayerParticipantAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.MultiplayerParticipantCountArgs<ExtArgs>
+            result: $Utils.Optional<MultiplayerParticipantCountAggregateOutputType> | number
+          }
+        }
+      }
+      Transaction: {
+        payload: Prisma.$TransactionPayload<ExtArgs>
+        fields: Prisma.TransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          update: {
+            args: Prisma.TransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransaction>
+          }
+          groupBy: {
+            args: Prisma.TransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.TransactionFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.TransactionAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.TransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
+      Recharge: {
+        payload: Prisma.$RechargePayload<ExtArgs>
+        fields: Prisma.RechargeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RechargeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RechargeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          findFirst: {
+            args: Prisma.RechargeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RechargeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          findMany: {
+            args: Prisma.RechargeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>[]
+          }
+          create: {
+            args: Prisma.RechargeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          createMany: {
+            args: Prisma.RechargeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.RechargeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          update: {
+            args: Prisma.RechargeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          deleteMany: {
+            args: Prisma.RechargeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RechargeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.RechargeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RechargePayload>
+          }
+          aggregate: {
+            args: Prisma.RechargeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRecharge>
+          }
+          groupBy: {
+            args: Prisma.RechargeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RechargeGroupByOutputType>[]
+          }
+          findRaw: {
+            args: Prisma.RechargeFindRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          aggregateRaw: {
+            args: Prisma.RechargeAggregateRawArgs<ExtArgs>
+            result: JsonObject
+          }
+          count: {
+            args: Prisma.RechargeCountArgs<ExtArgs>
+            result: $Utils.Optional<RechargeCountAggregateOutputType> | number
           }
         }
       }
@@ -848,7 +1278,11 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
-    gameHistory?: GameHistoryOmit
+    soloGame?: SoloGameOmit
+    multiplayerGame?: MultiplayerGameOmit
+    multiplayerParticipant?: MultiplayerParticipantOmit
+    transaction?: TransactionOmit
+    recharge?: RechargeOmit
   }
 
   /* Types for Logging */
@@ -943,11 +1377,17 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    gameHistory: number
+    createdGames: number
+    participations: number
+    soloGames: number
+    transactions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    gameHistory?: boolean | UserCountOutputTypeCountGameHistoryArgs
+    createdGames?: boolean | UserCountOutputTypeCountCreatedGamesArgs
+    participations?: boolean | UserCountOutputTypeCountParticipationsArgs
+    soloGames?: boolean | UserCountOutputTypeCountSoloGamesArgs
+    transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
@@ -964,8 +1404,100 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountGameHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: GameHistoryWhereInput
+  export type UserCountOutputTypeCountCreatedGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerGameWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountParticipationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerParticipantWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSoloGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SoloGameWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+  }
+
+
+  /**
+   * Count Type MultiplayerGameCountOutputType
+   */
+
+  export type MultiplayerGameCountOutputType = {
+    players: number
+  }
+
+  export type MultiplayerGameCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    players?: boolean | MultiplayerGameCountOutputTypeCountPlayersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MultiplayerGameCountOutputType without action
+   */
+  export type MultiplayerGameCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGameCountOutputType
+     */
+    select?: MultiplayerGameCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MultiplayerGameCountOutputType without action
+   */
+  export type MultiplayerGameCountOutputTypeCountPlayersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerParticipantWhereInput
+  }
+
+
+  /**
+   * Count Type TransactionCountOutputType
+   */
+
+  export type TransactionCountOutputType = {
+    soloGames: number
+    multiplayerParticipants: number
+  }
+
+  export type TransactionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    soloGames?: boolean | TransactionCountOutputTypeCountSoloGamesArgs
+    multiplayerParticipants?: boolean | TransactionCountOutputTypeCountMultiplayerParticipantsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TransactionCountOutputType without action
+   */
+  export type TransactionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionCountOutputType
+     */
+    select?: TransactionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TransactionCountOutputType without action
+   */
+  export type TransactionCountOutputTypeCountSoloGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SoloGameWhereInput
+  }
+
+  /**
+   * TransactionCountOutputType without action
+   */
+  export type TransactionCountOutputTypeCountMultiplayerParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerParticipantWhereInput
   }
 
 
@@ -979,18 +1511,8 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
-    _avg: UserAvgAggregateOutputType | null
-    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
-  }
-
-  export type UserAvgAggregateOutputType = {
-    balance: number | null
-  }
-
-  export type UserSumAggregateOutputType = {
-    balance: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -1000,7 +1522,6 @@ export namespace Prisma {
     password: string | null
     phone: string | null
     role: $Enums.Role | null
-    balance: number | null
     refreshToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1013,7 +1534,6 @@ export namespace Prisma {
     password: string | null
     phone: string | null
     role: $Enums.Role | null
-    balance: number | null
     refreshToken: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1026,21 +1546,12 @@ export namespace Prisma {
     password: number
     phone: number
     role: number
-    balance: number
     refreshToken: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
-
-  export type UserAvgAggregateInputType = {
-    balance?: true
-  }
-
-  export type UserSumAggregateInputType = {
-    balance?: true
-  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -1049,7 +1560,6 @@ export namespace Prisma {
     password?: true
     phone?: true
     role?: true
-    balance?: true
     refreshToken?: true
     createdAt?: true
     updatedAt?: true
@@ -1062,7 +1572,6 @@ export namespace Prisma {
     password?: true
     phone?: true
     role?: true
-    balance?: true
     refreshToken?: true
     createdAt?: true
     updatedAt?: true
@@ -1075,7 +1584,6 @@ export namespace Prisma {
     password?: true
     phone?: true
     role?: true
-    balance?: true
     refreshToken?: true
     createdAt?: true
     updatedAt?: true
@@ -1120,18 +1628,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: UserAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: UserSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -1162,8 +1658,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
-    _avg?: UserAvgAggregateInputType
-    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -1175,13 +1669,10 @@ export namespace Prisma {
     password: string
     phone: string
     role: $Enums.Role
-    balance: number
     refreshToken: string | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
-    _avg: UserAvgAggregateOutputType | null
-    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -1207,11 +1698,13 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     role?: boolean
-    balance?: boolean
     refreshToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    gameHistory?: boolean | User$gameHistoryArgs<ExtArgs>
+    createdGames?: boolean | User$createdGamesArgs<ExtArgs>
+    participations?: boolean | User$participationsArgs<ExtArgs>
+    soloGames?: boolean | User$soloGamesArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1224,22 +1717,27 @@ export namespace Prisma {
     password?: boolean
     phone?: boolean
     role?: boolean
-    balance?: boolean
     refreshToken?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "email" | "password" | "phone" | "role" | "balance" | "refreshToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "email" | "password" | "phone" | "role" | "refreshToken" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    gameHistory?: boolean | User$gameHistoryArgs<ExtArgs>
+    createdGames?: boolean | User$createdGamesArgs<ExtArgs>
+    participations?: boolean | User$participationsArgs<ExtArgs>
+    soloGames?: boolean | User$soloGamesArgs<ExtArgs>
+    transactions?: boolean | User$transactionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      gameHistory: Prisma.$GameHistoryPayload<ExtArgs>[]
+      createdGames: Prisma.$MultiplayerGamePayload<ExtArgs>[]
+      participations: Prisma.$MultiplayerParticipantPayload<ExtArgs>[]
+      soloGames: Prisma.$SoloGamePayload<ExtArgs>[]
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1248,7 +1746,6 @@ export namespace Prisma {
       password: string
       phone: string
       role: $Enums.Role
-      balance: number
       refreshToken: string | null
       createdAt: Date
       updatedAt: Date
@@ -1615,7 +2112,10 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    gameHistory<T extends User$gameHistoryArgs<ExtArgs> = {}>(args?: Subset<T, User$gameHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    createdGames<T extends User$createdGamesArgs<ExtArgs> = {}>(args?: Subset<T, User$createdGamesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participations<T extends User$participationsArgs<ExtArgs> = {}>(args?: Subset<T, User$participationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    soloGames<T extends User$soloGamesArgs<ExtArgs> = {}>(args?: Subset<T, User$soloGamesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    transactions<T extends User$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1651,7 +2151,6 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly phone: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
-    readonly balance: FieldRef<"User", 'Int'>
     readonly refreshToken: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
@@ -2025,27 +2524,99 @@ export namespace Prisma {
   }
 
   /**
-   * User.gameHistory
+   * User.createdGames
    */
-  export type User$gameHistoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$createdGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the MultiplayerGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: MultiplayerGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the MultiplayerGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: MultiplayerGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
-    where?: GameHistoryWhereInput
-    orderBy?: GameHistoryOrderByWithRelationInput | GameHistoryOrderByWithRelationInput[]
-    cursor?: GameHistoryWhereUniqueInput
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    where?: MultiplayerGameWhereInput
+    orderBy?: MultiplayerGameOrderByWithRelationInput | MultiplayerGameOrderByWithRelationInput[]
+    cursor?: MultiplayerGameWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: GameHistoryScalarFieldEnum | GameHistoryScalarFieldEnum[]
+    distinct?: MultiplayerGameScalarFieldEnum | MultiplayerGameScalarFieldEnum[]
+  }
+
+  /**
+   * User.participations
+   */
+  export type User$participationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    where?: MultiplayerParticipantWhereInput
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * User.soloGames
+   */
+  export type User$soloGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SoloGame
+     */
+    select?: SoloGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SoloGame
+     */
+    omit?: SoloGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SoloGameInclude<ExtArgs> | null
+    where?: SoloGameWhereInput
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
+    cursor?: SoloGameWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SoloGameScalarFieldEnum | SoloGameScalarFieldEnum[]
+  }
+
+  /**
+   * User.transactions
+   */
+  export type User$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
   }
 
   /**
@@ -2068,397 +2639,438 @@ export namespace Prisma {
 
 
   /**
-   * Model GameHistory
+   * Model SoloGame
    */
 
-  export type AggregateGameHistory = {
-    _count: GameHistoryCountAggregateOutputType | null
-    _avg: GameHistoryAvgAggregateOutputType | null
-    _sum: GameHistorySumAggregateOutputType | null
-    _min: GameHistoryMinAggregateOutputType | null
-    _max: GameHistoryMaxAggregateOutputType | null
+  export type AggregateSoloGame = {
+    _count: SoloGameCountAggregateOutputType | null
+    _avg: SoloGameAvgAggregateOutputType | null
+    _sum: SoloGameSumAggregateOutputType | null
+    _min: SoloGameMinAggregateOutputType | null
+    _max: SoloGameMaxAggregateOutputType | null
   }
 
-  export type GameHistoryAvgAggregateOutputType = {
+  export type SoloGameAvgAggregateOutputType = {
+    bet: number | null
+    chosenNumber: number | null
     generatedNumber: number | null
     balanceChange: number | null
-    newBalance: number | null
+    multiplier: number | null
   }
 
-  export type GameHistorySumAggregateOutputType = {
+  export type SoloGameSumAggregateOutputType = {
+    bet: number | null
+    chosenNumber: number | null
     generatedNumber: number | null
     balanceChange: number | null
-    newBalance: number | null
+    multiplier: number | null
   }
 
-  export type GameHistoryMinAggregateOutputType = {
+  export type SoloGameMinAggregateOutputType = {
     id: string | null
     userId: string | null
+    bet: number | null
+    chosenNumber: number | null
     generatedNumber: number | null
-    result: $Enums.GameResult | null
+    result: $Enums.SoloGameResult | null
     balanceChange: number | null
-    newBalance: number | null
+    multiplier: number | null
     playedAt: Date | null
+    transactionId: string | null
   }
 
-  export type GameHistoryMaxAggregateOutputType = {
+  export type SoloGameMaxAggregateOutputType = {
     id: string | null
     userId: string | null
+    bet: number | null
+    chosenNumber: number | null
     generatedNumber: number | null
-    result: $Enums.GameResult | null
+    result: $Enums.SoloGameResult | null
     balanceChange: number | null
-    newBalance: number | null
+    multiplier: number | null
     playedAt: Date | null
+    transactionId: string | null
   }
 
-  export type GameHistoryCountAggregateOutputType = {
+  export type SoloGameCountAggregateOutputType = {
     id: number
     userId: number
+    bet: number
+    chosenNumber: number
     generatedNumber: number
     result: number
     balanceChange: number
-    newBalance: number
+    multiplier: number
     playedAt: number
+    transactionId: number
     _all: number
   }
 
 
-  export type GameHistoryAvgAggregateInputType = {
+  export type SoloGameAvgAggregateInputType = {
+    bet?: true
+    chosenNumber?: true
     generatedNumber?: true
     balanceChange?: true
-    newBalance?: true
+    multiplier?: true
   }
 
-  export type GameHistorySumAggregateInputType = {
+  export type SoloGameSumAggregateInputType = {
+    bet?: true
+    chosenNumber?: true
     generatedNumber?: true
     balanceChange?: true
-    newBalance?: true
+    multiplier?: true
   }
 
-  export type GameHistoryMinAggregateInputType = {
+  export type SoloGameMinAggregateInputType = {
     id?: true
     userId?: true
+    bet?: true
+    chosenNumber?: true
     generatedNumber?: true
     result?: true
     balanceChange?: true
-    newBalance?: true
+    multiplier?: true
     playedAt?: true
+    transactionId?: true
   }
 
-  export type GameHistoryMaxAggregateInputType = {
+  export type SoloGameMaxAggregateInputType = {
     id?: true
     userId?: true
+    bet?: true
+    chosenNumber?: true
     generatedNumber?: true
     result?: true
     balanceChange?: true
-    newBalance?: true
+    multiplier?: true
     playedAt?: true
+    transactionId?: true
   }
 
-  export type GameHistoryCountAggregateInputType = {
+  export type SoloGameCountAggregateInputType = {
     id?: true
     userId?: true
+    bet?: true
+    chosenNumber?: true
     generatedNumber?: true
     result?: true
     balanceChange?: true
-    newBalance?: true
+    multiplier?: true
     playedAt?: true
+    transactionId?: true
     _all?: true
   }
 
-  export type GameHistoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which GameHistory to aggregate.
+     * Filter which SoloGame to aggregate.
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of GameHistories to fetch.
+     * Determine the order of SoloGames to fetch.
      */
-    orderBy?: GameHistoryOrderByWithRelationInput | GameHistoryOrderByWithRelationInput[]
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: GameHistoryWhereUniqueInput
+    cursor?: SoloGameWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` GameHistories from the position of the cursor.
+     * Take `±n` SoloGames from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` GameHistories.
+     * Skip the first `n` SoloGames.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned GameHistories
+     * Count returned SoloGames
     **/
-    _count?: true | GameHistoryCountAggregateInputType
+    _count?: true | SoloGameCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: GameHistoryAvgAggregateInputType
+    _avg?: SoloGameAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: GameHistorySumAggregateInputType
+    _sum?: SoloGameSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: GameHistoryMinAggregateInputType
+    _min?: SoloGameMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: GameHistoryMaxAggregateInputType
+    _max?: SoloGameMaxAggregateInputType
   }
 
-  export type GetGameHistoryAggregateType<T extends GameHistoryAggregateArgs> = {
-        [P in keyof T & keyof AggregateGameHistory]: P extends '_count' | 'count'
+  export type GetSoloGameAggregateType<T extends SoloGameAggregateArgs> = {
+        [P in keyof T & keyof AggregateSoloGame]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateGameHistory[P]>
-      : GetScalarType<T[P], AggregateGameHistory[P]>
+        : GetScalarType<T[P], AggregateSoloGame[P]>
+      : GetScalarType<T[P], AggregateSoloGame[P]>
   }
 
 
 
 
-  export type GameHistoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: GameHistoryWhereInput
-    orderBy?: GameHistoryOrderByWithAggregationInput | GameHistoryOrderByWithAggregationInput[]
-    by: GameHistoryScalarFieldEnum[] | GameHistoryScalarFieldEnum
-    having?: GameHistoryScalarWhereWithAggregatesInput
+  export type SoloGameGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SoloGameWhereInput
+    orderBy?: SoloGameOrderByWithAggregationInput | SoloGameOrderByWithAggregationInput[]
+    by: SoloGameScalarFieldEnum[] | SoloGameScalarFieldEnum
+    having?: SoloGameScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: GameHistoryCountAggregateInputType | true
-    _avg?: GameHistoryAvgAggregateInputType
-    _sum?: GameHistorySumAggregateInputType
-    _min?: GameHistoryMinAggregateInputType
-    _max?: GameHistoryMaxAggregateInputType
+    _count?: SoloGameCountAggregateInputType | true
+    _avg?: SoloGameAvgAggregateInputType
+    _sum?: SoloGameSumAggregateInputType
+    _min?: SoloGameMinAggregateInputType
+    _max?: SoloGameMaxAggregateInputType
   }
 
-  export type GameHistoryGroupByOutputType = {
+  export type SoloGameGroupByOutputType = {
     id: string
     userId: string
+    bet: number
+    chosenNumber: number
     generatedNumber: number
-    result: $Enums.GameResult
+    result: $Enums.SoloGameResult
     balanceChange: number
-    newBalance: number
+    multiplier: number
     playedAt: Date
-    _count: GameHistoryCountAggregateOutputType | null
-    _avg: GameHistoryAvgAggregateOutputType | null
-    _sum: GameHistorySumAggregateOutputType | null
-    _min: GameHistoryMinAggregateOutputType | null
-    _max: GameHistoryMaxAggregateOutputType | null
+    transactionId: string | null
+    _count: SoloGameCountAggregateOutputType | null
+    _avg: SoloGameAvgAggregateOutputType | null
+    _sum: SoloGameSumAggregateOutputType | null
+    _min: SoloGameMinAggregateOutputType | null
+    _max: SoloGameMaxAggregateOutputType | null
   }
 
-  type GetGameHistoryGroupByPayload<T extends GameHistoryGroupByArgs> = Prisma.PrismaPromise<
+  type GetSoloGameGroupByPayload<T extends SoloGameGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<GameHistoryGroupByOutputType, T['by']> &
+      PickEnumerable<SoloGameGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof GameHistoryGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof SoloGameGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], GameHistoryGroupByOutputType[P]>
-            : GetScalarType<T[P], GameHistoryGroupByOutputType[P]>
+              : GetScalarType<T[P], SoloGameGroupByOutputType[P]>
+            : GetScalarType<T[P], SoloGameGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type GameHistorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type SoloGameSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
+    bet?: boolean
+    chosenNumber?: boolean
     generatedNumber?: boolean
     result?: boolean
     balanceChange?: boolean
-    newBalance?: boolean
+    multiplier?: boolean
     playedAt?: boolean
+    transactionId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["gameHistory"]>
+    transaction?: boolean | SoloGame$transactionArgs<ExtArgs>
+  }, ExtArgs["result"]["soloGame"]>
 
 
 
-  export type GameHistorySelectScalar = {
+  export type SoloGameSelectScalar = {
     id?: boolean
     userId?: boolean
+    bet?: boolean
+    chosenNumber?: boolean
     generatedNumber?: boolean
     result?: boolean
     balanceChange?: boolean
-    newBalance?: boolean
+    multiplier?: boolean
     playedAt?: boolean
+    transactionId?: boolean
   }
 
-  export type GameHistoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "generatedNumber" | "result" | "balanceChange" | "newBalance" | "playedAt", ExtArgs["result"]["gameHistory"]>
-  export type GameHistoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "bet" | "chosenNumber" | "generatedNumber" | "result" | "balanceChange" | "multiplier" | "playedAt" | "transactionId", ExtArgs["result"]["soloGame"]>
+  export type SoloGameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    transaction?: boolean | SoloGame$transactionArgs<ExtArgs>
   }
 
-  export type $GameHistoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "GameHistory"
+  export type $SoloGamePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SoloGame"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      transaction: Prisma.$TransactionPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
+      bet: number
+      chosenNumber: number
       generatedNumber: number
-      result: $Enums.GameResult
+      result: $Enums.SoloGameResult
       balanceChange: number
-      newBalance: number
+      multiplier: number
       playedAt: Date
-    }, ExtArgs["result"]["gameHistory"]>
+      transactionId: string | null
+    }, ExtArgs["result"]["soloGame"]>
     composites: {}
   }
 
-  type GameHistoryGetPayload<S extends boolean | null | undefined | GameHistoryDefaultArgs> = $Result.GetResult<Prisma.$GameHistoryPayload, S>
+  type SoloGameGetPayload<S extends boolean | null | undefined | SoloGameDefaultArgs> = $Result.GetResult<Prisma.$SoloGamePayload, S>
 
-  type GameHistoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<GameHistoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: GameHistoryCountAggregateInputType | true
+  type SoloGameCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SoloGameFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SoloGameCountAggregateInputType | true
     }
 
-  export interface GameHistoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GameHistory'], meta: { name: 'GameHistory' } }
+  export interface SoloGameDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SoloGame'], meta: { name: 'SoloGame' } }
     /**
-     * Find zero or one GameHistory that matches the filter.
-     * @param {GameHistoryFindUniqueArgs} args - Arguments to find a GameHistory
+     * Find zero or one SoloGame that matches the filter.
+     * @param {SoloGameFindUniqueArgs} args - Arguments to find a SoloGame
      * @example
-     * // Get one GameHistory
-     * const gameHistory = await prisma.gameHistory.findUnique({
+     * // Get one SoloGame
+     * const soloGame = await prisma.soloGame.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends GameHistoryFindUniqueArgs>(args: SelectSubset<T, GameHistoryFindUniqueArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends SoloGameFindUniqueArgs>(args: SelectSubset<T, SoloGameFindUniqueArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one GameHistory that matches the filter or throw an error with `error.code='P2025'`
+     * Find one SoloGame that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {GameHistoryFindUniqueOrThrowArgs} args - Arguments to find a GameHistory
+     * @param {SoloGameFindUniqueOrThrowArgs} args - Arguments to find a SoloGame
      * @example
-     * // Get one GameHistory
-     * const gameHistory = await prisma.gameHistory.findUniqueOrThrow({
+     * // Get one SoloGame
+     * const soloGame = await prisma.soloGame.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends GameHistoryFindUniqueOrThrowArgs>(args: SelectSubset<T, GameHistoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends SoloGameFindUniqueOrThrowArgs>(args: SelectSubset<T, SoloGameFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first GameHistory that matches the filter.
+     * Find the first SoloGame that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryFindFirstArgs} args - Arguments to find a GameHistory
+     * @param {SoloGameFindFirstArgs} args - Arguments to find a SoloGame
      * @example
-     * // Get one GameHistory
-     * const gameHistory = await prisma.gameHistory.findFirst({
+     * // Get one SoloGame
+     * const soloGame = await prisma.soloGame.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends GameHistoryFindFirstArgs>(args?: SelectSubset<T, GameHistoryFindFirstArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends SoloGameFindFirstArgs>(args?: SelectSubset<T, SoloGameFindFirstArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first GameHistory that matches the filter or
+     * Find the first SoloGame that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryFindFirstOrThrowArgs} args - Arguments to find a GameHistory
+     * @param {SoloGameFindFirstOrThrowArgs} args - Arguments to find a SoloGame
      * @example
-     * // Get one GameHistory
-     * const gameHistory = await prisma.gameHistory.findFirstOrThrow({
+     * // Get one SoloGame
+     * const soloGame = await prisma.soloGame.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends GameHistoryFindFirstOrThrowArgs>(args?: SelectSubset<T, GameHistoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends SoloGameFindFirstOrThrowArgs>(args?: SelectSubset<T, SoloGameFindFirstOrThrowArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more GameHistories that matches the filter.
+     * Find zero or more SoloGames that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {SoloGameFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all GameHistories
-     * const gameHistories = await prisma.gameHistory.findMany()
+     * // Get all SoloGames
+     * const soloGames = await prisma.soloGame.findMany()
      * 
-     * // Get first 10 GameHistories
-     * const gameHistories = await prisma.gameHistory.findMany({ take: 10 })
+     * // Get first 10 SoloGames
+     * const soloGames = await prisma.soloGame.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const gameHistoryWithIdOnly = await prisma.gameHistory.findMany({ select: { id: true } })
+     * const soloGameWithIdOnly = await prisma.soloGame.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends GameHistoryFindManyArgs>(args?: SelectSubset<T, GameHistoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends SoloGameFindManyArgs>(args?: SelectSubset<T, SoloGameFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a GameHistory.
-     * @param {GameHistoryCreateArgs} args - Arguments to create a GameHistory.
+     * Create a SoloGame.
+     * @param {SoloGameCreateArgs} args - Arguments to create a SoloGame.
      * @example
-     * // Create one GameHistory
-     * const GameHistory = await prisma.gameHistory.create({
+     * // Create one SoloGame
+     * const SoloGame = await prisma.soloGame.create({
      *   data: {
-     *     // ... data to create a GameHistory
+     *     // ... data to create a SoloGame
      *   }
      * })
      * 
      */
-    create<T extends GameHistoryCreateArgs>(args: SelectSubset<T, GameHistoryCreateArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends SoloGameCreateArgs>(args: SelectSubset<T, SoloGameCreateArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many GameHistories.
-     * @param {GameHistoryCreateManyArgs} args - Arguments to create many GameHistories.
+     * Create many SoloGames.
+     * @param {SoloGameCreateManyArgs} args - Arguments to create many SoloGames.
      * @example
-     * // Create many GameHistories
-     * const gameHistory = await prisma.gameHistory.createMany({
+     * // Create many SoloGames
+     * const soloGame = await prisma.soloGame.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends GameHistoryCreateManyArgs>(args?: SelectSubset<T, GameHistoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends SoloGameCreateManyArgs>(args?: SelectSubset<T, SoloGameCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Delete a GameHistory.
-     * @param {GameHistoryDeleteArgs} args - Arguments to delete one GameHistory.
+     * Delete a SoloGame.
+     * @param {SoloGameDeleteArgs} args - Arguments to delete one SoloGame.
      * @example
-     * // Delete one GameHistory
-     * const GameHistory = await prisma.gameHistory.delete({
+     * // Delete one SoloGame
+     * const SoloGame = await prisma.soloGame.delete({
      *   where: {
-     *     // ... filter to delete one GameHistory
+     *     // ... filter to delete one SoloGame
      *   }
      * })
      * 
      */
-    delete<T extends GameHistoryDeleteArgs>(args: SelectSubset<T, GameHistoryDeleteArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends SoloGameDeleteArgs>(args: SelectSubset<T, SoloGameDeleteArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one GameHistory.
-     * @param {GameHistoryUpdateArgs} args - Arguments to update one GameHistory.
+     * Update one SoloGame.
+     * @param {SoloGameUpdateArgs} args - Arguments to update one SoloGame.
      * @example
-     * // Update one GameHistory
-     * const gameHistory = await prisma.gameHistory.update({
+     * // Update one SoloGame
+     * const soloGame = await prisma.soloGame.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -2468,30 +3080,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends GameHistoryUpdateArgs>(args: SelectSubset<T, GameHistoryUpdateArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends SoloGameUpdateArgs>(args: SelectSubset<T, SoloGameUpdateArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more GameHistories.
-     * @param {GameHistoryDeleteManyArgs} args - Arguments to filter GameHistories to delete.
+     * Delete zero or more SoloGames.
+     * @param {SoloGameDeleteManyArgs} args - Arguments to filter SoloGames to delete.
      * @example
-     * // Delete a few GameHistories
-     * const { count } = await prisma.gameHistory.deleteMany({
+     * // Delete a few SoloGames
+     * const { count } = await prisma.soloGame.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends GameHistoryDeleteManyArgs>(args?: SelectSubset<T, GameHistoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends SoloGameDeleteManyArgs>(args?: SelectSubset<T, SoloGameDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more GameHistories.
+     * Update zero or more SoloGames.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {SoloGameUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many GameHistories
-     * const gameHistory = await prisma.gameHistory.updateMany({
+     * // Update many SoloGames
+     * const soloGame = await prisma.soloGame.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -2501,79 +3113,79 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends GameHistoryUpdateManyArgs>(args: SelectSubset<T, GameHistoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends SoloGameUpdateManyArgs>(args: SelectSubset<T, SoloGameUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create or update one GameHistory.
-     * @param {GameHistoryUpsertArgs} args - Arguments to update or create a GameHistory.
+     * Create or update one SoloGame.
+     * @param {SoloGameUpsertArgs} args - Arguments to update or create a SoloGame.
      * @example
-     * // Update or create a GameHistory
-     * const gameHistory = await prisma.gameHistory.upsert({
+     * // Update or create a SoloGame
+     * const soloGame = await prisma.soloGame.upsert({
      *   create: {
-     *     // ... data to create a GameHistory
+     *     // ... data to create a SoloGame
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the GameHistory we want to update
+     *     // ... the filter for the SoloGame we want to update
      *   }
      * })
      */
-    upsert<T extends GameHistoryUpsertArgs>(args: SelectSubset<T, GameHistoryUpsertArgs<ExtArgs>>): Prisma__GameHistoryClient<$Result.GetResult<Prisma.$GameHistoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends SoloGameUpsertArgs>(args: SelectSubset<T, SoloGameUpsertArgs<ExtArgs>>): Prisma__SoloGameClient<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more GameHistories that matches the filter.
-     * @param {GameHistoryFindRawArgs} args - Select which filters you would like to apply.
+     * Find zero or more SoloGames that matches the filter.
+     * @param {SoloGameFindRawArgs} args - Select which filters you would like to apply.
      * @example
-     * const gameHistory = await prisma.gameHistory.findRaw({
+     * const soloGame = await prisma.soloGame.findRaw({
      *   filter: { age: { $gt: 25 } }
      * })
      */
-    findRaw(args?: GameHistoryFindRawArgs): Prisma.PrismaPromise<JsonObject>
+    findRaw(args?: SoloGameFindRawArgs): Prisma.PrismaPromise<JsonObject>
 
     /**
-     * Perform aggregation operations on a GameHistory.
-     * @param {GameHistoryAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * Perform aggregation operations on a SoloGame.
+     * @param {SoloGameAggregateRawArgs} args - Select which aggregations you would like to apply.
      * @example
-     * const gameHistory = await prisma.gameHistory.aggregateRaw({
+     * const soloGame = await prisma.soloGame.aggregateRaw({
      *   pipeline: [
      *     { $match: { status: "registered" } },
      *     { $group: { _id: "$country", total: { $sum: 1 } } }
      *   ]
      * })
      */
-    aggregateRaw(args?: GameHistoryAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+    aggregateRaw(args?: SoloGameAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
 
 
     /**
-     * Count the number of GameHistories.
+     * Count the number of SoloGames.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryCountArgs} args - Arguments to filter GameHistories to count.
+     * @param {SoloGameCountArgs} args - Arguments to filter SoloGames to count.
      * @example
-     * // Count the number of GameHistories
-     * const count = await prisma.gameHistory.count({
+     * // Count the number of SoloGames
+     * const count = await prisma.soloGame.count({
      *   where: {
-     *     // ... the filter for the GameHistories we want to count
+     *     // ... the filter for the SoloGames we want to count
      *   }
      * })
     **/
-    count<T extends GameHistoryCountArgs>(
-      args?: Subset<T, GameHistoryCountArgs>,
+    count<T extends SoloGameCountArgs>(
+      args?: Subset<T, SoloGameCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], GameHistoryCountAggregateOutputType>
+          : GetScalarType<T['select'], SoloGameCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a GameHistory.
+     * Allows you to perform aggregations operations on a SoloGame.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {SoloGameAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -2593,13 +3205,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends GameHistoryAggregateArgs>(args: Subset<T, GameHistoryAggregateArgs>): Prisma.PrismaPromise<GetGameHistoryAggregateType<T>>
+    aggregate<T extends SoloGameAggregateArgs>(args: Subset<T, SoloGameAggregateArgs>): Prisma.PrismaPromise<GetSoloGameAggregateType<T>>
 
     /**
-     * Group by GameHistory.
+     * Group by SoloGame.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {GameHistoryGroupByArgs} args - Group by arguments.
+     * @param {SoloGameGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -2614,14 +3226,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends GameHistoryGroupByArgs,
+      T extends SoloGameGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: GameHistoryGroupByArgs['orderBy'] }
-        : { orderBy?: GameHistoryGroupByArgs['orderBy'] },
+        ? { orderBy: SoloGameGroupByArgs['orderBy'] }
+        : { orderBy?: SoloGameGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -2670,22 +3282,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, GameHistoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGameHistoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, SoloGameGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSoloGameGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the GameHistory model
+   * Fields of the SoloGame model
    */
-  readonly fields: GameHistoryFieldRefs;
+  readonly fields: SoloGameFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for GameHistory.
+   * The delegate class that acts as a "Promise-like" for SoloGame.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__GameHistoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__SoloGameClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    transaction<T extends SoloGame$transactionArgs<ExtArgs> = {}>(args?: Subset<T, SoloGame$transactionArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2712,361 +3325,364 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the GameHistory model
+   * Fields of the SoloGame model
    */
-  interface GameHistoryFieldRefs {
-    readonly id: FieldRef<"GameHistory", 'String'>
-    readonly userId: FieldRef<"GameHistory", 'String'>
-    readonly generatedNumber: FieldRef<"GameHistory", 'Int'>
-    readonly result: FieldRef<"GameHistory", 'GameResult'>
-    readonly balanceChange: FieldRef<"GameHistory", 'Int'>
-    readonly newBalance: FieldRef<"GameHistory", 'Int'>
-    readonly playedAt: FieldRef<"GameHistory", 'DateTime'>
+  interface SoloGameFieldRefs {
+    readonly id: FieldRef<"SoloGame", 'String'>
+    readonly userId: FieldRef<"SoloGame", 'String'>
+    readonly bet: FieldRef<"SoloGame", 'Int'>
+    readonly chosenNumber: FieldRef<"SoloGame", 'Int'>
+    readonly generatedNumber: FieldRef<"SoloGame", 'Int'>
+    readonly result: FieldRef<"SoloGame", 'SoloGameResult'>
+    readonly balanceChange: FieldRef<"SoloGame", 'Int'>
+    readonly multiplier: FieldRef<"SoloGame", 'Float'>
+    readonly playedAt: FieldRef<"SoloGame", 'DateTime'>
+    readonly transactionId: FieldRef<"SoloGame", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * GameHistory findUnique
+   * SoloGame findUnique
    */
-  export type GameHistoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter, which GameHistory to fetch.
+     * Filter, which SoloGame to fetch.
      */
-    where: GameHistoryWhereUniqueInput
+    where: SoloGameWhereUniqueInput
   }
 
   /**
-   * GameHistory findUniqueOrThrow
+   * SoloGame findUniqueOrThrow
    */
-  export type GameHistoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter, which GameHistory to fetch.
+     * Filter, which SoloGame to fetch.
      */
-    where: GameHistoryWhereUniqueInput
+    where: SoloGameWhereUniqueInput
   }
 
   /**
-   * GameHistory findFirst
+   * SoloGame findFirst
    */
-  export type GameHistoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter, which GameHistory to fetch.
+     * Filter, which SoloGame to fetch.
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of GameHistories to fetch.
+     * Determine the order of SoloGames to fetch.
      */
-    orderBy?: GameHistoryOrderByWithRelationInput | GameHistoryOrderByWithRelationInput[]
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for GameHistories.
+     * Sets the position for searching for SoloGames.
      */
-    cursor?: GameHistoryWhereUniqueInput
+    cursor?: SoloGameWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` GameHistories from the position of the cursor.
+     * Take `±n` SoloGames from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` GameHistories.
+     * Skip the first `n` SoloGames.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of GameHistories.
+     * Filter by unique combinations of SoloGames.
      */
-    distinct?: GameHistoryScalarFieldEnum | GameHistoryScalarFieldEnum[]
+    distinct?: SoloGameScalarFieldEnum | SoloGameScalarFieldEnum[]
   }
 
   /**
-   * GameHistory findFirstOrThrow
+   * SoloGame findFirstOrThrow
    */
-  export type GameHistoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter, which GameHistory to fetch.
+     * Filter, which SoloGame to fetch.
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of GameHistories to fetch.
+     * Determine the order of SoloGames to fetch.
      */
-    orderBy?: GameHistoryOrderByWithRelationInput | GameHistoryOrderByWithRelationInput[]
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for GameHistories.
+     * Sets the position for searching for SoloGames.
      */
-    cursor?: GameHistoryWhereUniqueInput
+    cursor?: SoloGameWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` GameHistories from the position of the cursor.
+     * Take `±n` SoloGames from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` GameHistories.
+     * Skip the first `n` SoloGames.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of GameHistories.
+     * Filter by unique combinations of SoloGames.
      */
-    distinct?: GameHistoryScalarFieldEnum | GameHistoryScalarFieldEnum[]
+    distinct?: SoloGameScalarFieldEnum | SoloGameScalarFieldEnum[]
   }
 
   /**
-   * GameHistory findMany
+   * SoloGame findMany
    */
-  export type GameHistoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter, which GameHistories to fetch.
+     * Filter, which SoloGames to fetch.
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of GameHistories to fetch.
+     * Determine the order of SoloGames to fetch.
      */
-    orderBy?: GameHistoryOrderByWithRelationInput | GameHistoryOrderByWithRelationInput[]
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing GameHistories.
+     * Sets the position for listing SoloGames.
      */
-    cursor?: GameHistoryWhereUniqueInput
+    cursor?: SoloGameWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` GameHistories from the position of the cursor.
+     * Take `±n` SoloGames from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` GameHistories.
+     * Skip the first `n` SoloGames.
      */
     skip?: number
-    distinct?: GameHistoryScalarFieldEnum | GameHistoryScalarFieldEnum[]
+    distinct?: SoloGameScalarFieldEnum | SoloGameScalarFieldEnum[]
   }
 
   /**
-   * GameHistory create
+   * SoloGame create
    */
-  export type GameHistoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * The data needed to create a GameHistory.
+     * The data needed to create a SoloGame.
      */
-    data: XOR<GameHistoryCreateInput, GameHistoryUncheckedCreateInput>
+    data: XOR<SoloGameCreateInput, SoloGameUncheckedCreateInput>
   }
 
   /**
-   * GameHistory createMany
+   * SoloGame createMany
    */
-  export type GameHistoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many GameHistories.
+     * The data used to create many SoloGames.
      */
-    data: GameHistoryCreateManyInput | GameHistoryCreateManyInput[]
+    data: SoloGameCreateManyInput | SoloGameCreateManyInput[]
   }
 
   /**
-   * GameHistory update
+   * SoloGame update
    */
-  export type GameHistoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * The data needed to update a GameHistory.
+     * The data needed to update a SoloGame.
      */
-    data: XOR<GameHistoryUpdateInput, GameHistoryUncheckedUpdateInput>
+    data: XOR<SoloGameUpdateInput, SoloGameUncheckedUpdateInput>
     /**
-     * Choose, which GameHistory to update.
+     * Choose, which SoloGame to update.
      */
-    where: GameHistoryWhereUniqueInput
+    where: SoloGameWhereUniqueInput
   }
 
   /**
-   * GameHistory updateMany
+   * SoloGame updateMany
    */
-  export type GameHistoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update GameHistories.
+     * The data used to update SoloGames.
      */
-    data: XOR<GameHistoryUpdateManyMutationInput, GameHistoryUncheckedUpdateManyInput>
+    data: XOR<SoloGameUpdateManyMutationInput, SoloGameUncheckedUpdateManyInput>
     /**
-     * Filter which GameHistories to update
+     * Filter which SoloGames to update
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
-     * Limit how many GameHistories to update.
+     * Limit how many SoloGames to update.
      */
     limit?: number
   }
 
   /**
-   * GameHistory upsert
+   * SoloGame upsert
    */
-  export type GameHistoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * The filter to search for the GameHistory to update in case it exists.
+     * The filter to search for the SoloGame to update in case it exists.
      */
-    where: GameHistoryWhereUniqueInput
+    where: SoloGameWhereUniqueInput
     /**
-     * In case the GameHistory found by the `where` argument doesn't exist, create a new GameHistory with this data.
+     * In case the SoloGame found by the `where` argument doesn't exist, create a new SoloGame with this data.
      */
-    create: XOR<GameHistoryCreateInput, GameHistoryUncheckedCreateInput>
+    create: XOR<SoloGameCreateInput, SoloGameUncheckedCreateInput>
     /**
-     * In case the GameHistory was found with the provided `where` argument, update it with this data.
+     * In case the SoloGame was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<GameHistoryUpdateInput, GameHistoryUncheckedUpdateInput>
+    update: XOR<SoloGameUpdateInput, SoloGameUncheckedUpdateInput>
   }
 
   /**
-   * GameHistory delete
+   * SoloGame delete
    */
-  export type GameHistoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the SoloGame
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: SoloGameSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the SoloGame
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: SoloGameOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: SoloGameInclude<ExtArgs> | null
     /**
-     * Filter which GameHistory to delete.
+     * Filter which SoloGame to delete.
      */
-    where: GameHistoryWhereUniqueInput
+    where: SoloGameWhereUniqueInput
   }
 
   /**
-   * GameHistory deleteMany
+   * SoloGame deleteMany
    */
-  export type GameHistoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which GameHistories to delete
+     * Filter which SoloGames to delete
      */
-    where?: GameHistoryWhereInput
+    where?: SoloGameWhereInput
     /**
-     * Limit how many GameHistories to delete.
+     * Limit how many SoloGames to delete.
      */
     limit?: number
   }
 
   /**
-   * GameHistory findRaw
+   * SoloGame findRaw
    */
-  export type GameHistoryFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
      */
@@ -3078,9 +3694,9 @@ export namespace Prisma {
   }
 
   /**
-   * GameHistory aggregateRaw
+   * SoloGame aggregateRaw
    */
-  export type GameHistoryAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGameAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
      */
@@ -3092,21 +3708,4399 @@ export namespace Prisma {
   }
 
   /**
-   * GameHistory without action
+   * SoloGame.transaction
    */
-  export type GameHistoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SoloGame$transactionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the GameHistory
+     * Select specific fields to fetch from the Transaction
      */
-    select?: GameHistorySelect<ExtArgs> | null
+    select?: TransactionSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the GameHistory
+     * Omit specific fields from the Transaction
      */
-    omit?: GameHistoryOmit<ExtArgs> | null
+    omit?: TransactionOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: GameHistoryInclude<ExtArgs> | null
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+  }
+
+  /**
+   * SoloGame without action
+   */
+  export type SoloGameDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SoloGame
+     */
+    select?: SoloGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SoloGame
+     */
+    omit?: SoloGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SoloGameInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MultiplayerGame
+   */
+
+  export type AggregateMultiplayerGame = {
+    _count: MultiplayerGameCountAggregateOutputType | null
+    _avg: MultiplayerGameAvgAggregateOutputType | null
+    _sum: MultiplayerGameSumAggregateOutputType | null
+    _min: MultiplayerGameMinAggregateOutputType | null
+    _max: MultiplayerGameMaxAggregateOutputType | null
+  }
+
+  export type MultiplayerGameAvgAggregateOutputType = {
+    bet: number | null
+    thinkingTime: number | null
+  }
+
+  export type MultiplayerGameSumAggregateOutputType = {
+    bet: number | null
+    thinkingTime: number | null
+  }
+
+  export type MultiplayerGameMinAggregateOutputType = {
+    id: string | null
+    bet: number | null
+    thinkingTime: number | null
+    status: $Enums.GameStatus | null
+    createdBy: string | null
+    winnerId: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    finishedAt: Date | null
+  }
+
+  export type MultiplayerGameMaxAggregateOutputType = {
+    id: string | null
+    bet: number | null
+    thinkingTime: number | null
+    status: $Enums.GameStatus | null
+    createdBy: string | null
+    winnerId: string | null
+    createdAt: Date | null
+    startedAt: Date | null
+    finishedAt: Date | null
+  }
+
+  export type MultiplayerGameCountAggregateOutputType = {
+    id: number
+    bet: number
+    thinkingTime: number
+    status: number
+    createdBy: number
+    winnerId: number
+    createdAt: number
+    startedAt: number
+    finishedAt: number
+    _all: number
+  }
+
+
+  export type MultiplayerGameAvgAggregateInputType = {
+    bet?: true
+    thinkingTime?: true
+  }
+
+  export type MultiplayerGameSumAggregateInputType = {
+    bet?: true
+    thinkingTime?: true
+  }
+
+  export type MultiplayerGameMinAggregateInputType = {
+    id?: true
+    bet?: true
+    thinkingTime?: true
+    status?: true
+    createdBy?: true
+    winnerId?: true
+    createdAt?: true
+    startedAt?: true
+    finishedAt?: true
+  }
+
+  export type MultiplayerGameMaxAggregateInputType = {
+    id?: true
+    bet?: true
+    thinkingTime?: true
+    status?: true
+    createdBy?: true
+    winnerId?: true
+    createdAt?: true
+    startedAt?: true
+    finishedAt?: true
+  }
+
+  export type MultiplayerGameCountAggregateInputType = {
+    id?: true
+    bet?: true
+    thinkingTime?: true
+    status?: true
+    createdBy?: true
+    winnerId?: true
+    createdAt?: true
+    startedAt?: true
+    finishedAt?: true
+    _all?: true
+  }
+
+  export type MultiplayerGameAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MultiplayerGame to aggregate.
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerGames to fetch.
+     */
+    orderBy?: MultiplayerGameOrderByWithRelationInput | MultiplayerGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MultiplayerGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MultiplayerGames
+    **/
+    _count?: true | MultiplayerGameCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MultiplayerGameAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MultiplayerGameSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MultiplayerGameMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MultiplayerGameMaxAggregateInputType
+  }
+
+  export type GetMultiplayerGameAggregateType<T extends MultiplayerGameAggregateArgs> = {
+        [P in keyof T & keyof AggregateMultiplayerGame]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMultiplayerGame[P]>
+      : GetScalarType<T[P], AggregateMultiplayerGame[P]>
+  }
+
+
+
+
+  export type MultiplayerGameGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerGameWhereInput
+    orderBy?: MultiplayerGameOrderByWithAggregationInput | MultiplayerGameOrderByWithAggregationInput[]
+    by: MultiplayerGameScalarFieldEnum[] | MultiplayerGameScalarFieldEnum
+    having?: MultiplayerGameScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MultiplayerGameCountAggregateInputType | true
+    _avg?: MultiplayerGameAvgAggregateInputType
+    _sum?: MultiplayerGameSumAggregateInputType
+    _min?: MultiplayerGameMinAggregateInputType
+    _max?: MultiplayerGameMaxAggregateInputType
+  }
+
+  export type MultiplayerGameGroupByOutputType = {
+    id: string
+    bet: number
+    thinkingTime: number
+    status: $Enums.GameStatus
+    createdBy: string
+    winnerId: string | null
+    createdAt: Date
+    startedAt: Date | null
+    finishedAt: Date | null
+    _count: MultiplayerGameCountAggregateOutputType | null
+    _avg: MultiplayerGameAvgAggregateOutputType | null
+    _sum: MultiplayerGameSumAggregateOutputType | null
+    _min: MultiplayerGameMinAggregateOutputType | null
+    _max: MultiplayerGameMaxAggregateOutputType | null
+  }
+
+  type GetMultiplayerGameGroupByPayload<T extends MultiplayerGameGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MultiplayerGameGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MultiplayerGameGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MultiplayerGameGroupByOutputType[P]>
+            : GetScalarType<T[P], MultiplayerGameGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MultiplayerGameSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    bet?: boolean
+    thinkingTime?: boolean
+    status?: boolean
+    createdBy?: boolean
+    winnerId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    players?: boolean | MultiplayerGame$playersArgs<ExtArgs>
+    _count?: boolean | MultiplayerGameCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["multiplayerGame"]>
+
+
+
+  export type MultiplayerGameSelectScalar = {
+    id?: boolean
+    bet?: boolean
+    thinkingTime?: boolean
+    status?: boolean
+    createdBy?: boolean
+    winnerId?: boolean
+    createdAt?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+  }
+
+  export type MultiplayerGameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bet" | "thinkingTime" | "status" | "createdBy" | "winnerId" | "createdAt" | "startedAt" | "finishedAt", ExtArgs["result"]["multiplayerGame"]>
+  export type MultiplayerGameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    creator?: boolean | UserDefaultArgs<ExtArgs>
+    players?: boolean | MultiplayerGame$playersArgs<ExtArgs>
+    _count?: boolean | MultiplayerGameCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $MultiplayerGamePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MultiplayerGame"
+    objects: {
+      creator: Prisma.$UserPayload<ExtArgs>
+      players: Prisma.$MultiplayerParticipantPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      bet: number
+      thinkingTime: number
+      status: $Enums.GameStatus
+      createdBy: string
+      winnerId: string | null
+      createdAt: Date
+      startedAt: Date | null
+      finishedAt: Date | null
+    }, ExtArgs["result"]["multiplayerGame"]>
+    composites: {}
+  }
+
+  type MultiplayerGameGetPayload<S extends boolean | null | undefined | MultiplayerGameDefaultArgs> = $Result.GetResult<Prisma.$MultiplayerGamePayload, S>
+
+  type MultiplayerGameCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MultiplayerGameFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MultiplayerGameCountAggregateInputType | true
+    }
+
+  export interface MultiplayerGameDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MultiplayerGame'], meta: { name: 'MultiplayerGame' } }
+    /**
+     * Find zero or one MultiplayerGame that matches the filter.
+     * @param {MultiplayerGameFindUniqueArgs} args - Arguments to find a MultiplayerGame
+     * @example
+     * // Get one MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MultiplayerGameFindUniqueArgs>(args: SelectSubset<T, MultiplayerGameFindUniqueArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MultiplayerGame that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MultiplayerGameFindUniqueOrThrowArgs} args - Arguments to find a MultiplayerGame
+     * @example
+     * // Get one MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MultiplayerGameFindUniqueOrThrowArgs>(args: SelectSubset<T, MultiplayerGameFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MultiplayerGame that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameFindFirstArgs} args - Arguments to find a MultiplayerGame
+     * @example
+     * // Get one MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MultiplayerGameFindFirstArgs>(args?: SelectSubset<T, MultiplayerGameFindFirstArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MultiplayerGame that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameFindFirstOrThrowArgs} args - Arguments to find a MultiplayerGame
+     * @example
+     * // Get one MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MultiplayerGameFindFirstOrThrowArgs>(args?: SelectSubset<T, MultiplayerGameFindFirstOrThrowArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MultiplayerGames that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MultiplayerGames
+     * const multiplayerGames = await prisma.multiplayerGame.findMany()
+     * 
+     * // Get first 10 MultiplayerGames
+     * const multiplayerGames = await prisma.multiplayerGame.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const multiplayerGameWithIdOnly = await prisma.multiplayerGame.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MultiplayerGameFindManyArgs>(args?: SelectSubset<T, MultiplayerGameFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MultiplayerGame.
+     * @param {MultiplayerGameCreateArgs} args - Arguments to create a MultiplayerGame.
+     * @example
+     * // Create one MultiplayerGame
+     * const MultiplayerGame = await prisma.multiplayerGame.create({
+     *   data: {
+     *     // ... data to create a MultiplayerGame
+     *   }
+     * })
+     * 
+     */
+    create<T extends MultiplayerGameCreateArgs>(args: SelectSubset<T, MultiplayerGameCreateArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MultiplayerGames.
+     * @param {MultiplayerGameCreateManyArgs} args - Arguments to create many MultiplayerGames.
+     * @example
+     * // Create many MultiplayerGames
+     * const multiplayerGame = await prisma.multiplayerGame.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MultiplayerGameCreateManyArgs>(args?: SelectSubset<T, MultiplayerGameCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a MultiplayerGame.
+     * @param {MultiplayerGameDeleteArgs} args - Arguments to delete one MultiplayerGame.
+     * @example
+     * // Delete one MultiplayerGame
+     * const MultiplayerGame = await prisma.multiplayerGame.delete({
+     *   where: {
+     *     // ... filter to delete one MultiplayerGame
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MultiplayerGameDeleteArgs>(args: SelectSubset<T, MultiplayerGameDeleteArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MultiplayerGame.
+     * @param {MultiplayerGameUpdateArgs} args - Arguments to update one MultiplayerGame.
+     * @example
+     * // Update one MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MultiplayerGameUpdateArgs>(args: SelectSubset<T, MultiplayerGameUpdateArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MultiplayerGames.
+     * @param {MultiplayerGameDeleteManyArgs} args - Arguments to filter MultiplayerGames to delete.
+     * @example
+     * // Delete a few MultiplayerGames
+     * const { count } = await prisma.multiplayerGame.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MultiplayerGameDeleteManyArgs>(args?: SelectSubset<T, MultiplayerGameDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MultiplayerGames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MultiplayerGames
+     * const multiplayerGame = await prisma.multiplayerGame.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MultiplayerGameUpdateManyArgs>(args: SelectSubset<T, MultiplayerGameUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one MultiplayerGame.
+     * @param {MultiplayerGameUpsertArgs} args - Arguments to update or create a MultiplayerGame.
+     * @example
+     * // Update or create a MultiplayerGame
+     * const multiplayerGame = await prisma.multiplayerGame.upsert({
+     *   create: {
+     *     // ... data to create a MultiplayerGame
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MultiplayerGame we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MultiplayerGameUpsertArgs>(args: SelectSubset<T, MultiplayerGameUpsertArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MultiplayerGames that matches the filter.
+     * @param {MultiplayerGameFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const multiplayerGame = await prisma.multiplayerGame.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: MultiplayerGameFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a MultiplayerGame.
+     * @param {MultiplayerGameAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const multiplayerGame = await prisma.multiplayerGame.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: MultiplayerGameAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of MultiplayerGames.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameCountArgs} args - Arguments to filter MultiplayerGames to count.
+     * @example
+     * // Count the number of MultiplayerGames
+     * const count = await prisma.multiplayerGame.count({
+     *   where: {
+     *     // ... the filter for the MultiplayerGames we want to count
+     *   }
+     * })
+    **/
+    count<T extends MultiplayerGameCountArgs>(
+      args?: Subset<T, MultiplayerGameCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MultiplayerGameCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MultiplayerGame.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MultiplayerGameAggregateArgs>(args: Subset<T, MultiplayerGameAggregateArgs>): Prisma.PrismaPromise<GetMultiplayerGameAggregateType<T>>
+
+    /**
+     * Group by MultiplayerGame.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerGameGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MultiplayerGameGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MultiplayerGameGroupByArgs['orderBy'] }
+        : { orderBy?: MultiplayerGameGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MultiplayerGameGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMultiplayerGameGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MultiplayerGame model
+   */
+  readonly fields: MultiplayerGameFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MultiplayerGame.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MultiplayerGameClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    creator<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    players<T extends MultiplayerGame$playersArgs<ExtArgs> = {}>(args?: Subset<T, MultiplayerGame$playersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MultiplayerGame model
+   */
+  interface MultiplayerGameFieldRefs {
+    readonly id: FieldRef<"MultiplayerGame", 'String'>
+    readonly bet: FieldRef<"MultiplayerGame", 'Int'>
+    readonly thinkingTime: FieldRef<"MultiplayerGame", 'Int'>
+    readonly status: FieldRef<"MultiplayerGame", 'GameStatus'>
+    readonly createdBy: FieldRef<"MultiplayerGame", 'String'>
+    readonly winnerId: FieldRef<"MultiplayerGame", 'String'>
+    readonly createdAt: FieldRef<"MultiplayerGame", 'DateTime'>
+    readonly startedAt: FieldRef<"MultiplayerGame", 'DateTime'>
+    readonly finishedAt: FieldRef<"MultiplayerGame", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MultiplayerGame findUnique
+   */
+  export type MultiplayerGameFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerGame to fetch.
+     */
+    where: MultiplayerGameWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerGame findUniqueOrThrow
+   */
+  export type MultiplayerGameFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerGame to fetch.
+     */
+    where: MultiplayerGameWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerGame findFirst
+   */
+  export type MultiplayerGameFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerGame to fetch.
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerGames to fetch.
+     */
+    orderBy?: MultiplayerGameOrderByWithRelationInput | MultiplayerGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MultiplayerGames.
+     */
+    cursor?: MultiplayerGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MultiplayerGames.
+     */
+    distinct?: MultiplayerGameScalarFieldEnum | MultiplayerGameScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerGame findFirstOrThrow
+   */
+  export type MultiplayerGameFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerGame to fetch.
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerGames to fetch.
+     */
+    orderBy?: MultiplayerGameOrderByWithRelationInput | MultiplayerGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MultiplayerGames.
+     */
+    cursor?: MultiplayerGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerGames.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MultiplayerGames.
+     */
+    distinct?: MultiplayerGameScalarFieldEnum | MultiplayerGameScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerGame findMany
+   */
+  export type MultiplayerGameFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerGames to fetch.
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerGames to fetch.
+     */
+    orderBy?: MultiplayerGameOrderByWithRelationInput | MultiplayerGameOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MultiplayerGames.
+     */
+    cursor?: MultiplayerGameWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerGames from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerGames.
+     */
+    skip?: number
+    distinct?: MultiplayerGameScalarFieldEnum | MultiplayerGameScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerGame create
+   */
+  export type MultiplayerGameCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MultiplayerGame.
+     */
+    data: XOR<MultiplayerGameCreateInput, MultiplayerGameUncheckedCreateInput>
+  }
+
+  /**
+   * MultiplayerGame createMany
+   */
+  export type MultiplayerGameCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MultiplayerGames.
+     */
+    data: MultiplayerGameCreateManyInput | MultiplayerGameCreateManyInput[]
+  }
+
+  /**
+   * MultiplayerGame update
+   */
+  export type MultiplayerGameUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MultiplayerGame.
+     */
+    data: XOR<MultiplayerGameUpdateInput, MultiplayerGameUncheckedUpdateInput>
+    /**
+     * Choose, which MultiplayerGame to update.
+     */
+    where: MultiplayerGameWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerGame updateMany
+   */
+  export type MultiplayerGameUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MultiplayerGames.
+     */
+    data: XOR<MultiplayerGameUpdateManyMutationInput, MultiplayerGameUncheckedUpdateManyInput>
+    /**
+     * Filter which MultiplayerGames to update
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * Limit how many MultiplayerGames to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MultiplayerGame upsert
+   */
+  export type MultiplayerGameUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MultiplayerGame to update in case it exists.
+     */
+    where: MultiplayerGameWhereUniqueInput
+    /**
+     * In case the MultiplayerGame found by the `where` argument doesn't exist, create a new MultiplayerGame with this data.
+     */
+    create: XOR<MultiplayerGameCreateInput, MultiplayerGameUncheckedCreateInput>
+    /**
+     * In case the MultiplayerGame was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MultiplayerGameUpdateInput, MultiplayerGameUncheckedUpdateInput>
+  }
+
+  /**
+   * MultiplayerGame delete
+   */
+  export type MultiplayerGameDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+    /**
+     * Filter which MultiplayerGame to delete.
+     */
+    where: MultiplayerGameWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerGame deleteMany
+   */
+  export type MultiplayerGameDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MultiplayerGames to delete
+     */
+    where?: MultiplayerGameWhereInput
+    /**
+     * Limit how many MultiplayerGames to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MultiplayerGame findRaw
+   */
+  export type MultiplayerGameFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * MultiplayerGame aggregateRaw
+   */
+  export type MultiplayerGameAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * MultiplayerGame.players
+   */
+  export type MultiplayerGame$playersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    where?: MultiplayerParticipantWhereInput
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerGame without action
+   */
+  export type MultiplayerGameDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerGame
+     */
+    select?: MultiplayerGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerGame
+     */
+    omit?: MultiplayerGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerGameInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MultiplayerParticipant
+   */
+
+  export type AggregateMultiplayerParticipant = {
+    _count: MultiplayerParticipantCountAggregateOutputType | null
+    _avg: MultiplayerParticipantAvgAggregateOutputType | null
+    _sum: MultiplayerParticipantSumAggregateOutputType | null
+    _min: MultiplayerParticipantMinAggregateOutputType | null
+    _max: MultiplayerParticipantMaxAggregateOutputType | null
+  }
+
+  export type MultiplayerParticipantAvgAggregateOutputType = {
+    generatedNumber: number | null
+    balanceChange: number | null
+  }
+
+  export type MultiplayerParticipantSumAggregateOutputType = {
+    generatedNumber: number | null
+    balanceChange: number | null
+  }
+
+  export type MultiplayerParticipantMinAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    playerId: string | null
+    generatedNumber: number | null
+    playedAt: Date | null
+    isWinner: boolean | null
+    balanceChange: number | null
+    joinedAt: Date | null
+    transactionId: string | null
+  }
+
+  export type MultiplayerParticipantMaxAggregateOutputType = {
+    id: string | null
+    gameId: string | null
+    playerId: string | null
+    generatedNumber: number | null
+    playedAt: Date | null
+    isWinner: boolean | null
+    balanceChange: number | null
+    joinedAt: Date | null
+    transactionId: string | null
+  }
+
+  export type MultiplayerParticipantCountAggregateOutputType = {
+    id: number
+    gameId: number
+    playerId: number
+    generatedNumber: number
+    playedAt: number
+    isWinner: number
+    balanceChange: number
+    joinedAt: number
+    transactionId: number
+    _all: number
+  }
+
+
+  export type MultiplayerParticipantAvgAggregateInputType = {
+    generatedNumber?: true
+    balanceChange?: true
+  }
+
+  export type MultiplayerParticipantSumAggregateInputType = {
+    generatedNumber?: true
+    balanceChange?: true
+  }
+
+  export type MultiplayerParticipantMinAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerId?: true
+    generatedNumber?: true
+    playedAt?: true
+    isWinner?: true
+    balanceChange?: true
+    joinedAt?: true
+    transactionId?: true
+  }
+
+  export type MultiplayerParticipantMaxAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerId?: true
+    generatedNumber?: true
+    playedAt?: true
+    isWinner?: true
+    balanceChange?: true
+    joinedAt?: true
+    transactionId?: true
+  }
+
+  export type MultiplayerParticipantCountAggregateInputType = {
+    id?: true
+    gameId?: true
+    playerId?: true
+    generatedNumber?: true
+    playedAt?: true
+    isWinner?: true
+    balanceChange?: true
+    joinedAt?: true
+    transactionId?: true
+    _all?: true
+  }
+
+  export type MultiplayerParticipantAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MultiplayerParticipant to aggregate.
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerParticipants to fetch.
+     */
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerParticipants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerParticipants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MultiplayerParticipants
+    **/
+    _count?: true | MultiplayerParticipantCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MultiplayerParticipantAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MultiplayerParticipantSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MultiplayerParticipantMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MultiplayerParticipantMaxAggregateInputType
+  }
+
+  export type GetMultiplayerParticipantAggregateType<T extends MultiplayerParticipantAggregateArgs> = {
+        [P in keyof T & keyof AggregateMultiplayerParticipant]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMultiplayerParticipant[P]>
+      : GetScalarType<T[P], AggregateMultiplayerParticipant[P]>
+  }
+
+
+
+
+  export type MultiplayerParticipantGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MultiplayerParticipantWhereInput
+    orderBy?: MultiplayerParticipantOrderByWithAggregationInput | MultiplayerParticipantOrderByWithAggregationInput[]
+    by: MultiplayerParticipantScalarFieldEnum[] | MultiplayerParticipantScalarFieldEnum
+    having?: MultiplayerParticipantScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MultiplayerParticipantCountAggregateInputType | true
+    _avg?: MultiplayerParticipantAvgAggregateInputType
+    _sum?: MultiplayerParticipantSumAggregateInputType
+    _min?: MultiplayerParticipantMinAggregateInputType
+    _max?: MultiplayerParticipantMaxAggregateInputType
+  }
+
+  export type MultiplayerParticipantGroupByOutputType = {
+    id: string
+    gameId: string
+    playerId: string
+    generatedNumber: number | null
+    playedAt: Date | null
+    isWinner: boolean
+    balanceChange: number
+    joinedAt: Date
+    transactionId: string | null
+    _count: MultiplayerParticipantCountAggregateOutputType | null
+    _avg: MultiplayerParticipantAvgAggregateOutputType | null
+    _sum: MultiplayerParticipantSumAggregateOutputType | null
+    _min: MultiplayerParticipantMinAggregateOutputType | null
+    _max: MultiplayerParticipantMaxAggregateOutputType | null
+  }
+
+  type GetMultiplayerParticipantGroupByPayload<T extends MultiplayerParticipantGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MultiplayerParticipantGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MultiplayerParticipantGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MultiplayerParticipantGroupByOutputType[P]>
+            : GetScalarType<T[P], MultiplayerParticipantGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MultiplayerParticipantSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    gameId?: boolean
+    playerId?: boolean
+    generatedNumber?: boolean
+    playedAt?: boolean
+    isWinner?: boolean
+    balanceChange?: boolean
+    joinedAt?: boolean
+    transactionId?: boolean
+    game?: boolean | MultiplayerGameDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    transaction?: boolean | MultiplayerParticipant$transactionArgs<ExtArgs>
+  }, ExtArgs["result"]["multiplayerParticipant"]>
+
+
+
+  export type MultiplayerParticipantSelectScalar = {
+    id?: boolean
+    gameId?: boolean
+    playerId?: boolean
+    generatedNumber?: boolean
+    playedAt?: boolean
+    isWinner?: boolean
+    balanceChange?: boolean
+    joinedAt?: boolean
+    transactionId?: boolean
+  }
+
+  export type MultiplayerParticipantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "playerId" | "generatedNumber" | "playedAt" | "isWinner" | "balanceChange" | "joinedAt" | "transactionId", ExtArgs["result"]["multiplayerParticipant"]>
+  export type MultiplayerParticipantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    game?: boolean | MultiplayerGameDefaultArgs<ExtArgs>
+    player?: boolean | UserDefaultArgs<ExtArgs>
+    transaction?: boolean | MultiplayerParticipant$transactionArgs<ExtArgs>
+  }
+
+  export type $MultiplayerParticipantPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MultiplayerParticipant"
+    objects: {
+      game: Prisma.$MultiplayerGamePayload<ExtArgs>
+      player: Prisma.$UserPayload<ExtArgs>
+      transaction: Prisma.$TransactionPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      gameId: string
+      playerId: string
+      generatedNumber: number | null
+      playedAt: Date | null
+      isWinner: boolean
+      balanceChange: number
+      joinedAt: Date
+      transactionId: string | null
+    }, ExtArgs["result"]["multiplayerParticipant"]>
+    composites: {}
+  }
+
+  type MultiplayerParticipantGetPayload<S extends boolean | null | undefined | MultiplayerParticipantDefaultArgs> = $Result.GetResult<Prisma.$MultiplayerParticipantPayload, S>
+
+  type MultiplayerParticipantCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MultiplayerParticipantFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MultiplayerParticipantCountAggregateInputType | true
+    }
+
+  export interface MultiplayerParticipantDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MultiplayerParticipant'], meta: { name: 'MultiplayerParticipant' } }
+    /**
+     * Find zero or one MultiplayerParticipant that matches the filter.
+     * @param {MultiplayerParticipantFindUniqueArgs} args - Arguments to find a MultiplayerParticipant
+     * @example
+     * // Get one MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MultiplayerParticipantFindUniqueArgs>(args: SelectSubset<T, MultiplayerParticipantFindUniqueArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MultiplayerParticipant that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MultiplayerParticipantFindUniqueOrThrowArgs} args - Arguments to find a MultiplayerParticipant
+     * @example
+     * // Get one MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MultiplayerParticipantFindUniqueOrThrowArgs>(args: SelectSubset<T, MultiplayerParticipantFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MultiplayerParticipant that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantFindFirstArgs} args - Arguments to find a MultiplayerParticipant
+     * @example
+     * // Get one MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MultiplayerParticipantFindFirstArgs>(args?: SelectSubset<T, MultiplayerParticipantFindFirstArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MultiplayerParticipant that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantFindFirstOrThrowArgs} args - Arguments to find a MultiplayerParticipant
+     * @example
+     * // Get one MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MultiplayerParticipantFindFirstOrThrowArgs>(args?: SelectSubset<T, MultiplayerParticipantFindFirstOrThrowArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MultiplayerParticipants that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MultiplayerParticipants
+     * const multiplayerParticipants = await prisma.multiplayerParticipant.findMany()
+     * 
+     * // Get first 10 MultiplayerParticipants
+     * const multiplayerParticipants = await prisma.multiplayerParticipant.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const multiplayerParticipantWithIdOnly = await prisma.multiplayerParticipant.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MultiplayerParticipantFindManyArgs>(args?: SelectSubset<T, MultiplayerParticipantFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MultiplayerParticipant.
+     * @param {MultiplayerParticipantCreateArgs} args - Arguments to create a MultiplayerParticipant.
+     * @example
+     * // Create one MultiplayerParticipant
+     * const MultiplayerParticipant = await prisma.multiplayerParticipant.create({
+     *   data: {
+     *     // ... data to create a MultiplayerParticipant
+     *   }
+     * })
+     * 
+     */
+    create<T extends MultiplayerParticipantCreateArgs>(args: SelectSubset<T, MultiplayerParticipantCreateArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MultiplayerParticipants.
+     * @param {MultiplayerParticipantCreateManyArgs} args - Arguments to create many MultiplayerParticipants.
+     * @example
+     * // Create many MultiplayerParticipants
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MultiplayerParticipantCreateManyArgs>(args?: SelectSubset<T, MultiplayerParticipantCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a MultiplayerParticipant.
+     * @param {MultiplayerParticipantDeleteArgs} args - Arguments to delete one MultiplayerParticipant.
+     * @example
+     * // Delete one MultiplayerParticipant
+     * const MultiplayerParticipant = await prisma.multiplayerParticipant.delete({
+     *   where: {
+     *     // ... filter to delete one MultiplayerParticipant
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MultiplayerParticipantDeleteArgs>(args: SelectSubset<T, MultiplayerParticipantDeleteArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MultiplayerParticipant.
+     * @param {MultiplayerParticipantUpdateArgs} args - Arguments to update one MultiplayerParticipant.
+     * @example
+     * // Update one MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MultiplayerParticipantUpdateArgs>(args: SelectSubset<T, MultiplayerParticipantUpdateArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MultiplayerParticipants.
+     * @param {MultiplayerParticipantDeleteManyArgs} args - Arguments to filter MultiplayerParticipants to delete.
+     * @example
+     * // Delete a few MultiplayerParticipants
+     * const { count } = await prisma.multiplayerParticipant.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MultiplayerParticipantDeleteManyArgs>(args?: SelectSubset<T, MultiplayerParticipantDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MultiplayerParticipants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MultiplayerParticipants
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MultiplayerParticipantUpdateManyArgs>(args: SelectSubset<T, MultiplayerParticipantUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one MultiplayerParticipant.
+     * @param {MultiplayerParticipantUpsertArgs} args - Arguments to update or create a MultiplayerParticipant.
+     * @example
+     * // Update or create a MultiplayerParticipant
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.upsert({
+     *   create: {
+     *     // ... data to create a MultiplayerParticipant
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MultiplayerParticipant we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MultiplayerParticipantUpsertArgs>(args: SelectSubset<T, MultiplayerParticipantUpsertArgs<ExtArgs>>): Prisma__MultiplayerParticipantClient<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MultiplayerParticipants that matches the filter.
+     * @param {MultiplayerParticipantFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: MultiplayerParticipantFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a MultiplayerParticipant.
+     * @param {MultiplayerParticipantAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const multiplayerParticipant = await prisma.multiplayerParticipant.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: MultiplayerParticipantAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of MultiplayerParticipants.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantCountArgs} args - Arguments to filter MultiplayerParticipants to count.
+     * @example
+     * // Count the number of MultiplayerParticipants
+     * const count = await prisma.multiplayerParticipant.count({
+     *   where: {
+     *     // ... the filter for the MultiplayerParticipants we want to count
+     *   }
+     * })
+    **/
+    count<T extends MultiplayerParticipantCountArgs>(
+      args?: Subset<T, MultiplayerParticipantCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MultiplayerParticipantCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MultiplayerParticipant.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MultiplayerParticipantAggregateArgs>(args: Subset<T, MultiplayerParticipantAggregateArgs>): Prisma.PrismaPromise<GetMultiplayerParticipantAggregateType<T>>
+
+    /**
+     * Group by MultiplayerParticipant.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MultiplayerParticipantGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MultiplayerParticipantGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MultiplayerParticipantGroupByArgs['orderBy'] }
+        : { orderBy?: MultiplayerParticipantGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MultiplayerParticipantGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMultiplayerParticipantGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MultiplayerParticipant model
+   */
+  readonly fields: MultiplayerParticipantFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MultiplayerParticipant.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MultiplayerParticipantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    game<T extends MultiplayerGameDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MultiplayerGameDefaultArgs<ExtArgs>>): Prisma__MultiplayerGameClient<$Result.GetResult<Prisma.$MultiplayerGamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    player<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    transaction<T extends MultiplayerParticipant$transactionArgs<ExtArgs> = {}>(args?: Subset<T, MultiplayerParticipant$transactionArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MultiplayerParticipant model
+   */
+  interface MultiplayerParticipantFieldRefs {
+    readonly id: FieldRef<"MultiplayerParticipant", 'String'>
+    readonly gameId: FieldRef<"MultiplayerParticipant", 'String'>
+    readonly playerId: FieldRef<"MultiplayerParticipant", 'String'>
+    readonly generatedNumber: FieldRef<"MultiplayerParticipant", 'Int'>
+    readonly playedAt: FieldRef<"MultiplayerParticipant", 'DateTime'>
+    readonly isWinner: FieldRef<"MultiplayerParticipant", 'Boolean'>
+    readonly balanceChange: FieldRef<"MultiplayerParticipant", 'Int'>
+    readonly joinedAt: FieldRef<"MultiplayerParticipant", 'DateTime'>
+    readonly transactionId: FieldRef<"MultiplayerParticipant", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MultiplayerParticipant findUnique
+   */
+  export type MultiplayerParticipantFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerParticipant to fetch.
+     */
+    where: MultiplayerParticipantWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerParticipant findUniqueOrThrow
+   */
+  export type MultiplayerParticipantFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerParticipant to fetch.
+     */
+    where: MultiplayerParticipantWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerParticipant findFirst
+   */
+  export type MultiplayerParticipantFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerParticipant to fetch.
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerParticipants to fetch.
+     */
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MultiplayerParticipants.
+     */
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerParticipants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerParticipants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MultiplayerParticipants.
+     */
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerParticipant findFirstOrThrow
+   */
+  export type MultiplayerParticipantFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerParticipant to fetch.
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerParticipants to fetch.
+     */
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MultiplayerParticipants.
+     */
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerParticipants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerParticipants.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MultiplayerParticipants.
+     */
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerParticipant findMany
+   */
+  export type MultiplayerParticipantFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter, which MultiplayerParticipants to fetch.
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MultiplayerParticipants to fetch.
+     */
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MultiplayerParticipants.
+     */
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MultiplayerParticipants from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MultiplayerParticipants.
+     */
+    skip?: number
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * MultiplayerParticipant create
+   */
+  export type MultiplayerParticipantCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MultiplayerParticipant.
+     */
+    data: XOR<MultiplayerParticipantCreateInput, MultiplayerParticipantUncheckedCreateInput>
+  }
+
+  /**
+   * MultiplayerParticipant createMany
+   */
+  export type MultiplayerParticipantCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MultiplayerParticipants.
+     */
+    data: MultiplayerParticipantCreateManyInput | MultiplayerParticipantCreateManyInput[]
+  }
+
+  /**
+   * MultiplayerParticipant update
+   */
+  export type MultiplayerParticipantUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MultiplayerParticipant.
+     */
+    data: XOR<MultiplayerParticipantUpdateInput, MultiplayerParticipantUncheckedUpdateInput>
+    /**
+     * Choose, which MultiplayerParticipant to update.
+     */
+    where: MultiplayerParticipantWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerParticipant updateMany
+   */
+  export type MultiplayerParticipantUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MultiplayerParticipants.
+     */
+    data: XOR<MultiplayerParticipantUpdateManyMutationInput, MultiplayerParticipantUncheckedUpdateManyInput>
+    /**
+     * Filter which MultiplayerParticipants to update
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * Limit how many MultiplayerParticipants to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MultiplayerParticipant upsert
+   */
+  export type MultiplayerParticipantUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MultiplayerParticipant to update in case it exists.
+     */
+    where: MultiplayerParticipantWhereUniqueInput
+    /**
+     * In case the MultiplayerParticipant found by the `where` argument doesn't exist, create a new MultiplayerParticipant with this data.
+     */
+    create: XOR<MultiplayerParticipantCreateInput, MultiplayerParticipantUncheckedCreateInput>
+    /**
+     * In case the MultiplayerParticipant was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MultiplayerParticipantUpdateInput, MultiplayerParticipantUncheckedUpdateInput>
+  }
+
+  /**
+   * MultiplayerParticipant delete
+   */
+  export type MultiplayerParticipantDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    /**
+     * Filter which MultiplayerParticipant to delete.
+     */
+    where: MultiplayerParticipantWhereUniqueInput
+  }
+
+  /**
+   * MultiplayerParticipant deleteMany
+   */
+  export type MultiplayerParticipantDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MultiplayerParticipants to delete
+     */
+    where?: MultiplayerParticipantWhereInput
+    /**
+     * Limit how many MultiplayerParticipants to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MultiplayerParticipant findRaw
+   */
+  export type MultiplayerParticipantFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * MultiplayerParticipant aggregateRaw
+   */
+  export type MultiplayerParticipantAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * MultiplayerParticipant.transaction
+   */
+  export type MultiplayerParticipant$transactionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+  }
+
+  /**
+   * MultiplayerParticipant without action
+   */
+  export type MultiplayerParticipantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Transaction
+   */
+
+  export type AggregateTransaction = {
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  export type TransactionAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: $Enums.TransactionType | null
+    amount: number | null
+    description: string | null
+    reference: string | null
+    status: $Enums.TransactionStatus | null
+    createdAt: Date | null
+  }
+
+  export type TransactionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    type: $Enums.TransactionType | null
+    amount: number | null
+    description: string | null
+    reference: string | null
+    status: $Enums.TransactionStatus | null
+    createdAt: Date | null
+  }
+
+  export type TransactionCountAggregateOutputType = {
+    id: number
+    userId: number
+    type: number
+    amount: number
+    description: number
+    reference: number
+    status: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TransactionAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    amount?: true
+    description?: true
+    reference?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type TransactionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    amount?: true
+    description?: true
+    reference?: true
+    status?: true
+    createdAt?: true
+  }
+
+  export type TransactionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    type?: true
+    amount?: true
+    description?: true
+    reference?: true
+    status?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transaction to aggregate.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transactions
+    **/
+    _count?: true | TransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type GetTransactionAggregateType<T extends TransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransaction[P]>
+      : GetScalarType<T[P], AggregateTransaction[P]>
+  }
+
+
+
+
+  export type TransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithAggregationInput | TransactionOrderByWithAggregationInput[]
+    by: TransactionScalarFieldEnum[] | TransactionScalarFieldEnum
+    having?: TransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionCountAggregateInputType | true
+    _avg?: TransactionAvgAggregateInputType
+    _sum?: TransactionSumAggregateInputType
+    _min?: TransactionMinAggregateInputType
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type TransactionGroupByOutputType = {
+    id: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference: string | null
+    status: $Enums.TransactionStatus
+    createdAt: Date
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  type GetTransactionGroupByPayload<T extends TransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    amount?: boolean
+    description?: boolean
+    reference?: boolean
+    status?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    soloGames?: boolean | Transaction$soloGamesArgs<ExtArgs>
+    multiplayerParticipants?: boolean | Transaction$multiplayerParticipantsArgs<ExtArgs>
+    recharge?: boolean | Transaction$rechargeArgs<ExtArgs>
+    _count?: boolean | TransactionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+
+
+  export type TransactionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    type?: boolean
+    amount?: boolean
+    description?: boolean
+    reference?: boolean
+    status?: boolean
+    createdAt?: boolean
+  }
+
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "description" | "reference" | "status" | "createdAt", ExtArgs["result"]["transaction"]>
+  export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    soloGames?: boolean | Transaction$soloGamesArgs<ExtArgs>
+    multiplayerParticipants?: boolean | Transaction$multiplayerParticipantsArgs<ExtArgs>
+    recharge?: boolean | Transaction$rechargeArgs<ExtArgs>
+    _count?: boolean | TransactionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transaction"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      soloGames: Prisma.$SoloGamePayload<ExtArgs>[]
+      multiplayerParticipants: Prisma.$MultiplayerParticipantPayload<ExtArgs>[]
+      recharge: Prisma.$RechargePayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      type: $Enums.TransactionType
+      amount: number
+      description: string
+      reference: string | null
+      status: $Enums.TransactionStatus
+      createdAt: Date
+    }, ExtArgs["result"]["transaction"]>
+    composites: {}
+  }
+
+  type TransactionGetPayload<S extends boolean | null | undefined | TransactionDefaultArgs> = $Result.GetResult<Prisma.$TransactionPayload, S>
+
+  type TransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionCountAggregateInputType | true
+    }
+
+  export interface TransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transaction'], meta: { name: 'Transaction' } }
+    /**
+     * Find zero or one Transaction that matches the filter.
+     * @param {TransactionFindUniqueArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionFindUniqueArgs>(args: SelectSubset<T, TransactionFindUniqueArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionFindUniqueOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionFindFirstArgs>(args?: SelectSubset<T, TransactionFindFirstArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transactions
+     * const transactions = await prisma.transaction.findMany()
+     * 
+     * // Get first 10 Transactions
+     * const transactions = await prisma.transaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionWithIdOnly = await prisma.transaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionFindManyArgs>(args?: SelectSubset<T, TransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transaction.
+     * @param {TransactionCreateArgs} args - Arguments to create a Transaction.
+     * @example
+     * // Create one Transaction
+     * const Transaction = await prisma.transaction.create({
+     *   data: {
+     *     // ... data to create a Transaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionCreateArgs>(args: SelectSubset<T, TransactionCreateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transactions.
+     * @param {TransactionCreateManyArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionCreateManyArgs>(args?: SelectSubset<T, TransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Transaction.
+     * @param {TransactionDeleteArgs} args - Arguments to delete one Transaction.
+     * @example
+     * // Delete one Transaction
+     * const Transaction = await prisma.transaction.delete({
+     *   where: {
+     *     // ... filter to delete one Transaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionDeleteArgs>(args: SelectSubset<T, TransactionDeleteArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transaction.
+     * @param {TransactionUpdateArgs} args - Arguments to update one Transaction.
+     * @example
+     * // Update one Transaction
+     * const transaction = await prisma.transaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionUpdateArgs>(args: SelectSubset<T, TransactionUpdateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transactions.
+     * @param {TransactionDeleteManyArgs} args - Arguments to filter Transactions to delete.
+     * @example
+     * // Delete a few Transactions
+     * const { count } = await prisma.transaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionDeleteManyArgs>(args?: SelectSubset<T, TransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionUpdateManyArgs>(args: SelectSubset<T, TransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Transaction.
+     * @param {TransactionUpsertArgs} args - Arguments to update or create a Transaction.
+     * @example
+     * // Update or create a Transaction
+     * const transaction = await prisma.transaction.upsert({
+     *   create: {
+     *     // ... data to create a Transaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionUpsertArgs>(args: SelectSubset<T, TransactionUpsertArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * @param {TransactionFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const transaction = await prisma.transaction.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: TransactionFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a Transaction.
+     * @param {TransactionAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const transaction = await prisma.transaction.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: TransactionAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionCountArgs} args - Arguments to filter Transactions to count.
+     * @example
+     * // Count the number of Transactions
+     * const count = await prisma.transaction.count({
+     *   where: {
+     *     // ... the filter for the Transactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionCountArgs>(
+      args?: Subset<T, TransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionAggregateArgs>(args: Subset<T, TransactionAggregateArgs>): Prisma.PrismaPromise<GetTransactionAggregateType<T>>
+
+    /**
+     * Group by Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transaction model
+   */
+  readonly fields: TransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    soloGames<T extends Transaction$soloGamesArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$soloGamesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SoloGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    multiplayerParticipants<T extends Transaction$multiplayerParticipantsArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$multiplayerParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MultiplayerParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    recharge<T extends Transaction$rechargeArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$rechargeArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transaction model
+   */
+  interface TransactionFieldRefs {
+    readonly id: FieldRef<"Transaction", 'String'>
+    readonly userId: FieldRef<"Transaction", 'String'>
+    readonly type: FieldRef<"Transaction", 'TransactionType'>
+    readonly amount: FieldRef<"Transaction", 'Int'>
+    readonly description: FieldRef<"Transaction", 'String'>
+    readonly reference: FieldRef<"Transaction", 'String'>
+    readonly status: FieldRef<"Transaction", 'TransactionStatus'>
+    readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transaction findUnique
+   */
+  export type TransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findUniqueOrThrow
+   */
+  export type TransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findFirst
+   */
+  export type TransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findFirstOrThrow
+   */
+  export type TransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findMany
+   */
+  export type TransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transactions to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction create
+   */
+  export type TransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transaction.
+     */
+    data: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+  }
+
+  /**
+   * Transaction createMany
+   */
+  export type TransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+  }
+
+  /**
+   * Transaction update
+   */
+  export type TransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transaction.
+     */
+    data: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+    /**
+     * Choose, which Transaction to update.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction updateMany
+   */
+  export type TransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction upsert
+   */
+  export type TransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transaction to update in case it exists.
+     */
+    where: TransactionWhereUniqueInput
+    /**
+     * In case the Transaction found by the `where` argument doesn't exist, create a new Transaction with this data.
+     */
+    create: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+    /**
+     * In case the Transaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * Transaction delete
+   */
+  export type TransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter which Transaction to delete.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction deleteMany
+   */
+  export type TransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transactions to delete
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction findRaw
+   */
+  export type TransactionFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * Transaction aggregateRaw
+   */
+  export type TransactionAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * Transaction.soloGames
+   */
+  export type Transaction$soloGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SoloGame
+     */
+    select?: SoloGameSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SoloGame
+     */
+    omit?: SoloGameOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SoloGameInclude<ExtArgs> | null
+    where?: SoloGameWhereInput
+    orderBy?: SoloGameOrderByWithRelationInput | SoloGameOrderByWithRelationInput[]
+    cursor?: SoloGameWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SoloGameScalarFieldEnum | SoloGameScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction.multiplayerParticipants
+   */
+  export type Transaction$multiplayerParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MultiplayerParticipant
+     */
+    select?: MultiplayerParticipantSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MultiplayerParticipant
+     */
+    omit?: MultiplayerParticipantOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MultiplayerParticipantInclude<ExtArgs> | null
+    where?: MultiplayerParticipantWhereInput
+    orderBy?: MultiplayerParticipantOrderByWithRelationInput | MultiplayerParticipantOrderByWithRelationInput[]
+    cursor?: MultiplayerParticipantWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MultiplayerParticipantScalarFieldEnum | MultiplayerParticipantScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction.recharge
+   */
+  export type Transaction$rechargeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    where?: RechargeWhereInput
+  }
+
+  /**
+   * Transaction without action
+   */
+  export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Recharge
+   */
+
+  export type AggregateRecharge = {
+    _count: RechargeCountAggregateOutputType | null
+    _avg: RechargeAvgAggregateOutputType | null
+    _sum: RechargeSumAggregateOutputType | null
+    _min: RechargeMinAggregateOutputType | null
+    _max: RechargeMaxAggregateOutputType | null
+  }
+
+  export type RechargeAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type RechargeSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type RechargeMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    amount: number | null
+    method: $Enums.PaymentMethod | null
+    status: $Enums.RechargeStatus | null
+    transactionId: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type RechargeMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    amount: number | null
+    method: $Enums.PaymentMethod | null
+    status: $Enums.RechargeStatus | null
+    transactionId: string | null
+    createdAt: Date | null
+    completedAt: Date | null
+  }
+
+  export type RechargeCountAggregateOutputType = {
+    id: number
+    userId: number
+    amount: number
+    method: number
+    status: number
+    transactionId: number
+    billingData: number
+    createdAt: number
+    completedAt: number
+    _all: number
+  }
+
+
+  export type RechargeAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type RechargeSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type RechargeMinAggregateInputType = {
+    id?: true
+    userId?: true
+    amount?: true
+    method?: true
+    status?: true
+    transactionId?: true
+    createdAt?: true
+    completedAt?: true
+  }
+
+  export type RechargeMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    amount?: true
+    method?: true
+    status?: true
+    transactionId?: true
+    createdAt?: true
+    completedAt?: true
+  }
+
+  export type RechargeCountAggregateInputType = {
+    id?: true
+    userId?: true
+    amount?: true
+    method?: true
+    status?: true
+    transactionId?: true
+    billingData?: true
+    createdAt?: true
+    completedAt?: true
+    _all?: true
+  }
+
+  export type RechargeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Recharge to aggregate.
+     */
+    where?: RechargeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recharges to fetch.
+     */
+    orderBy?: RechargeOrderByWithRelationInput | RechargeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RechargeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recharges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recharges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Recharges
+    **/
+    _count?: true | RechargeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RechargeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RechargeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RechargeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RechargeMaxAggregateInputType
+  }
+
+  export type GetRechargeAggregateType<T extends RechargeAggregateArgs> = {
+        [P in keyof T & keyof AggregateRecharge]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRecharge[P]>
+      : GetScalarType<T[P], AggregateRecharge[P]>
+  }
+
+
+
+
+  export type RechargeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RechargeWhereInput
+    orderBy?: RechargeOrderByWithAggregationInput | RechargeOrderByWithAggregationInput[]
+    by: RechargeScalarFieldEnum[] | RechargeScalarFieldEnum
+    having?: RechargeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RechargeCountAggregateInputType | true
+    _avg?: RechargeAvgAggregateInputType
+    _sum?: RechargeSumAggregateInputType
+    _min?: RechargeMinAggregateInputType
+    _max?: RechargeMaxAggregateInputType
+  }
+
+  export type RechargeGroupByOutputType = {
+    id: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status: $Enums.RechargeStatus
+    transactionId: string
+    billingData: JsonValue
+    createdAt: Date
+    completedAt: Date | null
+    _count: RechargeCountAggregateOutputType | null
+    _avg: RechargeAvgAggregateOutputType | null
+    _sum: RechargeSumAggregateOutputType | null
+    _min: RechargeMinAggregateOutputType | null
+    _max: RechargeMaxAggregateOutputType | null
+  }
+
+  type GetRechargeGroupByPayload<T extends RechargeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RechargeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RechargeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RechargeGroupByOutputType[P]>
+            : GetScalarType<T[P], RechargeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RechargeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    amount?: boolean
+    method?: boolean
+    status?: boolean
+    transactionId?: boolean
+    billingData?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+    transaction?: boolean | TransactionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["recharge"]>
+
+
+
+  export type RechargeSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    amount?: boolean
+    method?: boolean
+    status?: boolean
+    transactionId?: boolean
+    billingData?: boolean
+    createdAt?: boolean
+    completedAt?: boolean
+  }
+
+  export type RechargeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "amount" | "method" | "status" | "transactionId" | "billingData" | "createdAt" | "completedAt", ExtArgs["result"]["recharge"]>
+  export type RechargeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transaction?: boolean | TransactionDefaultArgs<ExtArgs>
+  }
+
+  export type $RechargePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Recharge"
+    objects: {
+      transaction: Prisma.$TransactionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      amount: number
+      method: $Enums.PaymentMethod
+      status: $Enums.RechargeStatus
+      transactionId: string
+      billingData: Prisma.JsonValue
+      createdAt: Date
+      completedAt: Date | null
+    }, ExtArgs["result"]["recharge"]>
+    composites: {}
+  }
+
+  type RechargeGetPayload<S extends boolean | null | undefined | RechargeDefaultArgs> = $Result.GetResult<Prisma.$RechargePayload, S>
+
+  type RechargeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RechargeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RechargeCountAggregateInputType | true
+    }
+
+  export interface RechargeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Recharge'], meta: { name: 'Recharge' } }
+    /**
+     * Find zero or one Recharge that matches the filter.
+     * @param {RechargeFindUniqueArgs} args - Arguments to find a Recharge
+     * @example
+     * // Get one Recharge
+     * const recharge = await prisma.recharge.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RechargeFindUniqueArgs>(args: SelectSubset<T, RechargeFindUniqueArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Recharge that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RechargeFindUniqueOrThrowArgs} args - Arguments to find a Recharge
+     * @example
+     * // Get one Recharge
+     * const recharge = await prisma.recharge.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RechargeFindUniqueOrThrowArgs>(args: SelectSubset<T, RechargeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Recharge that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeFindFirstArgs} args - Arguments to find a Recharge
+     * @example
+     * // Get one Recharge
+     * const recharge = await prisma.recharge.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RechargeFindFirstArgs>(args?: SelectSubset<T, RechargeFindFirstArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Recharge that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeFindFirstOrThrowArgs} args - Arguments to find a Recharge
+     * @example
+     * // Get one Recharge
+     * const recharge = await prisma.recharge.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RechargeFindFirstOrThrowArgs>(args?: SelectSubset<T, RechargeFindFirstOrThrowArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Recharges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Recharges
+     * const recharges = await prisma.recharge.findMany()
+     * 
+     * // Get first 10 Recharges
+     * const recharges = await prisma.recharge.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rechargeWithIdOnly = await prisma.recharge.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RechargeFindManyArgs>(args?: SelectSubset<T, RechargeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Recharge.
+     * @param {RechargeCreateArgs} args - Arguments to create a Recharge.
+     * @example
+     * // Create one Recharge
+     * const Recharge = await prisma.recharge.create({
+     *   data: {
+     *     // ... data to create a Recharge
+     *   }
+     * })
+     * 
+     */
+    create<T extends RechargeCreateArgs>(args: SelectSubset<T, RechargeCreateArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Recharges.
+     * @param {RechargeCreateManyArgs} args - Arguments to create many Recharges.
+     * @example
+     * // Create many Recharges
+     * const recharge = await prisma.recharge.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RechargeCreateManyArgs>(args?: SelectSubset<T, RechargeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Recharge.
+     * @param {RechargeDeleteArgs} args - Arguments to delete one Recharge.
+     * @example
+     * // Delete one Recharge
+     * const Recharge = await prisma.recharge.delete({
+     *   where: {
+     *     // ... filter to delete one Recharge
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RechargeDeleteArgs>(args: SelectSubset<T, RechargeDeleteArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Recharge.
+     * @param {RechargeUpdateArgs} args - Arguments to update one Recharge.
+     * @example
+     * // Update one Recharge
+     * const recharge = await prisma.recharge.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RechargeUpdateArgs>(args: SelectSubset<T, RechargeUpdateArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Recharges.
+     * @param {RechargeDeleteManyArgs} args - Arguments to filter Recharges to delete.
+     * @example
+     * // Delete a few Recharges
+     * const { count } = await prisma.recharge.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RechargeDeleteManyArgs>(args?: SelectSubset<T, RechargeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Recharges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Recharges
+     * const recharge = await prisma.recharge.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RechargeUpdateManyArgs>(args: SelectSubset<T, RechargeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Recharge.
+     * @param {RechargeUpsertArgs} args - Arguments to update or create a Recharge.
+     * @example
+     * // Update or create a Recharge
+     * const recharge = await prisma.recharge.upsert({
+     *   create: {
+     *     // ... data to create a Recharge
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Recharge we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RechargeUpsertArgs>(args: SelectSubset<T, RechargeUpsertArgs<ExtArgs>>): Prisma__RechargeClient<$Result.GetResult<Prisma.$RechargePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Recharges that matches the filter.
+     * @param {RechargeFindRawArgs} args - Select which filters you would like to apply.
+     * @example
+     * const recharge = await prisma.recharge.findRaw({
+     *   filter: { age: { $gt: 25 } }
+     * })
+     */
+    findRaw(args?: RechargeFindRawArgs): Prisma.PrismaPromise<JsonObject>
+
+    /**
+     * Perform aggregation operations on a Recharge.
+     * @param {RechargeAggregateRawArgs} args - Select which aggregations you would like to apply.
+     * @example
+     * const recharge = await prisma.recharge.aggregateRaw({
+     *   pipeline: [
+     *     { $match: { status: "registered" } },
+     *     { $group: { _id: "$country", total: { $sum: 1 } } }
+     *   ]
+     * })
+     */
+    aggregateRaw(args?: RechargeAggregateRawArgs): Prisma.PrismaPromise<JsonObject>
+
+
+    /**
+     * Count the number of Recharges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeCountArgs} args - Arguments to filter Recharges to count.
+     * @example
+     * // Count the number of Recharges
+     * const count = await prisma.recharge.count({
+     *   where: {
+     *     // ... the filter for the Recharges we want to count
+     *   }
+     * })
+    **/
+    count<T extends RechargeCountArgs>(
+      args?: Subset<T, RechargeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RechargeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Recharge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RechargeAggregateArgs>(args: Subset<T, RechargeAggregateArgs>): Prisma.PrismaPromise<GetRechargeAggregateType<T>>
+
+    /**
+     * Group by Recharge.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RechargeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RechargeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RechargeGroupByArgs['orderBy'] }
+        : { orderBy?: RechargeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RechargeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRechargeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Recharge model
+   */
+  readonly fields: RechargeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Recharge.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RechargeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    transaction<T extends TransactionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TransactionDefaultArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Recharge model
+   */
+  interface RechargeFieldRefs {
+    readonly id: FieldRef<"Recharge", 'String'>
+    readonly userId: FieldRef<"Recharge", 'String'>
+    readonly amount: FieldRef<"Recharge", 'Int'>
+    readonly method: FieldRef<"Recharge", 'PaymentMethod'>
+    readonly status: FieldRef<"Recharge", 'RechargeStatus'>
+    readonly transactionId: FieldRef<"Recharge", 'String'>
+    readonly billingData: FieldRef<"Recharge", 'Json'>
+    readonly createdAt: FieldRef<"Recharge", 'DateTime'>
+    readonly completedAt: FieldRef<"Recharge", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Recharge findUnique
+   */
+  export type RechargeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recharge to fetch.
+     */
+    where: RechargeWhereUniqueInput
+  }
+
+  /**
+   * Recharge findUniqueOrThrow
+   */
+  export type RechargeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recharge to fetch.
+     */
+    where: RechargeWhereUniqueInput
+  }
+
+  /**
+   * Recharge findFirst
+   */
+  export type RechargeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recharge to fetch.
+     */
+    where?: RechargeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recharges to fetch.
+     */
+    orderBy?: RechargeOrderByWithRelationInput | RechargeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Recharges.
+     */
+    cursor?: RechargeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recharges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recharges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Recharges.
+     */
+    distinct?: RechargeScalarFieldEnum | RechargeScalarFieldEnum[]
+  }
+
+  /**
+   * Recharge findFirstOrThrow
+   */
+  export type RechargeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recharge to fetch.
+     */
+    where?: RechargeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recharges to fetch.
+     */
+    orderBy?: RechargeOrderByWithRelationInput | RechargeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Recharges.
+     */
+    cursor?: RechargeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recharges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recharges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Recharges.
+     */
+    distinct?: RechargeScalarFieldEnum | RechargeScalarFieldEnum[]
+  }
+
+  /**
+   * Recharge findMany
+   */
+  export type RechargeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter, which Recharges to fetch.
+     */
+    where?: RechargeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Recharges to fetch.
+     */
+    orderBy?: RechargeOrderByWithRelationInput | RechargeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Recharges.
+     */
+    cursor?: RechargeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Recharges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Recharges.
+     */
+    skip?: number
+    distinct?: RechargeScalarFieldEnum | RechargeScalarFieldEnum[]
+  }
+
+  /**
+   * Recharge create
+   */
+  export type RechargeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Recharge.
+     */
+    data: XOR<RechargeCreateInput, RechargeUncheckedCreateInput>
+  }
+
+  /**
+   * Recharge createMany
+   */
+  export type RechargeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Recharges.
+     */
+    data: RechargeCreateManyInput | RechargeCreateManyInput[]
+  }
+
+  /**
+   * Recharge update
+   */
+  export type RechargeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Recharge.
+     */
+    data: XOR<RechargeUpdateInput, RechargeUncheckedUpdateInput>
+    /**
+     * Choose, which Recharge to update.
+     */
+    where: RechargeWhereUniqueInput
+  }
+
+  /**
+   * Recharge updateMany
+   */
+  export type RechargeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Recharges.
+     */
+    data: XOR<RechargeUpdateManyMutationInput, RechargeUncheckedUpdateManyInput>
+    /**
+     * Filter which Recharges to update
+     */
+    where?: RechargeWhereInput
+    /**
+     * Limit how many Recharges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Recharge upsert
+   */
+  export type RechargeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Recharge to update in case it exists.
+     */
+    where: RechargeWhereUniqueInput
+    /**
+     * In case the Recharge found by the `where` argument doesn't exist, create a new Recharge with this data.
+     */
+    create: XOR<RechargeCreateInput, RechargeUncheckedCreateInput>
+    /**
+     * In case the Recharge was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RechargeUpdateInput, RechargeUncheckedUpdateInput>
+  }
+
+  /**
+   * Recharge delete
+   */
+  export type RechargeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
+    /**
+     * Filter which Recharge to delete.
+     */
+    where: RechargeWhereUniqueInput
+  }
+
+  /**
+   * Recharge deleteMany
+   */
+  export type RechargeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Recharges to delete
+     */
+    where?: RechargeWhereInput
+    /**
+     * Limit how many Recharges to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Recharge findRaw
+   */
+  export type RechargeFindRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The query predicate filter. If unspecified, then all documents in the collection will match the predicate. ${@link https://docs.mongodb.com/manual/reference/operator/query MongoDB Docs}.
+     */
+    filter?: InputJsonValue
+    /**
+     * Additional options to pass to the `find` command ${@link https://docs.mongodb.com/manual/reference/command/find/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * Recharge aggregateRaw
+   */
+  export type RechargeAggregateRawArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * An array of aggregation stages to process and transform the document stream via the aggregation pipeline. ${@link https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline MongoDB Docs}.
+     */
+    pipeline?: InputJsonValue[]
+    /**
+     * Additional options to pass to the `aggregate` command ${@link https://docs.mongodb.com/manual/reference/command/aggregate/#command-fields MongoDB Docs}.
+     */
+    options?: InputJsonValue
+  }
+
+  /**
+   * Recharge without action
+   */
+  export type RechargeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recharge
+     */
+    select?: RechargeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recharge
+     */
+    omit?: RechargeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RechargeInclude<ExtArgs> | null
   }
 
 
@@ -3121,7 +8115,6 @@ export namespace Prisma {
     password: 'password',
     phone: 'phone',
     role: 'role',
-    balance: 'balance',
     refreshToken: 'refreshToken',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -3130,17 +8123,79 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-  export const GameHistoryScalarFieldEnum: {
+  export const SoloGameScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
+    bet: 'bet',
+    chosenNumber: 'chosenNumber',
     generatedNumber: 'generatedNumber',
     result: 'result',
     balanceChange: 'balanceChange',
-    newBalance: 'newBalance',
-    playedAt: 'playedAt'
+    multiplier: 'multiplier',
+    playedAt: 'playedAt',
+    transactionId: 'transactionId'
   };
 
-  export type GameHistoryScalarFieldEnum = (typeof GameHistoryScalarFieldEnum)[keyof typeof GameHistoryScalarFieldEnum]
+  export type SoloGameScalarFieldEnum = (typeof SoloGameScalarFieldEnum)[keyof typeof SoloGameScalarFieldEnum]
+
+
+  export const MultiplayerGameScalarFieldEnum: {
+    id: 'id',
+    bet: 'bet',
+    thinkingTime: 'thinkingTime',
+    status: 'status',
+    createdBy: 'createdBy',
+    winnerId: 'winnerId',
+    createdAt: 'createdAt',
+    startedAt: 'startedAt',
+    finishedAt: 'finishedAt'
+  };
+
+  export type MultiplayerGameScalarFieldEnum = (typeof MultiplayerGameScalarFieldEnum)[keyof typeof MultiplayerGameScalarFieldEnum]
+
+
+  export const MultiplayerParticipantScalarFieldEnum: {
+    id: 'id',
+    gameId: 'gameId',
+    playerId: 'playerId',
+    generatedNumber: 'generatedNumber',
+    playedAt: 'playedAt',
+    isWinner: 'isWinner',
+    balanceChange: 'balanceChange',
+    joinedAt: 'joinedAt',
+    transactionId: 'transactionId'
+  };
+
+  export type MultiplayerParticipantScalarFieldEnum = (typeof MultiplayerParticipantScalarFieldEnum)[keyof typeof MultiplayerParticipantScalarFieldEnum]
+
+
+  export const TransactionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    amount: 'amount',
+    description: 'description',
+    reference: 'reference',
+    status: 'status',
+    createdAt: 'createdAt'
+  };
+
+  export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+  export const RechargeScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    amount: 'amount',
+    method: 'method',
+    status: 'status',
+    transactionId: 'transactionId',
+    billingData: 'billingData',
+    createdAt: 'createdAt',
+    completedAt: 'completedAt'
+  };
+
+  export type RechargeScalarFieldEnum = (typeof RechargeScalarFieldEnum)[keyof typeof RechargeScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3193,20 +8248,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -3221,16 +8262,30 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'GameResult'
+   * Reference to a field of type 'Int'
    */
-  export type EnumGameResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameResult'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
   /**
-   * Reference to a field of type 'GameResult[]'
+   * Reference to a field of type 'Int[]'
    */
-  export type ListEnumGameResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameResult[]'>
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SoloGameResult'
+   */
+  export type EnumSoloGameResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SoloGameResult'>
+    
+
+
+  /**
+   * Reference to a field of type 'SoloGameResult[]'
+   */
+  export type ListEnumSoloGameResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SoloGameResult[]'>
     
 
 
@@ -3245,6 +8300,90 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'GameStatus'
+   */
+  export type EnumGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GameStatus[]'
+   */
+  export type ListEnumGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionType'
+   */
+  export type EnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionType[]'
+   */
+  export type ListEnumTransactionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus'
+   */
+  export type EnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TransactionStatus[]'
+   */
+  export type ListEnumTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TransactionStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod'
+   */
+  export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentMethod[]'
+   */
+  export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RechargeStatus'
+   */
+  export type EnumRechargeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RechargeStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'RechargeStatus[]'
+   */
+  export type ListEnumRechargeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RechargeStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
   /**
    * Deep Input Types
@@ -3261,11 +8400,13 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     phone?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
-    balance?: IntFilter<"User"> | number
     refreshToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    gameHistory?: GameHistoryListRelationFilter
+    createdGames?: MultiplayerGameListRelationFilter
+    participations?: MultiplayerParticipantListRelationFilter
+    soloGames?: SoloGameListRelationFilter
+    transactions?: TransactionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -3275,11 +8416,13 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     role?: SortOrder
-    balance?: SortOrder
     refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    gameHistory?: GameHistoryOrderByRelationAggregateInput
+    createdGames?: MultiplayerGameOrderByRelationAggregateInput
+    participations?: MultiplayerParticipantOrderByRelationAggregateInput
+    soloGames?: SoloGameOrderByRelationAggregateInput
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -3292,11 +8435,13 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     phone?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
-    balance?: IntFilter<"User"> | number
     refreshToken?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    gameHistory?: GameHistoryListRelationFilter
+    createdGames?: MultiplayerGameListRelationFilter
+    participations?: MultiplayerParticipantListRelationFilter
+    soloGames?: SoloGameListRelationFilter
+    transactions?: TransactionListRelationFilter
   }, "id" | "username" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -3306,15 +8451,12 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     role?: SortOrder
-    balance?: SortOrder
     refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
-    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
-    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -3327,77 +8469,416 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     phone?: StringWithAggregatesFilter<"User"> | string
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
-    balance?: IntWithAggregatesFilter<"User"> | number
     refreshToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
-  export type GameHistoryWhereInput = {
-    AND?: GameHistoryWhereInput | GameHistoryWhereInput[]
-    OR?: GameHistoryWhereInput[]
-    NOT?: GameHistoryWhereInput | GameHistoryWhereInput[]
-    id?: StringFilter<"GameHistory"> | string
-    userId?: StringFilter<"GameHistory"> | string
-    generatedNumber?: IntFilter<"GameHistory"> | number
-    result?: EnumGameResultFilter<"GameHistory"> | $Enums.GameResult
-    balanceChange?: IntFilter<"GameHistory"> | number
-    newBalance?: IntFilter<"GameHistory"> | number
-    playedAt?: DateTimeFilter<"GameHistory"> | Date | string
+  export type SoloGameWhereInput = {
+    AND?: SoloGameWhereInput | SoloGameWhereInput[]
+    OR?: SoloGameWhereInput[]
+    NOT?: SoloGameWhereInput | SoloGameWhereInput[]
+    id?: StringFilter<"SoloGame"> | string
+    userId?: StringFilter<"SoloGame"> | string
+    bet?: IntFilter<"SoloGame"> | number
+    chosenNumber?: IntFilter<"SoloGame"> | number
+    generatedNumber?: IntFilter<"SoloGame"> | number
+    result?: EnumSoloGameResultFilter<"SoloGame"> | $Enums.SoloGameResult
+    balanceChange?: IntFilter<"SoloGame"> | number
+    multiplier?: FloatFilter<"SoloGame"> | number
+    playedAt?: DateTimeFilter<"SoloGame"> | Date | string
+    transactionId?: StringNullableFilter<"SoloGame"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
   }
 
-  export type GameHistoryOrderByWithRelationInput = {
+  export type SoloGameOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     result?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
     playedAt?: SortOrder
+    transactionId?: SortOrder
     user?: UserOrderByWithRelationInput
+    transaction?: TransactionOrderByWithRelationInput
   }
 
-  export type GameHistoryWhereUniqueInput = Prisma.AtLeast<{
+  export type SoloGameWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    AND?: GameHistoryWhereInput | GameHistoryWhereInput[]
-    OR?: GameHistoryWhereInput[]
-    NOT?: GameHistoryWhereInput | GameHistoryWhereInput[]
-    userId?: StringFilter<"GameHistory"> | string
-    generatedNumber?: IntFilter<"GameHistory"> | number
-    result?: EnumGameResultFilter<"GameHistory"> | $Enums.GameResult
-    balanceChange?: IntFilter<"GameHistory"> | number
-    newBalance?: IntFilter<"GameHistory"> | number
-    playedAt?: DateTimeFilter<"GameHistory"> | Date | string
+    AND?: SoloGameWhereInput | SoloGameWhereInput[]
+    OR?: SoloGameWhereInput[]
+    NOT?: SoloGameWhereInput | SoloGameWhereInput[]
+    userId?: StringFilter<"SoloGame"> | string
+    bet?: IntFilter<"SoloGame"> | number
+    chosenNumber?: IntFilter<"SoloGame"> | number
+    generatedNumber?: IntFilter<"SoloGame"> | number
+    result?: EnumSoloGameResultFilter<"SoloGame"> | $Enums.SoloGameResult
+    balanceChange?: IntFilter<"SoloGame"> | number
+    multiplier?: FloatFilter<"SoloGame"> | number
+    playedAt?: DateTimeFilter<"SoloGame"> | Date | string
+    transactionId?: StringNullableFilter<"SoloGame"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
   }, "id">
 
-  export type GameHistoryOrderByWithAggregationInput = {
+  export type SoloGameOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     result?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
     playedAt?: SortOrder
-    _count?: GameHistoryCountOrderByAggregateInput
-    _avg?: GameHistoryAvgOrderByAggregateInput
-    _max?: GameHistoryMaxOrderByAggregateInput
-    _min?: GameHistoryMinOrderByAggregateInput
-    _sum?: GameHistorySumOrderByAggregateInput
+    transactionId?: SortOrder
+    _count?: SoloGameCountOrderByAggregateInput
+    _avg?: SoloGameAvgOrderByAggregateInput
+    _max?: SoloGameMaxOrderByAggregateInput
+    _min?: SoloGameMinOrderByAggregateInput
+    _sum?: SoloGameSumOrderByAggregateInput
   }
 
-  export type GameHistoryScalarWhereWithAggregatesInput = {
-    AND?: GameHistoryScalarWhereWithAggregatesInput | GameHistoryScalarWhereWithAggregatesInput[]
-    OR?: GameHistoryScalarWhereWithAggregatesInput[]
-    NOT?: GameHistoryScalarWhereWithAggregatesInput | GameHistoryScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"GameHistory"> | string
-    userId?: StringWithAggregatesFilter<"GameHistory"> | string
-    generatedNumber?: IntWithAggregatesFilter<"GameHistory"> | number
-    result?: EnumGameResultWithAggregatesFilter<"GameHistory"> | $Enums.GameResult
-    balanceChange?: IntWithAggregatesFilter<"GameHistory"> | number
-    newBalance?: IntWithAggregatesFilter<"GameHistory"> | number
-    playedAt?: DateTimeWithAggregatesFilter<"GameHistory"> | Date | string
+  export type SoloGameScalarWhereWithAggregatesInput = {
+    AND?: SoloGameScalarWhereWithAggregatesInput | SoloGameScalarWhereWithAggregatesInput[]
+    OR?: SoloGameScalarWhereWithAggregatesInput[]
+    NOT?: SoloGameScalarWhereWithAggregatesInput | SoloGameScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SoloGame"> | string
+    userId?: StringWithAggregatesFilter<"SoloGame"> | string
+    bet?: IntWithAggregatesFilter<"SoloGame"> | number
+    chosenNumber?: IntWithAggregatesFilter<"SoloGame"> | number
+    generatedNumber?: IntWithAggregatesFilter<"SoloGame"> | number
+    result?: EnumSoloGameResultWithAggregatesFilter<"SoloGame"> | $Enums.SoloGameResult
+    balanceChange?: IntWithAggregatesFilter<"SoloGame"> | number
+    multiplier?: FloatWithAggregatesFilter<"SoloGame"> | number
+    playedAt?: DateTimeWithAggregatesFilter<"SoloGame"> | Date | string
+    transactionId?: StringNullableWithAggregatesFilter<"SoloGame"> | string | null
+  }
+
+  export type MultiplayerGameWhereInput = {
+    AND?: MultiplayerGameWhereInput | MultiplayerGameWhereInput[]
+    OR?: MultiplayerGameWhereInput[]
+    NOT?: MultiplayerGameWhereInput | MultiplayerGameWhereInput[]
+    id?: StringFilter<"MultiplayerGame"> | string
+    bet?: IntFilter<"MultiplayerGame"> | number
+    thinkingTime?: IntFilter<"MultiplayerGame"> | number
+    status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
+    createdBy?: StringFilter<"MultiplayerGame"> | string
+    winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
+    startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+    finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    players?: MultiplayerParticipantListRelationFilter
+  }
+
+  export type MultiplayerGameOrderByWithRelationInput = {
+    id?: SortOrder
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    winnerId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+    creator?: UserOrderByWithRelationInput
+    players?: MultiplayerParticipantOrderByRelationAggregateInput
+  }
+
+  export type MultiplayerGameWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MultiplayerGameWhereInput | MultiplayerGameWhereInput[]
+    OR?: MultiplayerGameWhereInput[]
+    NOT?: MultiplayerGameWhereInput | MultiplayerGameWhereInput[]
+    bet?: IntFilter<"MultiplayerGame"> | number
+    thinkingTime?: IntFilter<"MultiplayerGame"> | number
+    status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
+    createdBy?: StringFilter<"MultiplayerGame"> | string
+    winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
+    startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+    finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+    creator?: XOR<UserScalarRelationFilter, UserWhereInput>
+    players?: MultiplayerParticipantListRelationFilter
+  }, "id">
+
+  export type MultiplayerGameOrderByWithAggregationInput = {
+    id?: SortOrder
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    winnerId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+    _count?: MultiplayerGameCountOrderByAggregateInput
+    _avg?: MultiplayerGameAvgOrderByAggregateInput
+    _max?: MultiplayerGameMaxOrderByAggregateInput
+    _min?: MultiplayerGameMinOrderByAggregateInput
+    _sum?: MultiplayerGameSumOrderByAggregateInput
+  }
+
+  export type MultiplayerGameScalarWhereWithAggregatesInput = {
+    AND?: MultiplayerGameScalarWhereWithAggregatesInput | MultiplayerGameScalarWhereWithAggregatesInput[]
+    OR?: MultiplayerGameScalarWhereWithAggregatesInput[]
+    NOT?: MultiplayerGameScalarWhereWithAggregatesInput | MultiplayerGameScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MultiplayerGame"> | string
+    bet?: IntWithAggregatesFilter<"MultiplayerGame"> | number
+    thinkingTime?: IntWithAggregatesFilter<"MultiplayerGame"> | number
+    status?: EnumGameStatusWithAggregatesFilter<"MultiplayerGame"> | $Enums.GameStatus
+    createdBy?: StringWithAggregatesFilter<"MultiplayerGame"> | string
+    winnerId?: StringNullableWithAggregatesFilter<"MultiplayerGame"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MultiplayerGame"> | Date | string
+    startedAt?: DateTimeNullableWithAggregatesFilter<"MultiplayerGame"> | Date | string | null
+    finishedAt?: DateTimeNullableWithAggregatesFilter<"MultiplayerGame"> | Date | string | null
+  }
+
+  export type MultiplayerParticipantWhereInput = {
+    AND?: MultiplayerParticipantWhereInput | MultiplayerParticipantWhereInput[]
+    OR?: MultiplayerParticipantWhereInput[]
+    NOT?: MultiplayerParticipantWhereInput | MultiplayerParticipantWhereInput[]
+    id?: StringFilter<"MultiplayerParticipant"> | string
+    gameId?: StringFilter<"MultiplayerParticipant"> | string
+    playerId?: StringFilter<"MultiplayerParticipant"> | string
+    generatedNumber?: IntNullableFilter<"MultiplayerParticipant"> | number | null
+    playedAt?: DateTimeNullableFilter<"MultiplayerParticipant"> | Date | string | null
+    isWinner?: BoolFilter<"MultiplayerParticipant"> | boolean
+    balanceChange?: IntFilter<"MultiplayerParticipant"> | number
+    joinedAt?: DateTimeFilter<"MultiplayerParticipant"> | Date | string
+    transactionId?: StringNullableFilter<"MultiplayerParticipant"> | string | null
+    game?: XOR<MultiplayerGameScalarRelationFilter, MultiplayerGameWhereInput>
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
+  }
+
+  export type MultiplayerParticipantOrderByWithRelationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerId?: SortOrder
+    generatedNumber?: SortOrder
+    playedAt?: SortOrder
+    isWinner?: SortOrder
+    balanceChange?: SortOrder
+    joinedAt?: SortOrder
+    transactionId?: SortOrder
+    game?: MultiplayerGameOrderByWithRelationInput
+    player?: UserOrderByWithRelationInput
+    transaction?: TransactionOrderByWithRelationInput
+  }
+
+  export type MultiplayerParticipantWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    gameId_playerId?: MultiplayerParticipantGameIdPlayerIdCompoundUniqueInput
+    AND?: MultiplayerParticipantWhereInput | MultiplayerParticipantWhereInput[]
+    OR?: MultiplayerParticipantWhereInput[]
+    NOT?: MultiplayerParticipantWhereInput | MultiplayerParticipantWhereInput[]
+    gameId?: StringFilter<"MultiplayerParticipant"> | string
+    playerId?: StringFilter<"MultiplayerParticipant"> | string
+    generatedNumber?: IntNullableFilter<"MultiplayerParticipant"> | number | null
+    playedAt?: DateTimeNullableFilter<"MultiplayerParticipant"> | Date | string | null
+    isWinner?: BoolFilter<"MultiplayerParticipant"> | boolean
+    balanceChange?: IntFilter<"MultiplayerParticipant"> | number
+    joinedAt?: DateTimeFilter<"MultiplayerParticipant"> | Date | string
+    transactionId?: StringNullableFilter<"MultiplayerParticipant"> | string | null
+    game?: XOR<MultiplayerGameScalarRelationFilter, MultiplayerGameWhereInput>
+    player?: XOR<UserScalarRelationFilter, UserWhereInput>
+    transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
+  }, "id" | "gameId_playerId">
+
+  export type MultiplayerParticipantOrderByWithAggregationInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerId?: SortOrder
+    generatedNumber?: SortOrder
+    playedAt?: SortOrder
+    isWinner?: SortOrder
+    balanceChange?: SortOrder
+    joinedAt?: SortOrder
+    transactionId?: SortOrder
+    _count?: MultiplayerParticipantCountOrderByAggregateInput
+    _avg?: MultiplayerParticipantAvgOrderByAggregateInput
+    _max?: MultiplayerParticipantMaxOrderByAggregateInput
+    _min?: MultiplayerParticipantMinOrderByAggregateInput
+    _sum?: MultiplayerParticipantSumOrderByAggregateInput
+  }
+
+  export type MultiplayerParticipantScalarWhereWithAggregatesInput = {
+    AND?: MultiplayerParticipantScalarWhereWithAggregatesInput | MultiplayerParticipantScalarWhereWithAggregatesInput[]
+    OR?: MultiplayerParticipantScalarWhereWithAggregatesInput[]
+    NOT?: MultiplayerParticipantScalarWhereWithAggregatesInput | MultiplayerParticipantScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MultiplayerParticipant"> | string
+    gameId?: StringWithAggregatesFilter<"MultiplayerParticipant"> | string
+    playerId?: StringWithAggregatesFilter<"MultiplayerParticipant"> | string
+    generatedNumber?: IntNullableWithAggregatesFilter<"MultiplayerParticipant"> | number | null
+    playedAt?: DateTimeNullableWithAggregatesFilter<"MultiplayerParticipant"> | Date | string | null
+    isWinner?: BoolWithAggregatesFilter<"MultiplayerParticipant"> | boolean
+    balanceChange?: IntWithAggregatesFilter<"MultiplayerParticipant"> | number
+    joinedAt?: DateTimeWithAggregatesFilter<"MultiplayerParticipant"> | Date | string
+    transactionId?: StringNullableWithAggregatesFilter<"MultiplayerParticipant"> | string | null
+  }
+
+  export type TransactionWhereInput = {
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    userId?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    amount?: IntFilter<"Transaction"> | number
+    description?: StringFilter<"Transaction"> | string
+    reference?: StringNullableFilter<"Transaction"> | string | null
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    soloGames?: SoloGameListRelationFilter
+    multiplayerParticipants?: MultiplayerParticipantListRelationFilter
+    recharge?: XOR<RechargeNullableScalarRelationFilter, RechargeWhereInput> | null
+  }
+
+  export type TransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    soloGames?: SoloGameOrderByRelationAggregateInput
+    multiplayerParticipants?: MultiplayerParticipantOrderByRelationAggregateInput
+    recharge?: RechargeOrderByWithRelationInput
+  }
+
+  export type TransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    userId?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    amount?: IntFilter<"Transaction"> | number
+    description?: StringFilter<"Transaction"> | string
+    reference?: StringNullableFilter<"Transaction"> | string | null
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    soloGames?: SoloGameListRelationFilter
+    multiplayerParticipants?: MultiplayerParticipantListRelationFilter
+    recharge?: XOR<RechargeNullableScalarRelationFilter, RechargeWhereInput> | null
+  }, "id">
+
+  export type TransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    _count?: TransactionCountOrderByAggregateInput
+    _avg?: TransactionAvgOrderByAggregateInput
+    _max?: TransactionMaxOrderByAggregateInput
+    _min?: TransactionMinOrderByAggregateInput
+    _sum?: TransactionSumOrderByAggregateInput
+  }
+
+  export type TransactionScalarWhereWithAggregatesInput = {
+    AND?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    OR?: TransactionScalarWhereWithAggregatesInput[]
+    NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transaction"> | string
+    userId?: StringWithAggregatesFilter<"Transaction"> | string
+    type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
+    amount?: IntWithAggregatesFilter<"Transaction"> | number
+    description?: StringWithAggregatesFilter<"Transaction"> | string
+    reference?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
+    createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  }
+
+  export type RechargeWhereInput = {
+    AND?: RechargeWhereInput | RechargeWhereInput[]
+    OR?: RechargeWhereInput[]
+    NOT?: RechargeWhereInput | RechargeWhereInput[]
+    id?: StringFilter<"Recharge"> | string
+    userId?: StringFilter<"Recharge"> | string
+    amount?: IntFilter<"Recharge"> | number
+    method?: EnumPaymentMethodFilter<"Recharge"> | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFilter<"Recharge"> | $Enums.RechargeStatus
+    transactionId?: StringFilter<"Recharge"> | string
+    billingData?: JsonFilter<"Recharge">
+    createdAt?: DateTimeFilter<"Recharge"> | Date | string
+    completedAt?: DateTimeNullableFilter<"Recharge"> | Date | string | null
+    transaction?: XOR<TransactionScalarRelationFilter, TransactionWhereInput>
+  }
+
+  export type RechargeOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    amount?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    transactionId?: SortOrder
+    billingData?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+    transaction?: TransactionOrderByWithRelationInput
+  }
+
+  export type RechargeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    transactionId?: string
+    AND?: RechargeWhereInput | RechargeWhereInput[]
+    OR?: RechargeWhereInput[]
+    NOT?: RechargeWhereInput | RechargeWhereInput[]
+    userId?: StringFilter<"Recharge"> | string
+    amount?: IntFilter<"Recharge"> | number
+    method?: EnumPaymentMethodFilter<"Recharge"> | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFilter<"Recharge"> | $Enums.RechargeStatus
+    billingData?: JsonFilter<"Recharge">
+    createdAt?: DateTimeFilter<"Recharge"> | Date | string
+    completedAt?: DateTimeNullableFilter<"Recharge"> | Date | string | null
+    transaction?: XOR<TransactionScalarRelationFilter, TransactionWhereInput>
+  }, "id" | "transactionId">
+
+  export type RechargeOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    amount?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    transactionId?: SortOrder
+    billingData?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+    _count?: RechargeCountOrderByAggregateInput
+    _avg?: RechargeAvgOrderByAggregateInput
+    _max?: RechargeMaxOrderByAggregateInput
+    _min?: RechargeMinOrderByAggregateInput
+    _sum?: RechargeSumOrderByAggregateInput
+  }
+
+  export type RechargeScalarWhereWithAggregatesInput = {
+    AND?: RechargeScalarWhereWithAggregatesInput | RechargeScalarWhereWithAggregatesInput[]
+    OR?: RechargeScalarWhereWithAggregatesInput[]
+    NOT?: RechargeScalarWhereWithAggregatesInput | RechargeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Recharge"> | string
+    userId?: StringWithAggregatesFilter<"Recharge"> | string
+    amount?: IntWithAggregatesFilter<"Recharge"> | number
+    method?: EnumPaymentMethodWithAggregatesFilter<"Recharge"> | $Enums.PaymentMethod
+    status?: EnumRechargeStatusWithAggregatesFilter<"Recharge"> | $Enums.RechargeStatus
+    transactionId?: StringWithAggregatesFilter<"Recharge"> | string
+    billingData?: JsonWithAggregatesFilter<"Recharge">
+    createdAt?: DateTimeWithAggregatesFilter<"Recharge"> | Date | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"Recharge"> | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -3407,11 +8888,13 @@ export namespace Prisma {
     password: string
     phone: string
     role?: $Enums.Role
-    balance?: number
     refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    gameHistory?: GameHistoryCreateNestedManyWithoutUserInput
+    createdGames?: MultiplayerGameCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -3421,11 +8904,13 @@ export namespace Prisma {
     password: string
     phone: string
     role?: $Enums.Role
-    balance?: number
     refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    gameHistory?: GameHistoryUncheckedCreateNestedManyWithoutUserInput
+    createdGames?: MultiplayerGameUncheckedCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantUncheckedCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -3434,11 +8919,13 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
     refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    gameHistory?: GameHistoryUpdateManyWithoutUserNestedInput
+    createdGames?: MultiplayerGameUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -3447,11 +8934,13 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
     refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    gameHistory?: GameHistoryUncheckedUpdateManyWithoutUserNestedInput
+    createdGames?: MultiplayerGameUncheckedUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUncheckedUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -3461,7 +8950,6 @@ export namespace Prisma {
     password: string
     phone: string
     role?: $Enums.Role
-    balance?: number
     refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -3473,7 +8961,6 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
     refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3485,75 +8972,417 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
     refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type GameHistoryCreateInput = {
+  export type SoloGameCreateInput = {
     id?: string
+    bet: number
+    chosenNumber: number
     generatedNumber: number
-    result: $Enums.GameResult
+    result: $Enums.SoloGameResult
     balanceChange: number
-    newBalance: number
+    multiplier: number
     playedAt?: Date | string
-    user: UserCreateNestedOneWithoutGameHistoryInput
+    user: UserCreateNestedOneWithoutSoloGamesInput
+    transaction?: TransactionCreateNestedOneWithoutSoloGamesInput
   }
 
-  export type GameHistoryUncheckedCreateInput = {
-    id?: string
-    userId: string
-    generatedNumber: number
-    result: $Enums.GameResult
-    balanceChange: number
-    newBalance: number
-    playedAt?: Date | string
-  }
-
-  export type GameHistoryUpdateInput = {
-    generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
-    balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
-    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutGameHistoryNestedInput
-  }
-
-  export type GameHistoryUncheckedUpdateInput = {
-    userId?: StringFieldUpdateOperationsInput | string
-    generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
-    balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
-    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type GameHistoryCreateManyInput = {
+  export type SoloGameUncheckedCreateInput = {
     id?: string
     userId: string
+    bet: number
+    chosenNumber: number
     generatedNumber: number
-    result: $Enums.GameResult
+    result: $Enums.SoloGameResult
     balanceChange: number
-    newBalance: number
+    multiplier: number
     playedAt?: Date | string
+    transactionId?: string | null
   }
 
-  export type GameHistoryUpdateManyMutationInput = {
+  export type SoloGameUpdateInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
     generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
     balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
     playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSoloGamesNestedInput
+    transaction?: TransactionUpdateOneWithoutSoloGamesNestedInput
   }
 
-  export type GameHistoryUncheckedUpdateManyInput = {
+  export type SoloGameUncheckedUpdateInput = {
     userId?: StringFieldUpdateOperationsInput | string
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
     generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
     balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
     playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SoloGameCreateManyInput = {
+    id?: string
+    userId: string
+    bet: number
+    chosenNumber: number
+    generatedNumber: number
+    result: $Enums.SoloGameResult
+    balanceChange: number
+    multiplier: number
+    playedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type SoloGameUpdateManyMutationInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SoloGameUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MultiplayerGameCreateInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    creator: UserCreateNestedOneWithoutCreatedGamesInput
+    players?: MultiplayerParticipantCreateNestedManyWithoutGameInput
+  }
+
+  export type MultiplayerGameUncheckedCreateInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    createdBy: string
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    players?: MultiplayerParticipantUncheckedCreateNestedManyWithoutGameInput
+  }
+
+  export type MultiplayerGameUpdateInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creator?: UserUpdateOneRequiredWithoutCreatedGamesNestedInput
+    players?: MultiplayerParticipantUpdateManyWithoutGameNestedInput
+  }
+
+  export type MultiplayerGameUncheckedUpdateInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    createdBy?: StringFieldUpdateOperationsInput | string
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    players?: MultiplayerParticipantUncheckedUpdateManyWithoutGameNestedInput
+  }
+
+  export type MultiplayerGameCreateManyInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    createdBy: string
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+  }
+
+  export type MultiplayerGameUpdateManyMutationInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MultiplayerGameUncheckedUpdateManyInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    createdBy?: StringFieldUpdateOperationsInput | string
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MultiplayerParticipantCreateInput = {
+    id?: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    game: MultiplayerGameCreateNestedOneWithoutPlayersInput
+    player: UserCreateNestedOneWithoutParticipationsInput
+    transaction?: TransactionCreateNestedOneWithoutMultiplayerParticipantsInput
+  }
+
+  export type MultiplayerParticipantUncheckedCreateInput = {
+    id?: string
+    gameId: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type MultiplayerParticipantUpdateInput = {
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    game?: MultiplayerGameUpdateOneRequiredWithoutPlayersNestedInput
+    player?: UserUpdateOneRequiredWithoutParticipationsNestedInput
+    transaction?: TransactionUpdateOneWithoutMultiplayerParticipantsNestedInput
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MultiplayerParticipantCreateManyInput = {
+    id?: string
+    gameId: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type MultiplayerParticipantUpdateManyMutationInput = {
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionCreateInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTransactionsInput
+    soloGames?: SoloGameCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeUncheckedCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionUpdateInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+    soloGames?: SoloGameUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soloGames?: SoloGameUncheckedUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUncheckedUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionCreateManyInput = {
+    id?: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+  }
+
+  export type TransactionUpdateManyMutationInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RechargeCreateInput = {
+    id?: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status?: $Enums.RechargeStatus
+    billingData: InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+    transaction: TransactionCreateNestedOneWithoutRechargeInput
+  }
+
+  export type RechargeUncheckedCreateInput = {
+    id?: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status?: $Enums.RechargeStatus
+    transactionId: string
+    billingData: InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type RechargeUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transaction?: TransactionUpdateOneRequiredWithoutRechargeNestedInput
+  }
+
+  export type RechargeUncheckedUpdateInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    transactionId?: StringFieldUpdateOperationsInput | string
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RechargeCreateManyInput = {
+    id?: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status?: $Enums.RechargeStatus
+    transactionId: string
+    billingData: InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type RechargeUpdateManyMutationInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RechargeUncheckedUpdateManyInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    transactionId?: StringFieldUpdateOperationsInput | string
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3576,17 +9405,6 @@ export namespace Prisma {
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -3616,13 +9434,43 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type GameHistoryListRelationFilter = {
-    every?: GameHistoryWhereInput
-    some?: GameHistoryWhereInput
-    none?: GameHistoryWhereInput
+  export type MultiplayerGameListRelationFilter = {
+    every?: MultiplayerGameWhereInput
+    some?: MultiplayerGameWhereInput
+    none?: MultiplayerGameWhereInput
   }
 
-  export type GameHistoryOrderByRelationAggregateInput = {
+  export type MultiplayerParticipantListRelationFilter = {
+    every?: MultiplayerParticipantWhereInput
+    some?: MultiplayerParticipantWhereInput
+    none?: MultiplayerParticipantWhereInput
+  }
+
+  export type SoloGameListRelationFilter = {
+    every?: SoloGameWhereInput
+    some?: SoloGameWhereInput
+    none?: SoloGameWhereInput
+  }
+
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
+  export type MultiplayerGameOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MultiplayerParticipantOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SoloGameOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -3633,14 +9481,9 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     role?: SortOrder
-    balance?: SortOrder
     refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type UserAvgOrderByAggregateInput = {
-    balance?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -3650,7 +9493,6 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     role?: SortOrder
-    balance?: SortOrder
     refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -3663,14 +9505,9 @@ export namespace Prisma {
     password?: SortOrder
     phone?: SortOrder
     role?: SortOrder
-    balance?: SortOrder
     refreshToken?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type UserSumOrderByAggregateInput = {
-    balance?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -3699,22 +9536,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -3750,11 +9571,33 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type EnumGameResultFilter<$PrismaModel = never> = {
-    equals?: $Enums.GameResult | EnumGameResultFieldRefInput<$PrismaModel>
-    in?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    notIn?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    not?: NestedEnumGameResultFilter<$PrismaModel> | $Enums.GameResult
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EnumSoloGameResultFilter<$PrismaModel = never> = {
+    equals?: $Enums.SoloGameResult | EnumSoloGameResultFieldRefInput<$PrismaModel>
+    in?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    not?: NestedEnumSoloGameResultFilter<$PrismaModel> | $Enums.SoloGameResult
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type UserScalarRelationFilter = {
@@ -3762,70 +9605,536 @@ export namespace Prisma {
     isNot?: UserWhereInput
   }
 
-  export type GameHistoryCountOrderByAggregateInput = {
+  export type TransactionNullableScalarRelationFilter = {
+    is?: TransactionWhereInput | null
+    isNot?: TransactionWhereInput | null
+  }
+
+  export type SoloGameCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     result?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
     playedAt?: SortOrder
+    transactionId?: SortOrder
   }
 
-  export type GameHistoryAvgOrderByAggregateInput = {
+  export type SoloGameAvgOrderByAggregateInput = {
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
   }
 
-  export type GameHistoryMaxOrderByAggregateInput = {
+  export type SoloGameMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     result?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
     playedAt?: SortOrder
+    transactionId?: SortOrder
   }
 
-  export type GameHistoryMinOrderByAggregateInput = {
+  export type SoloGameMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     result?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
     playedAt?: SortOrder
+    transactionId?: SortOrder
   }
 
-  export type GameHistorySumOrderByAggregateInput = {
+  export type SoloGameSumOrderByAggregateInput = {
+    bet?: SortOrder
+    chosenNumber?: SortOrder
     generatedNumber?: SortOrder
     balanceChange?: SortOrder
-    newBalance?: SortOrder
+    multiplier?: SortOrder
   }
 
-  export type EnumGameResultWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.GameResult | EnumGameResultFieldRefInput<$PrismaModel>
-    in?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    notIn?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    not?: NestedEnumGameResultWithAggregatesFilter<$PrismaModel> | $Enums.GameResult
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumGameResultFilter<$PrismaModel>
-    _max?: NestedEnumGameResultFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type GameHistoryCreateNestedManyWithoutUserInput = {
-    create?: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput> | GameHistoryCreateWithoutUserInput[] | GameHistoryUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: GameHistoryCreateOrConnectWithoutUserInput | GameHistoryCreateOrConnectWithoutUserInput[]
-    createMany?: GameHistoryCreateManyUserInputEnvelope
-    connect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
+  export type EnumSoloGameResultWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SoloGameResult | EnumSoloGameResultFieldRefInput<$PrismaModel>
+    in?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    not?: NestedEnumSoloGameResultWithAggregatesFilter<$PrismaModel> | $Enums.SoloGameResult
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSoloGameResultFilter<$PrismaModel>
+    _max?: NestedEnumSoloGameResultFilter<$PrismaModel>
   }
 
-  export type GameHistoryUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput> | GameHistoryCreateWithoutUserInput[] | GameHistoryUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: GameHistoryCreateOrConnectWithoutUserInput | GameHistoryCreateOrConnectWithoutUserInput[]
-    createMany?: GameHistoryCreateManyUserInputEnvelope
-    connect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumGameStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GameStatus | EnumGameStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGameStatusFilter<$PrismaModel> | $Enums.GameStatus
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    isSet?: boolean
+  }
+
+  export type MultiplayerGameCountOrderByAggregateInput = {
+    id?: SortOrder
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    winnerId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type MultiplayerGameAvgOrderByAggregateInput = {
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+  }
+
+  export type MultiplayerGameMaxOrderByAggregateInput = {
+    id?: SortOrder
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    winnerId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type MultiplayerGameMinOrderByAggregateInput = {
+    id?: SortOrder
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+    status?: SortOrder
+    createdBy?: SortOrder
+    winnerId?: SortOrder
+    createdAt?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+  }
+
+  export type MultiplayerGameSumOrderByAggregateInput = {
+    bet?: SortOrder
+    thinkingTime?: SortOrder
+  }
+
+  export type EnumGameStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GameStatus | EnumGameStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGameStatusWithAggregatesFilter<$PrismaModel> | $Enums.GameStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGameStatusFilter<$PrismaModel>
+    _max?: NestedEnumGameStatusFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+    isSet?: boolean
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type MultiplayerGameScalarRelationFilter = {
+    is?: MultiplayerGameWhereInput
+    isNot?: MultiplayerGameWhereInput
+  }
+
+  export type MultiplayerParticipantGameIdPlayerIdCompoundUniqueInput = {
+    gameId: string
+    playerId: string
+  }
+
+  export type MultiplayerParticipantCountOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerId?: SortOrder
+    generatedNumber?: SortOrder
+    playedAt?: SortOrder
+    isWinner?: SortOrder
+    balanceChange?: SortOrder
+    joinedAt?: SortOrder
+    transactionId?: SortOrder
+  }
+
+  export type MultiplayerParticipantAvgOrderByAggregateInput = {
+    generatedNumber?: SortOrder
+    balanceChange?: SortOrder
+  }
+
+  export type MultiplayerParticipantMaxOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerId?: SortOrder
+    generatedNumber?: SortOrder
+    playedAt?: SortOrder
+    isWinner?: SortOrder
+    balanceChange?: SortOrder
+    joinedAt?: SortOrder
+    transactionId?: SortOrder
+  }
+
+  export type MultiplayerParticipantMinOrderByAggregateInput = {
+    id?: SortOrder
+    gameId?: SortOrder
+    playerId?: SortOrder
+    generatedNumber?: SortOrder
+    playedAt?: SortOrder
+    isWinner?: SortOrder
+    balanceChange?: SortOrder
+    joinedAt?: SortOrder
+    transactionId?: SortOrder
+  }
+
+  export type MultiplayerParticipantSumOrderByAggregateInput = {
+    generatedNumber?: SortOrder
+    balanceChange?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type RechargeNullableScalarRelationFilter = {
+    is?: RechargeWhereInput | null
+    isNot?: RechargeWhereInput | null
+  }
+
+  export type TransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TransactionAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    description?: SortOrder
+    reference?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TransactionSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
+  }
+
+  export type EnumRechargeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RechargeStatus | EnumRechargeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRechargeStatusFilter<$PrismaModel> | $Enums.RechargeStatus
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+  }
+
+  export type TransactionScalarRelationFilter = {
+    is?: TransactionWhereInput
+    isNot?: TransactionWhereInput
+  }
+
+  export type RechargeCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    amount?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    transactionId?: SortOrder
+    billingData?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type RechargeAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type RechargeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    amount?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    transactionId?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type RechargeMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    amount?: SortOrder
+    method?: SortOrder
+    status?: SortOrder
+    transactionId?: SortOrder
+    createdAt?: SortOrder
+    completedAt?: SortOrder
+  }
+
+  export type RechargeSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
+    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
+  }
+
+  export type EnumRechargeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RechargeStatus | EnumRechargeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRechargeStatusWithAggregatesFilter<$PrismaModel> | $Enums.RechargeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRechargeStatusFilter<$PrismaModel>
+    _max?: NestedEnumRechargeStatusFilter<$PrismaModel>
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type MultiplayerGameCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput> | MultiplayerGameCreateWithoutCreatorInput[] | MultiplayerGameUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutCreatorInput | MultiplayerGameCreateOrConnectWithoutCreatorInput[]
+    createMany?: MultiplayerGameCreateManyCreatorInputEnvelope
+    connect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+  }
+
+  export type MultiplayerParticipantCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput> | MultiplayerParticipantCreateWithoutPlayerInput[] | MultiplayerParticipantUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutPlayerInput | MultiplayerParticipantCreateOrConnectWithoutPlayerInput[]
+    createMany?: MultiplayerParticipantCreateManyPlayerInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type SoloGameCreateNestedManyWithoutUserInput = {
+    create?: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput> | SoloGameCreateWithoutUserInput[] | SoloGameUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutUserInput | SoloGameCreateOrConnectWithoutUserInput[]
+    createMany?: SoloGameCreateManyUserInputEnvelope
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+  }
+
+  export type TransactionCreateNestedManyWithoutUserInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type MultiplayerGameUncheckedCreateNestedManyWithoutCreatorInput = {
+    create?: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput> | MultiplayerGameCreateWithoutCreatorInput[] | MultiplayerGameUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutCreatorInput | MultiplayerGameCreateOrConnectWithoutCreatorInput[]
+    createMany?: MultiplayerGameCreateManyCreatorInputEnvelope
+    connect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedCreateNestedManyWithoutPlayerInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput> | MultiplayerParticipantCreateWithoutPlayerInput[] | MultiplayerParticipantUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutPlayerInput | MultiplayerParticipantCreateOrConnectWithoutPlayerInput[]
+    createMany?: MultiplayerParticipantCreateManyPlayerInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type SoloGameUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput> | SoloGameCreateWithoutUserInput[] | SoloGameUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutUserInput | SoloGameCreateOrConnectWithoutUserInput[]
+    createMany?: SoloGameCreateManyUserInputEnvelope
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -3834,14 +10143,6 @@ export namespace Prisma {
 
   export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -3853,50 +10154,448 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type GameHistoryUpdateManyWithoutUserNestedInput = {
-    create?: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput> | GameHistoryCreateWithoutUserInput[] | GameHistoryUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: GameHistoryCreateOrConnectWithoutUserInput | GameHistoryCreateOrConnectWithoutUserInput[]
-    upsert?: GameHistoryUpsertWithWhereUniqueWithoutUserInput | GameHistoryUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: GameHistoryCreateManyUserInputEnvelope
-    set?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    disconnect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    delete?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    connect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    update?: GameHistoryUpdateWithWhereUniqueWithoutUserInput | GameHistoryUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: GameHistoryUpdateManyWithWhereWithoutUserInput | GameHistoryUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: GameHistoryScalarWhereInput | GameHistoryScalarWhereInput[]
+  export type MultiplayerGameUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput> | MultiplayerGameCreateWithoutCreatorInput[] | MultiplayerGameUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutCreatorInput | MultiplayerGameCreateOrConnectWithoutCreatorInput[]
+    upsert?: MultiplayerGameUpsertWithWhereUniqueWithoutCreatorInput | MultiplayerGameUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: MultiplayerGameCreateManyCreatorInputEnvelope
+    set?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    disconnect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    delete?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    connect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    update?: MultiplayerGameUpdateWithWhereUniqueWithoutCreatorInput | MultiplayerGameUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: MultiplayerGameUpdateManyWithWhereWithoutCreatorInput | MultiplayerGameUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: MultiplayerGameScalarWhereInput | MultiplayerGameScalarWhereInput[]
   }
 
-  export type GameHistoryUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput> | GameHistoryCreateWithoutUserInput[] | GameHistoryUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: GameHistoryCreateOrConnectWithoutUserInput | GameHistoryCreateOrConnectWithoutUserInput[]
-    upsert?: GameHistoryUpsertWithWhereUniqueWithoutUserInput | GameHistoryUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: GameHistoryCreateManyUserInputEnvelope
-    set?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    disconnect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    delete?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    connect?: GameHistoryWhereUniqueInput | GameHistoryWhereUniqueInput[]
-    update?: GameHistoryUpdateWithWhereUniqueWithoutUserInput | GameHistoryUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: GameHistoryUpdateManyWithWhereWithoutUserInput | GameHistoryUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: GameHistoryScalarWhereInput | GameHistoryScalarWhereInput[]
+  export type MultiplayerParticipantUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput> | MultiplayerParticipantCreateWithoutPlayerInput[] | MultiplayerParticipantUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutPlayerInput | MultiplayerParticipantCreateOrConnectWithoutPlayerInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutPlayerInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: MultiplayerParticipantCreateManyPlayerInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutPlayerInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutPlayerInput | MultiplayerParticipantUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutGameHistoryInput = {
-    create?: XOR<UserCreateWithoutGameHistoryInput, UserUncheckedCreateWithoutGameHistoryInput>
-    connectOrCreate?: UserCreateOrConnectWithoutGameHistoryInput
+  export type SoloGameUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput> | SoloGameCreateWithoutUserInput[] | SoloGameUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutUserInput | SoloGameCreateOrConnectWithoutUserInput[]
+    upsert?: SoloGameUpsertWithWhereUniqueWithoutUserInput | SoloGameUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SoloGameCreateManyUserInputEnvelope
+    set?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    disconnect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    delete?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    update?: SoloGameUpdateWithWhereUniqueWithoutUserInput | SoloGameUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SoloGameUpdateManyWithWhereWithoutUserInput | SoloGameUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+  }
+
+  export type TransactionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutUserInput | TransactionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutUserInput | TransactionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutUserInput | TransactionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type MultiplayerGameUncheckedUpdateManyWithoutCreatorNestedInput = {
+    create?: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput> | MultiplayerGameCreateWithoutCreatorInput[] | MultiplayerGameUncheckedCreateWithoutCreatorInput[]
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutCreatorInput | MultiplayerGameCreateOrConnectWithoutCreatorInput[]
+    upsert?: MultiplayerGameUpsertWithWhereUniqueWithoutCreatorInput | MultiplayerGameUpsertWithWhereUniqueWithoutCreatorInput[]
+    createMany?: MultiplayerGameCreateManyCreatorInputEnvelope
+    set?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    disconnect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    delete?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    connect?: MultiplayerGameWhereUniqueInput | MultiplayerGameWhereUniqueInput[]
+    update?: MultiplayerGameUpdateWithWhereUniqueWithoutCreatorInput | MultiplayerGameUpdateWithWhereUniqueWithoutCreatorInput[]
+    updateMany?: MultiplayerGameUpdateManyWithWhereWithoutCreatorInput | MultiplayerGameUpdateManyWithWhereWithoutCreatorInput[]
+    deleteMany?: MultiplayerGameScalarWhereInput | MultiplayerGameScalarWhereInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutPlayerNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput> | MultiplayerParticipantCreateWithoutPlayerInput[] | MultiplayerParticipantUncheckedCreateWithoutPlayerInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutPlayerInput | MultiplayerParticipantCreateOrConnectWithoutPlayerInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutPlayerInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutPlayerInput[]
+    createMany?: MultiplayerParticipantCreateManyPlayerInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutPlayerInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutPlayerInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutPlayerInput | MultiplayerParticipantUpdateManyWithWhereWithoutPlayerInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+  }
+
+  export type SoloGameUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput> | SoloGameCreateWithoutUserInput[] | SoloGameUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutUserInput | SoloGameCreateOrConnectWithoutUserInput[]
+    upsert?: SoloGameUpsertWithWhereUniqueWithoutUserInput | SoloGameUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SoloGameCreateManyUserInputEnvelope
+    set?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    disconnect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    delete?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    update?: SoloGameUpdateWithWhereUniqueWithoutUserInput | SoloGameUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SoloGameUpdateManyWithWhereWithoutUserInput | SoloGameUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput> | TransactionCreateWithoutUserInput[] | TransactionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutUserInput | TransactionCreateOrConnectWithoutUserInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutUserInput | TransactionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TransactionCreateManyUserInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutUserInput | TransactionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutUserInput | TransactionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutSoloGamesInput = {
+    create?: XOR<UserCreateWithoutSoloGamesInput, UserUncheckedCreateWithoutSoloGamesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSoloGamesInput
     connect?: UserWhereUniqueInput
   }
 
-  export type EnumGameResultFieldUpdateOperationsInput = {
-    set?: $Enums.GameResult
+  export type TransactionCreateNestedOneWithoutSoloGamesInput = {
+    create?: XOR<TransactionCreateWithoutSoloGamesInput, TransactionUncheckedCreateWithoutSoloGamesInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutSoloGamesInput
+    connect?: TransactionWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutGameHistoryNestedInput = {
-    create?: XOR<UserCreateWithoutGameHistoryInput, UserUncheckedCreateWithoutGameHistoryInput>
-    connectOrCreate?: UserCreateOrConnectWithoutGameHistoryInput
-    upsert?: UserUpsertWithoutGameHistoryInput
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumSoloGameResultFieldUpdateOperationsInput = {
+    set?: $Enums.SoloGameResult
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutSoloGamesNestedInput = {
+    create?: XOR<UserCreateWithoutSoloGamesInput, UserUncheckedCreateWithoutSoloGamesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSoloGamesInput
+    upsert?: UserUpsertWithoutSoloGamesInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGameHistoryInput, UserUpdateWithoutGameHistoryInput>, UserUncheckedUpdateWithoutGameHistoryInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSoloGamesInput, UserUpdateWithoutSoloGamesInput>, UserUncheckedUpdateWithoutSoloGamesInput>
+  }
+
+  export type TransactionUpdateOneWithoutSoloGamesNestedInput = {
+    create?: XOR<TransactionCreateWithoutSoloGamesInput, TransactionUncheckedCreateWithoutSoloGamesInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutSoloGamesInput
+    upsert?: TransactionUpsertWithoutSoloGamesInput
+    disconnect?: boolean
+    delete?: TransactionWhereInput | boolean
+    connect?: TransactionWhereUniqueInput
+    update?: XOR<XOR<TransactionUpdateToOneWithWhereWithoutSoloGamesInput, TransactionUpdateWithoutSoloGamesInput>, TransactionUncheckedUpdateWithoutSoloGamesInput>
+  }
+
+  export type UserCreateNestedOneWithoutCreatedGamesInput = {
+    create?: XOR<UserCreateWithoutCreatedGamesInput, UserUncheckedCreateWithoutCreatedGamesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedGamesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type MultiplayerParticipantCreateNestedManyWithoutGameInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput> | MultiplayerParticipantCreateWithoutGameInput[] | MultiplayerParticipantUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutGameInput | MultiplayerParticipantCreateOrConnectWithoutGameInput[]
+    createMany?: MultiplayerParticipantCreateManyGameInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedCreateNestedManyWithoutGameInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput> | MultiplayerParticipantCreateWithoutGameInput[] | MultiplayerParticipantUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutGameInput | MultiplayerParticipantCreateOrConnectWithoutGameInput[]
+    createMany?: MultiplayerParticipantCreateManyGameInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type EnumGameStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GameStatus
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+    unset?: boolean
+  }
+
+  export type UserUpdateOneRequiredWithoutCreatedGamesNestedInput = {
+    create?: XOR<UserCreateWithoutCreatedGamesInput, UserUncheckedCreateWithoutCreatedGamesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCreatedGamesInput
+    upsert?: UserUpsertWithoutCreatedGamesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedGamesInput, UserUpdateWithoutCreatedGamesInput>, UserUncheckedUpdateWithoutCreatedGamesInput>
+  }
+
+  export type MultiplayerParticipantUpdateManyWithoutGameNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput> | MultiplayerParticipantCreateWithoutGameInput[] | MultiplayerParticipantUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutGameInput | MultiplayerParticipantCreateOrConnectWithoutGameInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutGameInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: MultiplayerParticipantCreateManyGameInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutGameInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutGameInput | MultiplayerParticipantUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutGameNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput> | MultiplayerParticipantCreateWithoutGameInput[] | MultiplayerParticipantUncheckedCreateWithoutGameInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutGameInput | MultiplayerParticipantCreateOrConnectWithoutGameInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutGameInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutGameInput[]
+    createMany?: MultiplayerParticipantCreateManyGameInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutGameInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutGameInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutGameInput | MultiplayerParticipantUpdateManyWithWhereWithoutGameInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+  }
+
+  export type MultiplayerGameCreateNestedOneWithoutPlayersInput = {
+    create?: XOR<MultiplayerGameCreateWithoutPlayersInput, MultiplayerGameUncheckedCreateWithoutPlayersInput>
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutPlayersInput
+    connect?: MultiplayerGameWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutParticipationsInput = {
+    create?: XOR<UserCreateWithoutParticipationsInput, UserUncheckedCreateWithoutParticipationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutParticipationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TransactionCreateNestedOneWithoutMultiplayerParticipantsInput = {
+    create?: XOR<TransactionCreateWithoutMultiplayerParticipantsInput, TransactionUncheckedCreateWithoutMultiplayerParticipantsInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutMultiplayerParticipantsInput
+    connect?: TransactionWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+    unset?: boolean
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type MultiplayerGameUpdateOneRequiredWithoutPlayersNestedInput = {
+    create?: XOR<MultiplayerGameCreateWithoutPlayersInput, MultiplayerGameUncheckedCreateWithoutPlayersInput>
+    connectOrCreate?: MultiplayerGameCreateOrConnectWithoutPlayersInput
+    upsert?: MultiplayerGameUpsertWithoutPlayersInput
+    connect?: MultiplayerGameWhereUniqueInput
+    update?: XOR<XOR<MultiplayerGameUpdateToOneWithWhereWithoutPlayersInput, MultiplayerGameUpdateWithoutPlayersInput>, MultiplayerGameUncheckedUpdateWithoutPlayersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutParticipationsNestedInput = {
+    create?: XOR<UserCreateWithoutParticipationsInput, UserUncheckedCreateWithoutParticipationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutParticipationsInput
+    upsert?: UserUpsertWithoutParticipationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutParticipationsInput, UserUpdateWithoutParticipationsInput>, UserUncheckedUpdateWithoutParticipationsInput>
+  }
+
+  export type TransactionUpdateOneWithoutMultiplayerParticipantsNestedInput = {
+    create?: XOR<TransactionCreateWithoutMultiplayerParticipantsInput, TransactionUncheckedCreateWithoutMultiplayerParticipantsInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutMultiplayerParticipantsInput
+    upsert?: TransactionUpsertWithoutMultiplayerParticipantsInput
+    disconnect?: boolean
+    delete?: TransactionWhereInput | boolean
+    connect?: TransactionWhereUniqueInput
+    update?: XOR<XOR<TransactionUpdateToOneWithWhereWithoutMultiplayerParticipantsInput, TransactionUpdateWithoutMultiplayerParticipantsInput>, TransactionUncheckedUpdateWithoutMultiplayerParticipantsInput>
+  }
+
+  export type UserCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type SoloGameCreateNestedManyWithoutTransactionInput = {
+    create?: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput> | SoloGameCreateWithoutTransactionInput[] | SoloGameUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutTransactionInput | SoloGameCreateOrConnectWithoutTransactionInput[]
+    createMany?: SoloGameCreateManyTransactionInputEnvelope
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+  }
+
+  export type MultiplayerParticipantCreateNestedManyWithoutTransactionInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput> | MultiplayerParticipantCreateWithoutTransactionInput[] | MultiplayerParticipantUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutTransactionInput | MultiplayerParticipantCreateOrConnectWithoutTransactionInput[]
+    createMany?: MultiplayerParticipantCreateManyTransactionInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type RechargeCreateNestedOneWithoutTransactionInput = {
+    create?: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+    connectOrCreate?: RechargeCreateOrConnectWithoutTransactionInput
+    connect?: RechargeWhereUniqueInput
+  }
+
+  export type SoloGameUncheckedCreateNestedManyWithoutTransactionInput = {
+    create?: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput> | SoloGameCreateWithoutTransactionInput[] | SoloGameUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutTransactionInput | SoloGameCreateOrConnectWithoutTransactionInput[]
+    createMany?: SoloGameCreateManyTransactionInputEnvelope
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedCreateNestedManyWithoutTransactionInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput> | MultiplayerParticipantCreateWithoutTransactionInput[] | MultiplayerParticipantUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutTransactionInput | MultiplayerParticipantCreateOrConnectWithoutTransactionInput[]
+    createMany?: MultiplayerParticipantCreateManyTransactionInputEnvelope
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+  }
+
+  export type RechargeUncheckedCreateNestedOneWithoutTransactionInput = {
+    create?: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+    connectOrCreate?: RechargeCreateOrConnectWithoutTransactionInput
+    connect?: RechargeWhereUniqueInput
+  }
+
+  export type EnumTransactionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionType
+  }
+
+  export type EnumTransactionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionStatus
+  }
+
+  export type UserUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
+    upsert?: UserUpsertWithoutTransactionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTransactionsInput, UserUpdateWithoutTransactionsInput>, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type SoloGameUpdateManyWithoutTransactionNestedInput = {
+    create?: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput> | SoloGameCreateWithoutTransactionInput[] | SoloGameUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutTransactionInput | SoloGameCreateOrConnectWithoutTransactionInput[]
+    upsert?: SoloGameUpsertWithWhereUniqueWithoutTransactionInput | SoloGameUpsertWithWhereUniqueWithoutTransactionInput[]
+    createMany?: SoloGameCreateManyTransactionInputEnvelope
+    set?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    disconnect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    delete?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    update?: SoloGameUpdateWithWhereUniqueWithoutTransactionInput | SoloGameUpdateWithWhereUniqueWithoutTransactionInput[]
+    updateMany?: SoloGameUpdateManyWithWhereWithoutTransactionInput | SoloGameUpdateManyWithWhereWithoutTransactionInput[]
+    deleteMany?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+  }
+
+  export type MultiplayerParticipantUpdateManyWithoutTransactionNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput> | MultiplayerParticipantCreateWithoutTransactionInput[] | MultiplayerParticipantUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutTransactionInput | MultiplayerParticipantCreateOrConnectWithoutTransactionInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutTransactionInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutTransactionInput[]
+    createMany?: MultiplayerParticipantCreateManyTransactionInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutTransactionInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutTransactionInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutTransactionInput | MultiplayerParticipantUpdateManyWithWhereWithoutTransactionInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+  }
+
+  export type RechargeUpdateOneWithoutTransactionNestedInput = {
+    create?: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+    connectOrCreate?: RechargeCreateOrConnectWithoutTransactionInput
+    upsert?: RechargeUpsertWithoutTransactionInput
+    disconnect?: RechargeWhereInput | boolean
+    delete?: RechargeWhereInput | boolean
+    connect?: RechargeWhereUniqueInput
+    update?: XOR<XOR<RechargeUpdateToOneWithWhereWithoutTransactionInput, RechargeUpdateWithoutTransactionInput>, RechargeUncheckedUpdateWithoutTransactionInput>
+  }
+
+  export type SoloGameUncheckedUpdateManyWithoutTransactionNestedInput = {
+    create?: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput> | SoloGameCreateWithoutTransactionInput[] | SoloGameUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: SoloGameCreateOrConnectWithoutTransactionInput | SoloGameCreateOrConnectWithoutTransactionInput[]
+    upsert?: SoloGameUpsertWithWhereUniqueWithoutTransactionInput | SoloGameUpsertWithWhereUniqueWithoutTransactionInput[]
+    createMany?: SoloGameCreateManyTransactionInputEnvelope
+    set?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    disconnect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    delete?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    connect?: SoloGameWhereUniqueInput | SoloGameWhereUniqueInput[]
+    update?: SoloGameUpdateWithWhereUniqueWithoutTransactionInput | SoloGameUpdateWithWhereUniqueWithoutTransactionInput[]
+    updateMany?: SoloGameUpdateManyWithWhereWithoutTransactionInput | SoloGameUpdateManyWithWhereWithoutTransactionInput[]
+    deleteMany?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutTransactionNestedInput = {
+    create?: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput> | MultiplayerParticipantCreateWithoutTransactionInput[] | MultiplayerParticipantUncheckedCreateWithoutTransactionInput[]
+    connectOrCreate?: MultiplayerParticipantCreateOrConnectWithoutTransactionInput | MultiplayerParticipantCreateOrConnectWithoutTransactionInput[]
+    upsert?: MultiplayerParticipantUpsertWithWhereUniqueWithoutTransactionInput | MultiplayerParticipantUpsertWithWhereUniqueWithoutTransactionInput[]
+    createMany?: MultiplayerParticipantCreateManyTransactionInputEnvelope
+    set?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    disconnect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    delete?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    connect?: MultiplayerParticipantWhereUniqueInput | MultiplayerParticipantWhereUniqueInput[]
+    update?: MultiplayerParticipantUpdateWithWhereUniqueWithoutTransactionInput | MultiplayerParticipantUpdateWithWhereUniqueWithoutTransactionInput[]
+    updateMany?: MultiplayerParticipantUpdateManyWithWhereWithoutTransactionInput | MultiplayerParticipantUpdateManyWithWhereWithoutTransactionInput[]
+    deleteMany?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+  }
+
+  export type RechargeUncheckedUpdateOneWithoutTransactionNestedInput = {
+    create?: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+    connectOrCreate?: RechargeCreateOrConnectWithoutTransactionInput
+    upsert?: RechargeUpsertWithoutTransactionInput
+    disconnect?: RechargeWhereInput | boolean
+    delete?: RechargeWhereInput | boolean
+    connect?: RechargeWhereUniqueInput
+    update?: XOR<XOR<RechargeUpdateToOneWithWhereWithoutTransactionInput, RechargeUpdateWithoutTransactionInput>, RechargeUncheckedUpdateWithoutTransactionInput>
+  }
+
+  export type TransactionCreateNestedOneWithoutRechargeInput = {
+    create?: XOR<TransactionCreateWithoutRechargeInput, TransactionUncheckedCreateWithoutRechargeInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutRechargeInput
+    connect?: TransactionWhereUniqueInput
+  }
+
+  export type EnumPaymentMethodFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentMethod
+  }
+
+  export type EnumRechargeStatusFieldUpdateOperationsInput = {
+    set?: $Enums.RechargeStatus
+  }
+
+  export type TransactionUpdateOneRequiredWithoutRechargeNestedInput = {
+    create?: XOR<TransactionCreateWithoutRechargeInput, TransactionUncheckedCreateWithoutRechargeInput>
+    connectOrCreate?: TransactionCreateOrConnectWithoutRechargeInput
+    upsert?: TransactionUpsertWithoutRechargeInput
+    connect?: TransactionWhereUniqueInput
+    update?: XOR<XOR<TransactionUpdateToOneWithWhereWithoutRechargeInput, TransactionUpdateWithoutRechargeInput>, TransactionUncheckedUpdateWithoutRechargeInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -3918,17 +10617,6 @@ export namespace Prisma {
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -3974,6 +10662,17 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
@@ -3982,33 +10681,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -4055,176 +10727,1541 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumGameResultFilter<$PrismaModel = never> = {
-    equals?: $Enums.GameResult | EnumGameResultFieldRefInput<$PrismaModel>
-    in?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    notIn?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    not?: NestedEnumGameResultFilter<$PrismaModel> | $Enums.GameResult
+  export type NestedEnumSoloGameResultFilter<$PrismaModel = never> = {
+    equals?: $Enums.SoloGameResult | EnumSoloGameResultFieldRefInput<$PrismaModel>
+    in?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    not?: NestedEnumSoloGameResultFilter<$PrismaModel> | $Enums.SoloGameResult
   }
 
-  export type NestedEnumGameResultWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.GameResult | EnumGameResultFieldRefInput<$PrismaModel>
-    in?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    notIn?: $Enums.GameResult[] | ListEnumGameResultFieldRefInput<$PrismaModel>
-    not?: NestedEnumGameResultWithAggregatesFilter<$PrismaModel> | $Enums.GameResult
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumGameResultFilter<$PrismaModel>
-    _max?: NestedEnumGameResultFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type GameHistoryCreateWithoutUserInput = {
+  export type NestedEnumSoloGameResultWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SoloGameResult | EnumSoloGameResultFieldRefInput<$PrismaModel>
+    in?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SoloGameResult[] | ListEnumSoloGameResultFieldRefInput<$PrismaModel>
+    not?: NestedEnumSoloGameResultWithAggregatesFilter<$PrismaModel> | $Enums.SoloGameResult
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSoloGameResultFilter<$PrismaModel>
+    _max?: NestedEnumSoloGameResultFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumGameStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GameStatus | EnumGameStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGameStatusFilter<$PrismaModel> | $Enums.GameStatus
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+    isSet?: boolean
+  }
+
+  export type NestedEnumGameStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GameStatus | EnumGameStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GameStatus[] | ListEnumGameStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGameStatusWithAggregatesFilter<$PrismaModel> | $Enums.GameStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGameStatusFilter<$PrismaModel>
+    _max?: NestedEnumGameStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+    isSet?: boolean
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+    isSet?: boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeFilter<$PrismaModel> | $Enums.TransactionType
+  }
+
+  export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
+  }
+
+  export type NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionType | EnumTransactionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionType[] | ListEnumTransactionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionTypeWithAggregatesFilter<$PrismaModel> | $Enums.TransactionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionTypeFilter<$PrismaModel>
+    _max?: NestedEnumTransactionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentMethodFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
+  }
+
+  export type NestedEnumRechargeStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.RechargeStatus | EnumRechargeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRechargeStatusFilter<$PrismaModel> | $Enums.RechargeStatus
+  }
+
+  export type NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentMethod | EnumPaymentMethodFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentMethod[] | ListEnumPaymentMethodFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentMethodWithAggregatesFilter<$PrismaModel> | $Enums.PaymentMethod
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentMethodFilter<$PrismaModel>
+    _max?: NestedEnumPaymentMethodFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRechargeStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RechargeStatus | EnumRechargeStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.RechargeStatus[] | ListEnumRechargeStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumRechargeStatusWithAggregatesFilter<$PrismaModel> | $Enums.RechargeStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRechargeStatusFilter<$PrismaModel>
+    _max?: NestedEnumRechargeStatusFilter<$PrismaModel>
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+  }
+
+  export type MultiplayerGameCreateWithoutCreatorInput = {
     id?: string
-    generatedNumber: number
-    result: $Enums.GameResult
-    balanceChange: number
-    newBalance: number
-    playedAt?: Date | string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    players?: MultiplayerParticipantCreateNestedManyWithoutGameInput
   }
 
-  export type GameHistoryUncheckedCreateWithoutUserInput = {
+  export type MultiplayerGameUncheckedCreateWithoutCreatorInput = {
     id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    players?: MultiplayerParticipantUncheckedCreateNestedManyWithoutGameInput
+  }
+
+  export type MultiplayerGameCreateOrConnectWithoutCreatorInput = {
+    where: MultiplayerGameWhereUniqueInput
+    create: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type MultiplayerGameCreateManyCreatorInputEnvelope = {
+    data: MultiplayerGameCreateManyCreatorInput | MultiplayerGameCreateManyCreatorInput[]
+  }
+
+  export type MultiplayerParticipantCreateWithoutPlayerInput = {
+    id?: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    game: MultiplayerGameCreateNestedOneWithoutPlayersInput
+    transaction?: TransactionCreateNestedOneWithoutMultiplayerParticipantsInput
+  }
+
+  export type MultiplayerParticipantUncheckedCreateWithoutPlayerInput = {
+    id?: string
+    gameId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type MultiplayerParticipantCreateOrConnectWithoutPlayerInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    create: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type MultiplayerParticipantCreateManyPlayerInputEnvelope = {
+    data: MultiplayerParticipantCreateManyPlayerInput | MultiplayerParticipantCreateManyPlayerInput[]
+  }
+
+  export type SoloGameCreateWithoutUserInput = {
+    id?: string
+    bet: number
+    chosenNumber: number
     generatedNumber: number
-    result: $Enums.GameResult
+    result: $Enums.SoloGameResult
     balanceChange: number
-    newBalance: number
+    multiplier: number
     playedAt?: Date | string
+    transaction?: TransactionCreateNestedOneWithoutSoloGamesInput
   }
 
-  export type GameHistoryCreateOrConnectWithoutUserInput = {
-    where: GameHistoryWhereUniqueInput
-    create: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput>
+  export type SoloGameUncheckedCreateWithoutUserInput = {
+    id?: string
+    bet: number
+    chosenNumber: number
+    generatedNumber: number
+    result: $Enums.SoloGameResult
+    balanceChange: number
+    multiplier: number
+    playedAt?: Date | string
+    transactionId?: string | null
   }
 
-  export type GameHistoryCreateManyUserInputEnvelope = {
-    data: GameHistoryCreateManyUserInput | GameHistoryCreateManyUserInput[]
+  export type SoloGameCreateOrConnectWithoutUserInput = {
+    where: SoloGameWhereUniqueInput
+    create: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput>
   }
 
-  export type GameHistoryUpsertWithWhereUniqueWithoutUserInput = {
-    where: GameHistoryWhereUniqueInput
-    update: XOR<GameHistoryUpdateWithoutUserInput, GameHistoryUncheckedUpdateWithoutUserInput>
-    create: XOR<GameHistoryCreateWithoutUserInput, GameHistoryUncheckedCreateWithoutUserInput>
+  export type SoloGameCreateManyUserInputEnvelope = {
+    data: SoloGameCreateManyUserInput | SoloGameCreateManyUserInput[]
   }
 
-  export type GameHistoryUpdateWithWhereUniqueWithoutUserInput = {
-    where: GameHistoryWhereUniqueInput
-    data: XOR<GameHistoryUpdateWithoutUserInput, GameHistoryUncheckedUpdateWithoutUserInput>
+  export type TransactionCreateWithoutUserInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    soloGames?: SoloGameCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeCreateNestedOneWithoutTransactionInput
   }
 
-  export type GameHistoryUpdateManyWithWhereWithoutUserInput = {
-    where: GameHistoryScalarWhereInput
-    data: XOR<GameHistoryUpdateManyMutationInput, GameHistoryUncheckedUpdateManyWithoutUserInput>
+  export type TransactionUncheckedCreateWithoutUserInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeUncheckedCreateNestedOneWithoutTransactionInput
   }
 
-  export type GameHistoryScalarWhereInput = {
-    AND?: GameHistoryScalarWhereInput | GameHistoryScalarWhereInput[]
-    OR?: GameHistoryScalarWhereInput[]
-    NOT?: GameHistoryScalarWhereInput | GameHistoryScalarWhereInput[]
-    id?: StringFilter<"GameHistory"> | string
-    userId?: StringFilter<"GameHistory"> | string
-    generatedNumber?: IntFilter<"GameHistory"> | number
-    result?: EnumGameResultFilter<"GameHistory"> | $Enums.GameResult
-    balanceChange?: IntFilter<"GameHistory"> | number
-    newBalance?: IntFilter<"GameHistory"> | number
-    playedAt?: DateTimeFilter<"GameHistory"> | Date | string
+  export type TransactionCreateOrConnectWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput>
   }
 
-  export type UserCreateWithoutGameHistoryInput = {
+  export type TransactionCreateManyUserInputEnvelope = {
+    data: TransactionCreateManyUserInput | TransactionCreateManyUserInput[]
+  }
+
+  export type MultiplayerGameUpsertWithWhereUniqueWithoutCreatorInput = {
+    where: MultiplayerGameWhereUniqueInput
+    update: XOR<MultiplayerGameUpdateWithoutCreatorInput, MultiplayerGameUncheckedUpdateWithoutCreatorInput>
+    create: XOR<MultiplayerGameCreateWithoutCreatorInput, MultiplayerGameUncheckedCreateWithoutCreatorInput>
+  }
+
+  export type MultiplayerGameUpdateWithWhereUniqueWithoutCreatorInput = {
+    where: MultiplayerGameWhereUniqueInput
+    data: XOR<MultiplayerGameUpdateWithoutCreatorInput, MultiplayerGameUncheckedUpdateWithoutCreatorInput>
+  }
+
+  export type MultiplayerGameUpdateManyWithWhereWithoutCreatorInput = {
+    where: MultiplayerGameScalarWhereInput
+    data: XOR<MultiplayerGameUpdateManyMutationInput, MultiplayerGameUncheckedUpdateManyWithoutCreatorInput>
+  }
+
+  export type MultiplayerGameScalarWhereInput = {
+    AND?: MultiplayerGameScalarWhereInput | MultiplayerGameScalarWhereInput[]
+    OR?: MultiplayerGameScalarWhereInput[]
+    NOT?: MultiplayerGameScalarWhereInput | MultiplayerGameScalarWhereInput[]
+    id?: StringFilter<"MultiplayerGame"> | string
+    bet?: IntFilter<"MultiplayerGame"> | number
+    thinkingTime?: IntFilter<"MultiplayerGame"> | number
+    status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
+    createdBy?: StringFilter<"MultiplayerGame"> | string
+    winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
+    startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+    finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
+  }
+
+  export type MultiplayerParticipantUpsertWithWhereUniqueWithoutPlayerInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    update: XOR<MultiplayerParticipantUpdateWithoutPlayerInput, MultiplayerParticipantUncheckedUpdateWithoutPlayerInput>
+    create: XOR<MultiplayerParticipantCreateWithoutPlayerInput, MultiplayerParticipantUncheckedCreateWithoutPlayerInput>
+  }
+
+  export type MultiplayerParticipantUpdateWithWhereUniqueWithoutPlayerInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    data: XOR<MultiplayerParticipantUpdateWithoutPlayerInput, MultiplayerParticipantUncheckedUpdateWithoutPlayerInput>
+  }
+
+  export type MultiplayerParticipantUpdateManyWithWhereWithoutPlayerInput = {
+    where: MultiplayerParticipantScalarWhereInput
+    data: XOR<MultiplayerParticipantUpdateManyMutationInput, MultiplayerParticipantUncheckedUpdateManyWithoutPlayerInput>
+  }
+
+  export type MultiplayerParticipantScalarWhereInput = {
+    AND?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+    OR?: MultiplayerParticipantScalarWhereInput[]
+    NOT?: MultiplayerParticipantScalarWhereInput | MultiplayerParticipantScalarWhereInput[]
+    id?: StringFilter<"MultiplayerParticipant"> | string
+    gameId?: StringFilter<"MultiplayerParticipant"> | string
+    playerId?: StringFilter<"MultiplayerParticipant"> | string
+    generatedNumber?: IntNullableFilter<"MultiplayerParticipant"> | number | null
+    playedAt?: DateTimeNullableFilter<"MultiplayerParticipant"> | Date | string | null
+    isWinner?: BoolFilter<"MultiplayerParticipant"> | boolean
+    balanceChange?: IntFilter<"MultiplayerParticipant"> | number
+    joinedAt?: DateTimeFilter<"MultiplayerParticipant"> | Date | string
+    transactionId?: StringNullableFilter<"MultiplayerParticipant"> | string | null
+  }
+
+  export type SoloGameUpsertWithWhereUniqueWithoutUserInput = {
+    where: SoloGameWhereUniqueInput
+    update: XOR<SoloGameUpdateWithoutUserInput, SoloGameUncheckedUpdateWithoutUserInput>
+    create: XOR<SoloGameCreateWithoutUserInput, SoloGameUncheckedCreateWithoutUserInput>
+  }
+
+  export type SoloGameUpdateWithWhereUniqueWithoutUserInput = {
+    where: SoloGameWhereUniqueInput
+    data: XOR<SoloGameUpdateWithoutUserInput, SoloGameUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SoloGameUpdateManyWithWhereWithoutUserInput = {
+    where: SoloGameScalarWhereInput
+    data: XOR<SoloGameUpdateManyMutationInput, SoloGameUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SoloGameScalarWhereInput = {
+    AND?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+    OR?: SoloGameScalarWhereInput[]
+    NOT?: SoloGameScalarWhereInput | SoloGameScalarWhereInput[]
+    id?: StringFilter<"SoloGame"> | string
+    userId?: StringFilter<"SoloGame"> | string
+    bet?: IntFilter<"SoloGame"> | number
+    chosenNumber?: IntFilter<"SoloGame"> | number
+    generatedNumber?: IntFilter<"SoloGame"> | number
+    result?: EnumSoloGameResultFilter<"SoloGame"> | $Enums.SoloGameResult
+    balanceChange?: IntFilter<"SoloGame"> | number
+    multiplier?: FloatFilter<"SoloGame"> | number
+    playedAt?: DateTimeFilter<"SoloGame"> | Date | string
+    transactionId?: StringNullableFilter<"SoloGame"> | string | null
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutUserInput, TransactionUncheckedUpdateWithoutUserInput>
+    create: XOR<TransactionCreateWithoutUserInput, TransactionUncheckedCreateWithoutUserInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutUserInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutUserInput, TransactionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutUserInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    userId?: StringFilter<"Transaction"> | string
+    type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
+    amount?: IntFilter<"Transaction"> | number
+    description?: StringFilter<"Transaction"> | string
+    reference?: StringNullableFilter<"Transaction"> | string | null
+    status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
+  export type UserCreateWithoutSoloGamesInput = {
     id?: string
     username: string
     email: string
     password: string
     phone: string
     role?: $Enums.Role
-    balance?: number
     refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdGames?: MultiplayerGameCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantCreateNestedManyWithoutPlayerInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutGameHistoryInput = {
+  export type UserUncheckedCreateWithoutSoloGamesInput = {
     id?: string
     username: string
     email: string
     password: string
     phone: string
     role?: $Enums.Role
-    balance?: number
     refreshToken?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    createdGames?: MultiplayerGameUncheckedCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantUncheckedCreateNestedManyWithoutPlayerInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutGameHistoryInput = {
+  export type UserCreateOrConnectWithoutSoloGamesInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutGameHistoryInput, UserUncheckedCreateWithoutGameHistoryInput>
+    create: XOR<UserCreateWithoutSoloGamesInput, UserUncheckedCreateWithoutSoloGamesInput>
   }
 
-  export type UserUpsertWithoutGameHistoryInput = {
-    update: XOR<UserUpdateWithoutGameHistoryInput, UserUncheckedUpdateWithoutGameHistoryInput>
-    create: XOR<UserCreateWithoutGameHistoryInput, UserUncheckedCreateWithoutGameHistoryInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutGameHistoryInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutGameHistoryInput, UserUncheckedUpdateWithoutGameHistoryInput>
-  }
-
-  export type UserUpdateWithoutGameHistoryInput = {
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
-    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserUncheckedUpdateWithoutGameHistoryInput = {
-    username?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
-    balance?: IntFieldUpdateOperationsInput | number
-    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type GameHistoryCreateManyUserInput = {
+  export type TransactionCreateWithoutSoloGamesInput = {
     id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTransactionsInput
+    multiplayerParticipants?: MultiplayerParticipantCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionUncheckedCreateWithoutSoloGamesInput = {
+    id?: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    multiplayerParticipants?: MultiplayerParticipantUncheckedCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeUncheckedCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionCreateOrConnectWithoutSoloGamesInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutSoloGamesInput, TransactionUncheckedCreateWithoutSoloGamesInput>
+  }
+
+  export type UserUpsertWithoutSoloGamesInput = {
+    update: XOR<UserUpdateWithoutSoloGamesInput, UserUncheckedUpdateWithoutSoloGamesInput>
+    create: XOR<UserCreateWithoutSoloGamesInput, UserUncheckedCreateWithoutSoloGamesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSoloGamesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSoloGamesInput, UserUncheckedUpdateWithoutSoloGamesInput>
+  }
+
+  export type UserUpdateWithoutSoloGamesInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUpdateManyWithoutPlayerNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSoloGamesInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUncheckedUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUncheckedUpdateManyWithoutPlayerNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TransactionUpsertWithoutSoloGamesInput = {
+    update: XOR<TransactionUpdateWithoutSoloGamesInput, TransactionUncheckedUpdateWithoutSoloGamesInput>
+    create: XOR<TransactionCreateWithoutSoloGamesInput, TransactionUncheckedCreateWithoutSoloGamesInput>
+    where?: TransactionWhereInput
+  }
+
+  export type TransactionUpdateToOneWithWhereWithoutSoloGamesInput = {
+    where?: TransactionWhereInput
+    data: XOR<TransactionUpdateWithoutSoloGamesInput, TransactionUncheckedUpdateWithoutSoloGamesInput>
+  }
+
+  export type TransactionUpdateWithoutSoloGamesInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutSoloGamesInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    multiplayerParticipants?: MultiplayerParticipantUncheckedUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUncheckedUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type UserCreateWithoutCreatedGamesInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participations?: MultiplayerParticipantCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCreatedGamesInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    participations?: MultiplayerParticipantUncheckedCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCreatedGamesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCreatedGamesInput, UserUncheckedCreateWithoutCreatedGamesInput>
+  }
+
+  export type MultiplayerParticipantCreateWithoutGameInput = {
+    id?: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    player: UserCreateNestedOneWithoutParticipationsInput
+    transaction?: TransactionCreateNestedOneWithoutMultiplayerParticipantsInput
+  }
+
+  export type MultiplayerParticipantUncheckedCreateWithoutGameInput = {
+    id?: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type MultiplayerParticipantCreateOrConnectWithoutGameInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    create: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput>
+  }
+
+  export type MultiplayerParticipantCreateManyGameInputEnvelope = {
+    data: MultiplayerParticipantCreateManyGameInput | MultiplayerParticipantCreateManyGameInput[]
+  }
+
+  export type UserUpsertWithoutCreatedGamesInput = {
+    update: XOR<UserUpdateWithoutCreatedGamesInput, UserUncheckedUpdateWithoutCreatedGamesInput>
+    create: XOR<UserCreateWithoutCreatedGamesInput, UserUncheckedCreateWithoutCreatedGamesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCreatedGamesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCreatedGamesInput, UserUncheckedUpdateWithoutCreatedGamesInput>
+  }
+
+  export type UserUpdateWithoutCreatedGamesInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participations?: MultiplayerParticipantUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCreatedGamesInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    participations?: MultiplayerParticipantUncheckedUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type MultiplayerParticipantUpsertWithWhereUniqueWithoutGameInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    update: XOR<MultiplayerParticipantUpdateWithoutGameInput, MultiplayerParticipantUncheckedUpdateWithoutGameInput>
+    create: XOR<MultiplayerParticipantCreateWithoutGameInput, MultiplayerParticipantUncheckedCreateWithoutGameInput>
+  }
+
+  export type MultiplayerParticipantUpdateWithWhereUniqueWithoutGameInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    data: XOR<MultiplayerParticipantUpdateWithoutGameInput, MultiplayerParticipantUncheckedUpdateWithoutGameInput>
+  }
+
+  export type MultiplayerParticipantUpdateManyWithWhereWithoutGameInput = {
+    where: MultiplayerParticipantScalarWhereInput
+    data: XOR<MultiplayerParticipantUpdateManyMutationInput, MultiplayerParticipantUncheckedUpdateManyWithoutGameInput>
+  }
+
+  export type MultiplayerGameCreateWithoutPlayersInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+    creator: UserCreateNestedOneWithoutCreatedGamesInput
+  }
+
+  export type MultiplayerGameUncheckedCreateWithoutPlayersInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    createdBy: string
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+  }
+
+  export type MultiplayerGameCreateOrConnectWithoutPlayersInput = {
+    where: MultiplayerGameWhereUniqueInput
+    create: XOR<MultiplayerGameCreateWithoutPlayersInput, MultiplayerGameUncheckedCreateWithoutPlayersInput>
+  }
+
+  export type UserCreateWithoutParticipationsInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdGames?: MultiplayerGameCreateNestedManyWithoutCreatorInput
+    soloGames?: SoloGameCreateNestedManyWithoutUserInput
+    transactions?: TransactionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutParticipationsInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdGames?: MultiplayerGameUncheckedCreateNestedManyWithoutCreatorInput
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutUserInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutParticipationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutParticipationsInput, UserUncheckedCreateWithoutParticipationsInput>
+  }
+
+  export type TransactionCreateWithoutMultiplayerParticipantsInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTransactionsInput
+    soloGames?: SoloGameCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionUncheckedCreateWithoutMultiplayerParticipantsInput = {
+    id?: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutTransactionInput
+    recharge?: RechargeUncheckedCreateNestedOneWithoutTransactionInput
+  }
+
+  export type TransactionCreateOrConnectWithoutMultiplayerParticipantsInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutMultiplayerParticipantsInput, TransactionUncheckedCreateWithoutMultiplayerParticipantsInput>
+  }
+
+  export type MultiplayerGameUpsertWithoutPlayersInput = {
+    update: XOR<MultiplayerGameUpdateWithoutPlayersInput, MultiplayerGameUncheckedUpdateWithoutPlayersInput>
+    create: XOR<MultiplayerGameCreateWithoutPlayersInput, MultiplayerGameUncheckedCreateWithoutPlayersInput>
+    where?: MultiplayerGameWhereInput
+  }
+
+  export type MultiplayerGameUpdateToOneWithWhereWithoutPlayersInput = {
+    where?: MultiplayerGameWhereInput
+    data: XOR<MultiplayerGameUpdateWithoutPlayersInput, MultiplayerGameUncheckedUpdateWithoutPlayersInput>
+  }
+
+  export type MultiplayerGameUpdateWithoutPlayersInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    creator?: UserUpdateOneRequiredWithoutCreatedGamesNestedInput
+  }
+
+  export type MultiplayerGameUncheckedUpdateWithoutPlayersInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    createdBy?: StringFieldUpdateOperationsInput | string
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type UserUpsertWithoutParticipationsInput = {
+    update: XOR<UserUpdateWithoutParticipationsInput, UserUncheckedUpdateWithoutParticipationsInput>
+    create: XOR<UserCreateWithoutParticipationsInput, UserUncheckedCreateWithoutParticipationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutParticipationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutParticipationsInput, UserUncheckedUpdateWithoutParticipationsInput>
+  }
+
+  export type UserUpdateWithoutParticipationsInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUpdateManyWithoutCreatorNestedInput
+    soloGames?: SoloGameUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutParticipationsInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUncheckedUpdateManyWithoutCreatorNestedInput
+    soloGames?: SoloGameUncheckedUpdateManyWithoutUserNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TransactionUpsertWithoutMultiplayerParticipantsInput = {
+    update: XOR<TransactionUpdateWithoutMultiplayerParticipantsInput, TransactionUncheckedUpdateWithoutMultiplayerParticipantsInput>
+    create: XOR<TransactionCreateWithoutMultiplayerParticipantsInput, TransactionUncheckedCreateWithoutMultiplayerParticipantsInput>
+    where?: TransactionWhereInput
+  }
+
+  export type TransactionUpdateToOneWithWhereWithoutMultiplayerParticipantsInput = {
+    where?: TransactionWhereInput
+    data: XOR<TransactionUpdateWithoutMultiplayerParticipantsInput, TransactionUncheckedUpdateWithoutMultiplayerParticipantsInput>
+  }
+
+  export type TransactionUpdateWithoutMultiplayerParticipantsInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+    soloGames?: SoloGameUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutMultiplayerParticipantsInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soloGames?: SoloGameUncheckedUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUncheckedUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type UserCreateWithoutTransactionsInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdGames?: MultiplayerGameCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    username: string
+    email: string
+    password: string
+    phone: string
+    role?: $Enums.Role
+    refreshToken?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdGames?: MultiplayerGameUncheckedCreateNestedManyWithoutCreatorInput
+    participations?: MultiplayerParticipantUncheckedCreateNestedManyWithoutPlayerInput
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTransactionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type SoloGameCreateWithoutTransactionInput = {
+    id?: string
+    bet: number
+    chosenNumber: number
     generatedNumber: number
-    result: $Enums.GameResult
+    result: $Enums.SoloGameResult
     balanceChange: number
-    newBalance: number
+    multiplier: number
+    playedAt?: Date | string
+    user: UserCreateNestedOneWithoutSoloGamesInput
+  }
+
+  export type SoloGameUncheckedCreateWithoutTransactionInput = {
+    id?: string
+    userId: string
+    bet: number
+    chosenNumber: number
+    generatedNumber: number
+    result: $Enums.SoloGameResult
+    balanceChange: number
+    multiplier: number
     playedAt?: Date | string
   }
 
-  export type GameHistoryUpdateWithoutUserInput = {
-    generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
+  export type SoloGameCreateOrConnectWithoutTransactionInput = {
+    where: SoloGameWhereUniqueInput
+    create: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput>
+  }
+
+  export type SoloGameCreateManyTransactionInputEnvelope = {
+    data: SoloGameCreateManyTransactionInput | SoloGameCreateManyTransactionInput[]
+  }
+
+  export type MultiplayerParticipantCreateWithoutTransactionInput = {
+    id?: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    game: MultiplayerGameCreateNestedOneWithoutPlayersInput
+    player: UserCreateNestedOneWithoutParticipationsInput
+  }
+
+  export type MultiplayerParticipantUncheckedCreateWithoutTransactionInput = {
+    id?: string
+    gameId: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+  }
+
+  export type MultiplayerParticipantCreateOrConnectWithoutTransactionInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    create: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput>
+  }
+
+  export type MultiplayerParticipantCreateManyTransactionInputEnvelope = {
+    data: MultiplayerParticipantCreateManyTransactionInput | MultiplayerParticipantCreateManyTransactionInput[]
+  }
+
+  export type RechargeCreateWithoutTransactionInput = {
+    id?: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status?: $Enums.RechargeStatus
+    billingData: InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type RechargeUncheckedCreateWithoutTransactionInput = {
+    id?: string
+    userId: string
+    amount: number
+    method: $Enums.PaymentMethod
+    status?: $Enums.RechargeStatus
+    billingData: InputJsonValue
+    createdAt?: Date | string
+    completedAt?: Date | string | null
+  }
+
+  export type RechargeCreateOrConnectWithoutTransactionInput = {
+    where: RechargeWhereUniqueInput
+    create: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+  }
+
+  export type UserUpsertWithoutTransactionsInput = {
+    update: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTransactionsInput, UserUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type UserUpdateWithoutTransactionsInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTransactionsInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    refreshToken?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdGames?: MultiplayerGameUncheckedUpdateManyWithoutCreatorNestedInput
+    participations?: MultiplayerParticipantUncheckedUpdateManyWithoutPlayerNestedInput
+    soloGames?: SoloGameUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type SoloGameUpsertWithWhereUniqueWithoutTransactionInput = {
+    where: SoloGameWhereUniqueInput
+    update: XOR<SoloGameUpdateWithoutTransactionInput, SoloGameUncheckedUpdateWithoutTransactionInput>
+    create: XOR<SoloGameCreateWithoutTransactionInput, SoloGameUncheckedCreateWithoutTransactionInput>
+  }
+
+  export type SoloGameUpdateWithWhereUniqueWithoutTransactionInput = {
+    where: SoloGameWhereUniqueInput
+    data: XOR<SoloGameUpdateWithoutTransactionInput, SoloGameUncheckedUpdateWithoutTransactionInput>
+  }
+
+  export type SoloGameUpdateManyWithWhereWithoutTransactionInput = {
+    where: SoloGameScalarWhereInput
+    data: XOR<SoloGameUpdateManyMutationInput, SoloGameUncheckedUpdateManyWithoutTransactionInput>
+  }
+
+  export type MultiplayerParticipantUpsertWithWhereUniqueWithoutTransactionInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    update: XOR<MultiplayerParticipantUpdateWithoutTransactionInput, MultiplayerParticipantUncheckedUpdateWithoutTransactionInput>
+    create: XOR<MultiplayerParticipantCreateWithoutTransactionInput, MultiplayerParticipantUncheckedCreateWithoutTransactionInput>
+  }
+
+  export type MultiplayerParticipantUpdateWithWhereUniqueWithoutTransactionInput = {
+    where: MultiplayerParticipantWhereUniqueInput
+    data: XOR<MultiplayerParticipantUpdateWithoutTransactionInput, MultiplayerParticipantUncheckedUpdateWithoutTransactionInput>
+  }
+
+  export type MultiplayerParticipantUpdateManyWithWhereWithoutTransactionInput = {
+    where: MultiplayerParticipantScalarWhereInput
+    data: XOR<MultiplayerParticipantUpdateManyMutationInput, MultiplayerParticipantUncheckedUpdateManyWithoutTransactionInput>
+  }
+
+  export type RechargeUpsertWithoutTransactionInput = {
+    update: XOR<RechargeUpdateWithoutTransactionInput, RechargeUncheckedUpdateWithoutTransactionInput>
+    create: XOR<RechargeCreateWithoutTransactionInput, RechargeUncheckedCreateWithoutTransactionInput>
+    where?: RechargeWhereInput
+  }
+
+  export type RechargeUpdateToOneWithWhereWithoutTransactionInput = {
+    where?: RechargeWhereInput
+    data: XOR<RechargeUpdateWithoutTransactionInput, RechargeUncheckedUpdateWithoutTransactionInput>
+  }
+
+  export type RechargeUpdateWithoutTransactionInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type RechargeUncheckedUpdateWithoutTransactionInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    method?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    status?: EnumRechargeStatusFieldUpdateOperationsInput | $Enums.RechargeStatus
+    billingData?: InputJsonValue | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type TransactionCreateWithoutRechargeInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutTransactionsInput
+    soloGames?: SoloGameCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantCreateNestedManyWithoutTransactionInput
+  }
+
+  export type TransactionUncheckedCreateWithoutRechargeInput = {
+    id?: string
+    userId: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+    soloGames?: SoloGameUncheckedCreateNestedManyWithoutTransactionInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedCreateNestedManyWithoutTransactionInput
+  }
+
+  export type TransactionCreateOrConnectWithoutRechargeInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutRechargeInput, TransactionUncheckedCreateWithoutRechargeInput>
+  }
+
+  export type TransactionUpsertWithoutRechargeInput = {
+    update: XOR<TransactionUpdateWithoutRechargeInput, TransactionUncheckedUpdateWithoutRechargeInput>
+    create: XOR<TransactionCreateWithoutRechargeInput, TransactionUncheckedCreateWithoutRechargeInput>
+    where?: TransactionWhereInput
+  }
+
+  export type TransactionUpdateToOneWithWhereWithoutRechargeInput = {
+    where?: TransactionWhereInput
+    data: XOR<TransactionUpdateWithoutRechargeInput, TransactionUncheckedUpdateWithoutRechargeInput>
+  }
+
+  export type TransactionUpdateWithoutRechargeInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
+    soloGames?: SoloGameUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUpdateManyWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutRechargeInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soloGames?: SoloGameUncheckedUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedUpdateManyWithoutTransactionNestedInput
+  }
+
+  export type MultiplayerGameCreateManyCreatorInput = {
+    id?: string
+    bet: number
+    thinkingTime: number
+    status?: $Enums.GameStatus
+    winnerId?: string | null
+    createdAt?: Date | string
+    startedAt?: Date | string | null
+    finishedAt?: Date | string | null
+  }
+
+  export type MultiplayerParticipantCreateManyPlayerInput = {
+    id?: string
+    gameId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type SoloGameCreateManyUserInput = {
+    id?: string
+    bet: number
+    chosenNumber: number
+    generatedNumber: number
+    result: $Enums.SoloGameResult
+    balanceChange: number
+    multiplier: number
+    playedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type TransactionCreateManyUserInput = {
+    id?: string
+    type: $Enums.TransactionType
+    amount: number
+    description: string
+    reference?: string | null
+    status?: $Enums.TransactionStatus
+    createdAt?: Date | string
+  }
+
+  export type MultiplayerGameUpdateWithoutCreatorInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    players?: MultiplayerParticipantUpdateManyWithoutGameNestedInput
+  }
+
+  export type MultiplayerGameUncheckedUpdateWithoutCreatorInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    players?: MultiplayerParticipantUncheckedUpdateManyWithoutGameNestedInput
+  }
+
+  export type MultiplayerGameUncheckedUpdateManyWithoutCreatorInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    thinkingTime?: IntFieldUpdateOperationsInput | number
+    status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
+    winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type MultiplayerParticipantUpdateWithoutPlayerInput = {
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
     balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    game?: MultiplayerGameUpdateOneRequiredWithoutPlayersNestedInput
+    transaction?: TransactionUpdateOneWithoutMultiplayerParticipantsNestedInput
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateWithoutPlayerInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutPlayerInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SoloGameUpdateWithoutUserInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transaction?: TransactionUpdateOneWithoutSoloGamesNestedInput
+  }
+
+  export type SoloGameUncheckedUpdateWithoutUserInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SoloGameUncheckedUpdateManyWithoutUserInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TransactionUpdateWithoutUserInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soloGames?: SoloGameUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateWithoutUserInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    soloGames?: SoloGameUncheckedUpdateManyWithoutTransactionNestedInput
+    multiplayerParticipants?: MultiplayerParticipantUncheckedUpdateManyWithoutTransactionNestedInput
+    recharge?: RechargeUncheckedUpdateOneWithoutTransactionNestedInput
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutUserInput = {
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    amount?: IntFieldUpdateOperationsInput | number
+    description?: StringFieldUpdateOperationsInput | string
+    reference?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MultiplayerParticipantCreateManyGameInput = {
+    id?: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+    transactionId?: string | null
+  }
+
+  export type MultiplayerParticipantUpdateWithoutGameInput = {
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    player?: UserUpdateOneRequiredWithoutParticipationsNestedInput
+    transaction?: TransactionUpdateOneWithoutMultiplayerParticipantsNestedInput
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateWithoutGameInput = {
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutGameInput = {
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactionId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type SoloGameCreateManyTransactionInput = {
+    id?: string
+    userId: string
+    bet: number
+    chosenNumber: number
+    generatedNumber: number
+    result: $Enums.SoloGameResult
+    balanceChange: number
+    multiplier: number
+    playedAt?: Date | string
+  }
+
+  export type MultiplayerParticipantCreateManyTransactionInput = {
+    id?: string
+    gameId: string
+    playerId: string
+    generatedNumber?: number | null
+    playedAt?: Date | string | null
+    isWinner?: boolean
+    balanceChange?: number
+    joinedAt?: Date | string
+  }
+
+  export type SoloGameUpdateWithoutTransactionInput = {
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
+    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSoloGamesNestedInput
+  }
+
+  export type SoloGameUncheckedUpdateWithoutTransactionInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
+    generatedNumber?: IntFieldUpdateOperationsInput | number
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
     playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type GameHistoryUncheckedUpdateWithoutUserInput = {
+  export type SoloGameUncheckedUpdateManyWithoutTransactionInput = {
+    userId?: StringFieldUpdateOperationsInput | string
+    bet?: IntFieldUpdateOperationsInput | number
+    chosenNumber?: IntFieldUpdateOperationsInput | number
     generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
+    result?: EnumSoloGameResultFieldUpdateOperationsInput | $Enums.SoloGameResult
     balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
+    multiplier?: FloatFieldUpdateOperationsInput | number
     playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type GameHistoryUncheckedUpdateManyWithoutUserInput = {
-    generatedNumber?: IntFieldUpdateOperationsInput | number
-    result?: EnumGameResultFieldUpdateOperationsInput | $Enums.GameResult
+  export type MultiplayerParticipantUpdateWithoutTransactionInput = {
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
     balanceChange?: IntFieldUpdateOperationsInput | number
-    newBalance?: IntFieldUpdateOperationsInput | number
-    playedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    game?: MultiplayerGameUpdateOneRequiredWithoutPlayersNestedInput
+    player?: UserUpdateOneRequiredWithoutParticipationsNestedInput
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateWithoutTransactionInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MultiplayerParticipantUncheckedUpdateManyWithoutTransactionInput = {
+    gameId?: StringFieldUpdateOperationsInput | string
+    playerId?: StringFieldUpdateOperationsInput | string
+    generatedNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    playedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isWinner?: BoolFieldUpdateOperationsInput | boolean
+    balanceChange?: IntFieldUpdateOperationsInput | number
+    joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

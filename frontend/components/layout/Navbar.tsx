@@ -3,6 +3,7 @@
 import { useAuth } from "@/providers/AuthProvider";
 import { Button } from "@/components/ui/Button";
 import { useRouter } from "@/i18n/routing";
+import { usePathname } from "next/navigation";
 import {
   User,
   LogOut,
@@ -18,6 +19,7 @@ import { useState, useRef, useEffect } from "react";
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const t = useTranslations("common");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
@@ -70,7 +72,11 @@ export default function Navbar() {
                     variant="ghost"
                     size="sm"
                     onClick={() => router.push("/history")}
-                    className="text-white/80 hover:text-white hover:bg-white/10"
+                    className={`text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                      pathname.includes("/history") 
+                        ? "nav-active text-white" 
+                        : ""
+                    }`}
                   >
                     <History className="h-4 w-4 mr-2" />
                     {t("history")}
@@ -80,7 +86,11 @@ export default function Navbar() {
                       variant="ghost"
                       size="sm"
                       onClick={() => router.push("/admin")}
-                      className="text-white/80 hover:text-white hover:bg-white/10"
+                      className={`text-white/80 hover:text-white hover:bg-white/10 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                        pathname.includes("/admin") 
+                          ? "nav-active text-white" 
+                          : ""
+                      }`}
                     >
                       <BarChart3 className="h-4 w-4 mr-2" />
                       {t("admin")}

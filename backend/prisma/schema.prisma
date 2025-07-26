@@ -15,28 +15,104 @@ model User {
   password     String
   phone        String
   role         Role     @default(CLIENT)
-  balance      Int      @default(0)
   refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  gameHistory GameHistory[]
+  createdGames   MultiplayerGame[]        @relation("CreatedGames")
+  participations MultiplayerParticipant[] @relation("GameParticipations")
+  soloGames      SoloGame[]
+  transactions   Transaction[]
 
   @@map("users")
 }
 
-model GameHistory {
-  id              String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId          String     @db.ObjectId
-  generatedNumber Int
-  result          GameResult
-  balanceChange   Int
-  newBalance      Int
-  playedAt        DateTime   @default(now())
+model SoloGame {
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String         @db.ObjectId
+  bet             Int // Mise du joueur
+  chosenNumber    Int // Nombre choisi par le joueur (20-100)
+  generatedNumber Int // Nombre généré aléatoirement
+  result          SoloGameResult // Résultat de la partie
+  balanceChange   Int // Changement de balance (+/-)
+  multiplier      Float // 2.0, 1.5, ou 0 selon le résultat
+  playedAt        DateTime       @default(now())
+  transactionId   String?        @db.ObjectId // Reference to the transaction
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction Transaction? @relation(fields: [transactionId], references: [id])
 
-  @@map("game_history")
+  @@map("solo_games")
+}
+
+model MultiplayerGame {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  bet          Int
+  thinkingTime Int
+  status       GameStatus @default(WAITING)
+  createdBy    String     @db.ObjectId
+  winnerId     String?    @db.ObjectId
+  createdAt    DateTime   @default(now())
+  startedAt    DateTime?
+  finishedAt   DateTime?
+
+  creator User                     @relation("CreatedGames", fields: [createdBy], references: [id])
+  players MultiplayerParticipant[]
+
+  @@map("multiplayer_games")
+}
+
+model MultiplayerParticipant {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  gameId          String    @db.ObjectId
+  playerId        String    @db.ObjectId
+  generatedNumber Int?
+  playedAt        DateTime?
+  isWinner        Boolean   @default(false)
+  balanceChange   Int       @default(0)
+  joinedAt        DateTime  @default(now())
+  transactionId   String?   @db.ObjectId // Reference to the transaction
+
+  game        MultiplayerGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  player      User            @relation("GameParticipations", fields: [playerId], references: [id], onDelete: Cascade)
+  transaction Transaction?    @relation(fields: [transactionId], references: [id])
+
+  @@unique([gameId, playerId])
+  @@map("multiplayer_participants")
+}
+
+model Transaction {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String            @db.ObjectId
+  type        TransactionType
+  amount      Int
+  description String
+  reference   String?
+  status      TransactionStatus @default(COMPLETED)
+  createdAt   DateTime          @default(now())
+
+  user                    User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  soloGames               SoloGame[]
+  multiplayerParticipants MultiplayerParticipant[]
+  recharge                Recharge?
+
+  @@map("transactions")
+}
+
+model Recharge {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String         @db.ObjectId
+  amount        Int // Amount in cents
+  method        PaymentMethod
+  status        RechargeStatus @default(PENDING)
+  transactionId String         @unique @db.ObjectId
+  billingData   Json // Store fake billing information
+  createdAt     DateTime       @default(now())
+  completedAt   DateTime?
+
+  transaction Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@map("recharges")
 }
 
 enum Role {
@@ -44,7 +120,42 @@ enum Role {
   ADMIN
 }
 
-enum GameResult {
-  WON
-  LOST
+enum SoloGameResult {
+  EXACT_MATCH // 2x 
+  HIGHER // 1.5x  
+  LOWER // loose
+}
+
+enum GameStatus {
+  WAITING // Waiting second player
+  IN_PROGRESS // On game
+  FINISHED
+  CANCELLED
+}
+
+enum TransactionType {
+  CREDIT // Money coming in (recharge, game win)
+  DEBIT // Money going out (game bet, game loss)
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  PAYPAL
+  BANK_TRANSFER
+  CRYPTO
+}
+
+enum RechargeStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
 }

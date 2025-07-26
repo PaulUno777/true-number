@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import QueryProvider from "@/providers/QueryProvider";
 import AuthProvider from "@/providers/AuthProvider";
+import Navbar from "@/components/layout/Navbar";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -26,18 +26,20 @@ export default async function RootLayout({ children, params }: Props) {
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} >
-      <body>
+    <html lang={locale} className="dark">
+      <body className="dark bg-gray-900 text-white min-h-screen">
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <QueryProvider>
-              <AuthProvider>
-                <div className="lg:p-10 p-8">{children}</div>
-
-                <Toaster position="top-right" />
-              </AuthProvider>
-            </QueryProvider>
-          </ThemeProvider>
+          <QueryProvider>
+            <AuthProvider>
+              <div className="min-h-screen bg-background relative">
+                <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+                  <Navbar />
+                  {children}
+                </main>
+              </div>
+              <Toaster position="top-right" />
+            </AuthProvider>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

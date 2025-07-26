@@ -6,6 +6,8 @@ import {
   IsEmail,
   IsEnum,
   IsOptional,
+  IsNumber,
+  Min,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 

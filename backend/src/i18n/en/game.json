@@ -2,5 +2,31 @@
   "gameWon": "Congratulations! You won the game!",
   "gameLost": "Better luck next time! You lost.",
   "balanceUpdated": "Balance updated successfully",
-  "historyRetrieved": "Game history retrieved successfully"
+  "historyRetrieved": "Game history retrieved successfully",
+  "gameCreated": "Game created successfully",
+  "gameJoined": "Game joined successfully",
+  "turnPlayed": "Turn played successfully",
+  "waitingGamesRetrieved": "Waiting games retrieved successfully",
+  "gameDetailsRetrieved": "Game details retrieved successfully",
+  "userGamesRetrieved": "User games retrieved successfully",
+  "gameNotFound": "Game not found",
+  "gameNotWaiting": "This game is no longer waiting for players",
+  "cannotJoinOwnGame": "You cannot join your own game",
+  "gameFull": "This game is already full",
+  "gameNotInProgress": "This game is not in progress",
+  "notParticipant": "You are not a participant in this game",
+  "alreadyPlayed": "You have already played your turn",
+  "insufficientBalance": "Insufficient balance to join this game",
+  "statsRetrieved": "Multiplayer statistics retrieved successfully",
+  "lastGameRetrieved": "Last created game retrieved successfully",
+  "activeGameRetrieved": "Active game retrieved successfully",
+  "gameLeft": "Game left successfully",
+  "alreadyHasActiveGame": "You already have an active game. Please finish or leave it before creating a new one.",
+  "solo": {
+    "exactMatch": "🎯 Perfect! Exact match! You win {{points}} points!",
+    "higher": "🎉 Great! The generated number is higher! You win {{points}} points!",
+    "lower": "😞 Too bad! The generated number is lower. You lose {{points}} points.",
+    "historyRetrieved": "Solo game history retrieved successfully",
+    "statsRetrieved": "Solo game statistics retrieved successfully"
+  }
 }

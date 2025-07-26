@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
-import { GameService } from './game.service';
-import { GameController } from './game.controller';
+import { MultiGameService } from './multi-game.service';
+import { MultiGameController } from './multi-game.controller';
+import { GameGateway } from './game.gateway';
+import { SoloGameService } from './solo-game.service';
+import { SoloGameController } from './solo-game.controller';
+import { TransactionModule } from '../transaction/transaction.module';
 
 @Module({
-  providers: [GameService],
-  controllers: [GameController]
+  imports: [TransactionModule],
+  providers: [MultiGameService, GameGateway, SoloGameService],
+  controllers: [MultiGameController, SoloGameController],
+  exports: [MultiGameService, GameGateway, SoloGameService],
 })
 export class GameModule {}

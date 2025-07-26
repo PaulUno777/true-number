@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { gameService } from "@/services/game";
+import { soloService } from "@/services/solo";
 import { usersService } from "@/services/users";
+import { multiplayerService } from "@/services/multiplayer";
 import {
   Card,
   CardContent,
@@ -73,9 +74,14 @@ export default function AdminPage() {
   const t = useTranslations("admin");
   const tCommon = useTranslations("common");
 
-  const { data: globalStats, isLoading: statsLoading } = useQuery({
-    queryKey: ["globalStats"],
-    queryFn: gameService.getGlobalStats,
+  const { data: soloStats, isLoading: statsLoading } = useQuery({
+    queryKey: ["soloStats"],
+    queryFn: soloService.getStats,
+  });
+
+  const { data: multiplayerStats, isLoading: multiplayerStatsLoading } = useQuery({
+    queryKey: ["multiplayerStats"],
+    queryFn: multiplayerService.getMultiplayerStats,
   });
 
   const { data: users, isLoading: usersLoading } = useQuery({
@@ -168,7 +174,7 @@ export default function AdminPage() {
     });
   };
 
-  if (statsLoading || usersLoading) {
+  if (statsLoading || usersLoading || multiplayerStatsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -253,7 +259,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
-                  {globalStats?.totalUsers || 0}
+                  {users?.data?.length || 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("registeredUsers")}
@@ -270,7 +276,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-secondary">
-                  {globalStats?.totalGames || 0}
+                  {soloStats?.totalGames || 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("gamesPlayed")}
@@ -287,7 +293,9 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-accent">
-                  {globalStats?.globalWinRate.toFixed(1)}%
+                  {soloStats?.totalGames > 0 
+                    ? (((soloStats.exactMatches + soloStats.higherWins) / soloStats.totalGames) * 100).toFixed(1)
+                    : 0}%
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("successRate")}
@@ -304,7 +312,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-400">
-                  ${globalStats?.averageBalance.toFixed(2) || 0}
+                  ${users?.data ? (users.data.reduce((sum, user) => sum + user.balance, 0) / users.data.length).toFixed(2) : 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("averageBalance")}
@@ -393,7 +401,7 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {globalStats?.topPlayers.slice(0, 5).map((player, index) => (
+                {users?.data?.sort((a, b) => b.balance - a.balance).slice(0, 5).map((player, index) => (
                   <div
                     key={player.id}
                     className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
@@ -417,7 +425,7 @@ export default function AdminPage() {
                           {player.username}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {player.gameHistory} {t("games")}
+                          {player.role}
                         </div>
                       </div>
                     </div>
@@ -839,7 +847,7 @@ export default function AdminPage() {
                           {t("wonGames")}
                         </p>
                         <p className="text-3xl font-bold text-green-400">
-                          {globalStats?.wonGames || 0}
+                          {(soloStats?.exactMatches || 0) + (soloStats?.higherWins || 0)}
                         </p>
                       </div>
                       <TrendingUp className="h-8 w-8 text-green-400" />
@@ -855,7 +863,7 @@ export default function AdminPage() {
                           {t("lostGames")}
                         </p>
                         <p className="text-3xl font-bold text-red-400">
-                          {globalStats?.lostGames || 0}
+                          {soloStats?.losses || 0}
                         </p>
                       </div>
                       <TrendingDown className="h-8 w-8 text-red-400" />
@@ -863,6 +871,124 @@ export default function AdminPage() {
                   </CardContent>
                 </Card>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Multiplayer Statistics */}
+          <Card className="game-card">
+            <CardHeader>
+              <CardTitle className="text-xl text-white flex items-center space-x-2">
+                <Users className="h-5 w-5 text-accent" />
+                <span>Multiplayer Statistics</span>
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                Statistics from multiplayer games
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-primary/5 border-primary/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-primary">
+                          Total Games
+                        </p>
+                        <p className="text-3xl font-bold text-primary">
+                          {multiplayerStats?.totalGames || 0}
+                        </p>
+                      </div>
+                      <GamepadIcon className="h-8 w-8 text-primary" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-green-500/5 border-green-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-green-400">
+                          Active Games
+                        </p>
+                        <p className="text-3xl font-bold text-green-400">
+                          {multiplayerStats?.activeGames || 0}
+                        </p>
+                      </div>
+                      <TrendingUp className="h-8 w-8 text-green-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-yellow-500/5 border-yellow-500/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-yellow-400">
+                          Waiting Games
+                        </p>
+                        <p className="text-3xl font-bold text-yellow-400">
+                          {multiplayerStats?.waitingGames || 0}
+                        </p>
+                      </div>
+                      <Users className="h-8 w-8 text-yellow-400" />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-accent/5 border-accent/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-accent">
+                          Average Bet
+                        </p>
+                        <p className="text-3xl font-bold text-accent">
+                          ${multiplayerStats?.averageBet.toFixed(0) || 0}
+                        </p>
+                      </div>
+                      <DollarSign className="h-8 w-8 text-accent" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Top Multiplayer Winners */}
+              {multiplayerStats?.topWinners && multiplayerStats.topWinners.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold text-white mb-4">Top Multiplayer Winners</h3>
+                  <div className="space-y-3">
+                    {multiplayerStats.topWinners.slice(0, 5).map((player, index) => (
+                      <div
+                        key={player.id}
+                        className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div
+                            className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
+                              index === 0
+                                ? "bg-yellow-500"
+                                : index === 1
+                                ? "bg-gray-400"
+                                : index === 2
+                                ? "bg-amber-600"
+                                : "bg-primary"
+                            }`}
+                          >
+                            {index + 1}
+                          </div>
+                          <div>
+                            <p className="font-medium text-white">{player.username}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {player.wins} wins • {player.totalGames} games • {player.winRate.toFixed(1)}% win rate
+                            </p>
+                          </div>
+                        </div>
+                        <Trophy className="h-5 w-5 text-accent" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -879,7 +1005,7 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {globalStats?.topPlayers.map((player, index) => (
+                {users?.data?.sort((a, b) => b.balance - a.balance).map((player, index) => (
                   <div
                     key={player.id}
                     className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
@@ -903,7 +1029,7 @@ export default function AdminPage() {
                           {player.username}
                         </div>
                         <div className="text-sm text-muted-foreground">
-                          {player.gameHistory} {t("games")}
+                          {player.role}
                         </div>
                       </div>
                     </div>
