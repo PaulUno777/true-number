@@ -28,6 +28,7 @@ import {
   CreateUserResponseDto,
   UpdateUserResponseDto,
   DeleteUserResponseDto,
+  GetTopPlayersResponseDto,
 } from './dto/user-output.dto';
 import { Role } from '@generated/prisma';
 import { I18nLang } from 'nestjs-i18n';
@@ -92,6 +93,20 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'All users retrieved' })
   findAll(@Query() query: PaginationDto) {
     return this.usersService.findAll(query);
+  }
+
+  @Get('top-players')
+  @UseGuards(RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Get top players by wins and balance (Admin only)' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Top players retrieved',
+    type: GetTopPlayersResponseDto 
+  })
+  getTopPlayers(@Query('limit') limit?: string): Promise<GetTopPlayersResponseDto> {
+    const limitNumber = limit ? parseInt(limit, 10) : 10;
+    return this.usersService.getTopPlayers(limitNumber);
   }
 
   @Get(':id')

@@ -22,6 +22,22 @@ interface PaginationParams {
   filter?: string[];
 }
 
+interface TopPlayer {
+  id: string;
+  username: string;
+  balance: number;
+  totalGames: number;
+  wonGames: number;
+  winRate: number;
+  role: 'CLIENT' | 'ADMIN';
+  createdAt: string;
+}
+
+interface TopPlayersResponse {
+  data: TopPlayer[];
+  message?: string;
+}
+
 class UsersService {
   async getAllUsers(params?: PaginationParams) {
     const response = await api.get('/users', { params });
@@ -52,6 +68,15 @@ class UsersService {
     const response = await api.get(`/users/${id}/stats`);
     return response.data;
   }
+
+  async getTopPlayers(limit?: number): Promise<TopPlayersResponse> {
+    const params = limit ? { limit: limit.toString() } : {};
+    const response = await api.get('/users/top-players', { params });
+    return response.data;
+  }
 }
 
 export const usersService = new UsersService();
+
+// Export types for use in components
+export type { TopPlayer, TopPlayersResponse };

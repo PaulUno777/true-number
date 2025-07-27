@@ -105,3 +105,37 @@ export class DeleteUserResponseDto {
   @ApiProperty({ description: 'Response message' })
   message: string;
 }
+
+export class TopPlayerDto {
+  @ApiProperty({ description: 'User ID' })
+  id: string;
+
+  @ApiProperty({ description: 'Username' })
+  username: string;
+
+  @ApiProperty({ description: 'User balance' })
+  balance: number;
+
+  @ApiProperty({ description: 'Total games played' })
+  totalGames: number;
+
+  @ApiProperty({ description: 'Total won games' })
+  wonGames: number;
+
+  @ApiProperty({ description: 'Win rate percentage' })
+  winRate: number;
+
+  @ApiProperty({ enum: Role, description: 'User role' })
+  role: Role;
+
+  @ApiProperty({ description: 'Account creation date' })
+  createdAt: Date;
+}
+
+export class GetTopPlayersResponseDto {
+  @ApiProperty({ type: [TopPlayerDto], description: 'Top players list' })
+  data: TopPlayerDto[];
+
+  @ApiProperty({ description: 'Response message', required: false })
+  message?: string;
+}

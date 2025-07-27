@@ -114,7 +114,8 @@
     "noGames": "Aucune partie jouée pour le moment",
     "startAdventure": "Commencez votre aventure !",
     "transactionHistory": "Historique des Transactions",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "unknown": "Inconnu"
   },
   "admin": {
     "title": "Interface Administrateur",
@@ -309,7 +310,7 @@
     "searchError": "Erreur lors de la recherche",
     "reconnectError": "Erreur lors de la reconnexion",
     "createError": "Erreur lors de la création",
-    "joinError": "Erreur lors de la connexion", 
+    "joinError": "Erreur lors de la connexion",
     "playError": "Erreur lors du jeu",
     "alreadyHasActiveGame": "Vous avez déjà une partie active. Veuillez la terminer ou la quitter d'abord."
   },
@@ -352,7 +353,7 @@
     "gameRules": "Choisissez 20-100 • Gagnez si généré ≥ votre nombre",
     "exactMatch": "Exact : 2x",
     "higherWin": "Plus haut : 1.5x",
-    "lowerLoss": "Plus bas : -mise",
+    "lowerLoss": "Plus bas : perdu",
     "betAmount": "Montant de Mise",
     "guessNumber": "Nombre à Deviner",
     "playGame": "Jouer",
@@ -368,6 +369,10 @@
     "insufficientBalance": "Solde insuffisant !",
     "invalidNumber": "Veuillez choisir un nombre entre 20 et 100 !",
     "invalidBet": "La mise doit être entre 1 et 1000 !",
-    "failedToPlay": "Échec du jeu"
+    "failedToPlay": "Échec du jeu",
+    "gameStarting": "🎲 Début de votre jeu...",
+    "goodLuck": "Bonne chance !",
+    "exactMatchWin": "🎉 CORRESPONDANCE EXACTE ! Prédiction incroyable !",
+    "balanceUpdated": "Solde mis à jour avec succès"
   }
 }

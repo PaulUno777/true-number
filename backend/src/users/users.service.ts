@@ -13,6 +13,8 @@ import {
   GetUserWithStatsResponseDto,
   GetUsersResponseDto,
   UserWithCountDto,
+  GetTopPlayersResponseDto,
+  TopPlayerDto,
 } from './dto/user-output.dto';
 import { hashData } from '@shared/utils';
 import { I18nService } from 'nestjs-i18n';
@@ -305,6 +307,67 @@ export class UsersService {
           winRate: Math.round(winRate * 100) / 100, // Round to 2 decimal places
         },
       },
+    };
+  }
+
+  async getTopPlayers(limit: number = 10): Promise<GetTopPlayersResponseDto> {
+    // Get all users with their game data
+    const users = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        role: true,
+        createdAt: true,
+        soloGames: {
+          select: {
+            result: true,
+          },
+        },
+      },
+    });
+
+    // Calculate stats and balance for each user
+    const playersWithStats: TopPlayerDto[] = await Promise.all(
+      users.map(async (user) => {
+        const balance = await this.transactionService.getUserBalance(user.id);
+        
+        const totalGames = user.soloGames.length;
+        const wonGames = user.soloGames.filter(
+          (game) => game.result === 'EXACT_MATCH' || game.result === 'HIGHER',
+        ).length;
+        const winRate = totalGames > 0 ? (wonGames / totalGames) * 100 : 0;
+
+        return {
+          id: user.id,
+          username: user.username,
+          role: user.role,
+          createdAt: user.createdAt,
+          balance,
+          totalGames,
+          wonGames,
+          winRate: Math.round(winRate * 100) / 100,
+        };
+      })
+    );
+
+    // Sort by multiple criteria: wins first, then balance, then win rate
+    const topPlayers = playersWithStats
+      .sort((a, b) => {
+        // Primary sort: total wins (descending)
+        if (b.wonGames !== a.wonGames) {
+          return b.wonGames - a.wonGames;
+        }
+        // Secondary sort: balance (descending)
+        if (b.balance !== a.balance) {
+          return b.balance - a.balance;
+        }
+        // Tertiary sort: win rate (descending)
+        return b.winRate - a.winRate;
+      })
+      .slice(0, limit);
+
+    return {
+      data: topPlayers,
     };
   }
 }

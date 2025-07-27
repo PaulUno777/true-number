@@ -79,7 +79,7 @@ export default function Pagination({
             {showStartEllipsis && (
               <>
                 <Button
-                  variant={currentPage === 1 ? "default" : "ghost"}
+                  variant={currentPage === 1 ? "primary" : "ghost"}
                   size="sm"
                   onClick={() => onPageChange(1)}
                   disabled={isLoading}
@@ -116,7 +116,7 @@ export default function Pagination({
               <>
                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                 <Button
-                  variant={currentPage === totalPages ? "default" : "ghost"}
+                  variant={currentPage === totalPages ? "primary" : "ghost"}
                   size="sm"
                   onClick={() => onPageChange(totalPages)}
                   disabled={isLoading}

@@ -114,7 +114,8 @@
     "noGames": "No games played yet",
     "startAdventure": "Start your adventure!",
     "transactionHistory": "Transaction History",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "unknown": "Unknown"
   },
   "admin": {
     "title": "Admin Interface",
@@ -352,7 +353,7 @@
     "gameRules": "Choose 20-100 • Win if generated ≥ your number",
     "exactMatch": "Exact: 2x",
     "higherWin": "Higher: 1.5x",
-    "lowerLoss": "Lower: -bet",
+    "lowerLoss": "Lower: loose",
     "betAmount": "Bet Amount",
     "guessNumber": "Guess Number",
     "playGame": "Play Game",
@@ -368,6 +369,10 @@
     "insufficientBalance": "Insufficient balance!",
     "invalidNumber": "Please choose a number between 20 and 100!",
     "invalidBet": "Bet must be between 1 and 1000!",
-    "failedToPlay": "Failed to play game"
+    "failedToPlay": "Failed to play game",
+    "gameStarting": "🎲 Starting your game...",
+    "goodLuck": "Good luck!",
+    "exactMatchWin": "🎉 EXACT MATCH! Amazing prediction!",
+    "balanceUpdated": "Balance updated successfully"
   }
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { soloService } from "@/services/solo";
-import { usersService } from "@/services/users";
+import { usersService, TopPlayer } from "@/services/users";
 import { multiplayerService } from "@/services/multiplayer";
 import {
   Card,
@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/providers/AuthProvider";
 import PageLayout from "@/components/layout/PageLayout";
 import Pagination from "@/components/ui/Pagination";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {
   Users,
   GamepadIcon,
@@ -94,6 +93,11 @@ export default function AdminPage() {
     queryFn: () => usersService.getAllUsers(),
   });
 
+  const { data: topPlayers, isLoading: topPlayersLoading } = useQuery({
+    queryKey: ["topPlayers"],
+    queryFn: () => usersService.getTopPlayers(10),
+  });
+
   const createUserForm = useForm<CreateUserForm>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -110,6 +114,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success(t("userCreated"));
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["topPlayers"] });
       setShowCreateForm(false);
       createUserForm.reset();
     },
@@ -124,6 +129,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success(t("userDeleted"));
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["topPlayers"] });
     },
     onError: (error: unknown) => {
       if (error instanceof AxiosError)
@@ -142,6 +148,7 @@ export default function AdminPage() {
     onSuccess: () => {
       toast.success(t("roleUpdated"));
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["topPlayers"] });
       setEditingUser(null);
       editUserForm.reset();
     },
@@ -207,40 +214,104 @@ export default function AdminPage() {
     >
 
       {/* Navigation Tabs */}
-      <div className="flex items-center justify-center space-x-2 bg-white/5 rounded-xl p-2 backdrop-blur-sm border border-white/10 flex-wrap gap-2">
-        <button
-          onClick={() => setViewMode("overview")}
-          className={`tab-button ${
-            viewMode === "overview"
-              ? "tab-button-active from-accent to-accent"
-              : "tab-button-inactive"
-          }`}
-        >
-          <Home className="h-4 w-4 mr-2" />
-          {t("overview")}
-        </button>
-        <button
-          onClick={() => setViewMode("users")}
-          className={`tab-button ${
-            viewMode === "users"
-              ? "tab-button-active from-primary to-primary"
-              : "tab-button-inactive"
-          }`}
-        >
-          <Users className="h-4 w-4 mr-2" />
-          {t("userManagement")}
-        </button>
-        <button
-          onClick={() => setViewMode("stats")}
-          className={`tab-button ${
-            viewMode === "stats"
-              ? "tab-button-active from-secondary to-secondary"
-              : "tab-button-inactive"
-          }`}
-        >
-          <TrendingUp className="h-4 w-4 mr-2" />
-          {t("statistics")}
-        </button>
+      <div className="relative">
+        {/* Tab Container */}
+        <div className="flex items-center justify-center bg-white/5 rounded-2xl p-2 backdrop-blur-md border border-white/20 shadow-2xl">
+          <div className="flex items-center space-x-1 sm:space-x-2 overflow-x-auto scrollbar-hide">
+            {/* Overview Tab */}
+            <button
+              onClick={() => setViewMode("overview")}
+              className={`tab-button group relative ${
+                viewMode === "overview"
+                  ? "tab-button-active"
+                  : "tab-button-inactive"
+              }`}
+              style={{
+                background: viewMode === "overview" 
+                  ? "linear-gradient(135deg, #fbbf24, #f59e0b)" 
+                  : undefined
+              }}
+            >
+              <div className="relative z-10 flex items-center space-x-2">
+                <Home className={`h-4 w-4 transition-transform duration-300 ${
+                  viewMode === "overview" ? "animate-bounce" : "group-hover:scale-110"
+                }`} />
+                <span className="hidden sm:inline font-semibold">
+                  {t("overview")}
+                </span>
+              </div>
+              {viewMode === "overview" && (
+                <div className="absolute inset-0 bg-yellow-400/20 rounded-xl blur-xl animate-pulse" />
+              )}
+            </button>
+
+            {/* Users Tab */}
+            <button
+              onClick={() => setViewMode("users")}
+              className={`tab-button group relative ${
+                viewMode === "users"
+                  ? "tab-button-active"
+                  : "tab-button-inactive"
+              }`}
+              style={{
+                background: viewMode === "users" 
+                  ? "linear-gradient(135deg, #3b82f6, #1d4ed8)" 
+                  : undefined
+              }}
+            >
+              <div className="relative z-10 flex items-center space-x-2">
+                <Users className={`h-4 w-4 transition-transform duration-300 ${
+                  viewMode === "users" ? "animate-bounce" : "group-hover:scale-110"
+                }`} />
+                <span className="hidden sm:inline font-semibold">
+                  {t("userManagement")}
+                </span>
+              </div>
+              {viewMode === "users" && (
+                <div className="absolute inset-0 bg-blue-400/20 rounded-xl blur-xl animate-pulse" />
+              )}
+            </button>
+
+            {/* Statistics Tab */}
+            <button
+              onClick={() => setViewMode("stats")}
+              className={`tab-button group relative ${
+                viewMode === "stats"
+                  ? "tab-button-active"
+                  : "tab-button-inactive"
+              }`}
+              style={{
+                background: viewMode === "stats" 
+                  ? "linear-gradient(135deg, #8b5cf6, #7c3aed)" 
+                  : undefined
+              }}
+            >
+              <div className="relative z-10 flex items-center space-x-2">
+                <TrendingUp className={`h-4 w-4 transition-transform duration-300 ${
+                  viewMode === "stats" ? "animate-bounce" : "group-hover:scale-110"
+                }`} />
+                <span className="hidden sm:inline font-semibold">
+                  {t("statistics")}
+                </span>
+              </div>
+              {viewMode === "stats" && (
+                <div className="absolute inset-0 bg-purple-400/20 rounded-xl blur-xl animate-pulse" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Indicator Line */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full" />
+        
+        {/* Mobile Tab Labels */}
+        <div className="sm:hidden mt-2 text-center">
+          <span className="text-xs text-white/60 bg-white/5 px-3 py-1 rounded-full backdrop-blur-sm border border-white/10">
+            {viewMode === "overview" && t("overview")}
+            {viewMode === "users" && t("userManagement")}
+            {viewMode === "stats" && t("statistics")}
+          </span>
+        </div>
       </div>
 
       {/* Content based on view mode */}
@@ -405,43 +476,52 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {users?.data
-                  ?.slice(0, 5)
-                  .map((player: UserType, index: number) => (
-                    <div
-                      key={player.id}
-                      className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`flex items-center justify-center w-8 h-8 rounded-full text-white font-bold text-sm ${
-                            index === 0
-                              ? "bg-yellow-500"
-                              : index === 1
-                              ? "bg-gray-400"
-                              : index === 2
-                              ? "bg-amber-600"
-                              : "bg-gradient-to-r from-accent to-secondary"
-                          }`}
-                        >
-                          {index + 1}
-                        </div>
-                        <div>
-                          <div className="font-medium text-white">
-                            {player.username}
+                {topPlayersLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                  </div>
+                ) : topPlayers?.data && topPlayers.data.length > 0 ? (
+                  topPlayers.data
+                    .slice(0, 5)
+                    .map((player: TopPlayer, index: number) => (
+                      <div
+                        key={player.id}
+                        className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`flex items-center justify-center w-8 h-8 rounded-full text-white font-bold text-sm ${
+                              index === 0
+                                ? "bg-yellow-500"
+                                : index === 1
+                                ? "bg-gray-400"
+                                : index === 2
+                                ? "bg-amber-600"
+                                : "bg-gradient-to-r from-accent to-secondary"
+                            }`}
+                          >
+                            {index + 1}
                           </div>
-                          <div className="text-sm text-muted-foreground">
-                            {player.role}
+                          <div>
+                            <div className="font-medium text-white">
+                              {player.username}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.wonGames} {t("wins")} • {player.totalGames} {t("games")}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-accent">
+                            ${player.balance}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            {player.winRate.toFixed(1)}% {t("winRate")}
                           </div>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold text-accent">
-                          Recent Player
-                        </div>
-                      </div>
-                    </div>
-                  )) || (
+                    ))
+                ) : (
                   <p className="text-center text-muted-foreground py-4">
                     {t("noPlayers")}
                   </p>
@@ -1033,47 +1113,56 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {users?.data
-                  ?.map((player: UserType, index: number) => (
-                    <div
-                      key={player.id}
-                      className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
-                    >
-                      <div className="flex items-center space-x-4">
-                        <div
-                          className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
-                            index === 0
-                              ? "bg-yellow-500 shadow-yellow-500/30"
-                              : index === 1
-                              ? "bg-gray-400 shadow-gray-400/30"
-                              : index === 2
-                              ? "bg-amber-600 shadow-amber-600/30"
-                              : "bg-gradient-to-r from-accent to-secondary"
-                          } shadow-lg`}
-                        >
-                          {index + 1}
-                        </div>
-                        <div>
-                          <div className="font-medium text-white text-lg">
-                            {player.username}
+                {topPlayersLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  </div>
+                ) : topPlayers?.data && topPlayers.data.length > 0 ? (
+                  topPlayers.data
+                    .map((player: TopPlayer, index: number) => (
+                      <div
+                        key={player.id}
+                        className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
+                      >
+                        <div className="flex items-center space-x-4">
+                          <div
+                            className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
+                              index === 0
+                                ? "bg-yellow-500 shadow-yellow-500/30"
+                                : index === 1
+                                ? "bg-gray-400 shadow-gray-400/30"
+                                : index === 2
+                                ? "bg-amber-600 shadow-amber-600/30"
+                                : "bg-gradient-to-r from-accent to-secondary"
+                            } shadow-lg`}
+                          >
+                            {index + 1}
                           </div>
-                          <div className="text-sm text-muted-foreground">
+                          <div>
+                            <div className="font-medium text-white text-lg">
+                              {player.username}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {player.wonGames} {t("wins")} • {player.totalGames} {t("games")} • {player.winRate.toFixed(1)}% {t("winRate")}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-accent text-xl">
+                            ${player.balance}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
                             {player.role}
                           </div>
+                          {index < 3 && (
+                            <div className="text-xs text-yellow-400">
+                              🏆 {t("medal")}
+                            </div>
+                          )}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="font-bold text-accent text-xl">
-                          {player.role}
-                        </div>
-                        {index < 3 && (
-                          <div className="text-xs text-yellow-400">
-                            🏆 Top User
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )) || (
+                    ))
+                ) : (
                   <p className="text-center text-muted-foreground py-4">
                     {t("noPlayers")}
                   </p>
