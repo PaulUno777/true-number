@@ -15,6 +15,9 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useAuth } from "@/providers/AuthProvider";
+import PageLayout from "@/components/layout/PageLayout";
+import Pagination from "@/components/ui/Pagination";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {
   Users,
   GamepadIcon,
@@ -45,7 +48,7 @@ import { AxiosError } from "axios";
 
 const createUserSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
+  email: z.email("Please enter a valid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   phone: z.string().min(1, "Phone number is required"),
   role: z.enum(["CLIENT", "ADMIN"]),
@@ -53,7 +56,7 @@ const createUserSchema = z.object({
 
 const editUserSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Please enter a valid email"),
+  email: z.email("Please enter a valid email"),
   phone: z.string().min(1, "Phone number is required"),
   role: z.enum(["CLIENT", "ADMIN"]),
 });
@@ -68,21 +71,23 @@ export default function AdminPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingUser, setEditingUser] = useState<UserType | null>(null);
   const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
-  const [viewMode, setViewMode] = useState<"overview" | "users" | "stats">(
-    "overview"
-  );
+  const [viewMode, setViewMode] = useState<
+    "overview" | "users" | "stats"
+  >("overview");
+  const [usersPage, setUsersPage] = useState(1);
+  const usersPerPage = 8;
   const t = useTranslations("admin");
-  const tCommon = useTranslations("common");
 
   const { data: soloStats, isLoading: statsLoading } = useQuery({
     queryKey: ["soloStats"],
     queryFn: soloService.getStats,
   });
 
-  const { data: multiplayerStats, isLoading: multiplayerStatsLoading } = useQuery({
-    queryKey: ["multiplayerStats"],
-    queryFn: multiplayerService.getMultiplayerStats,
-  });
+  const { data: multiplayerStats, isLoading: multiplayerStatsLoading } =
+    useQuery({
+      queryKey: ["multiplayerStats"],
+      queryFn: multiplayerService.getMultiplayerStats,
+    });
 
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ["users"],
@@ -174,6 +179,13 @@ export default function AdminPage() {
     });
   };
 
+  // Pagination logic for users
+  const paginatedUsers = users?.data ? {
+    ...users,
+    data: users.data.slice((usersPage - 1) * usersPerPage, usersPage * usersPerPage),
+    totalPages: Math.ceil(users.data.length / usersPerPage),
+  } : users;
+
   if (statsLoading || usersLoading || multiplayerStatsLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -183,66 +195,52 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="space-y-8 relative">
-      {/* Header Section */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold neon-text bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-          {t("title")}
-        </h1>
-        <p className="text-lg text-muted-foreground">{t("subtitle")}</p>
-      </div>
-
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="hover:text-primary transition-colors flex items-center space-x-1"
-        >
-          <Home className="h-3 w-3" />
-          <span>{tCommon("dashboard")}</span>
-        </button>
-        <span>/</span>
-        <span className="text-white">{t("title")}</span>
-      </div>
+    <PageLayout
+      title={t("title")}
+      subtitle={t("subtitle")}
+      breadcrumbs={[
+        {
+          label: t("title"),
+          current: true,
+        },
+      ]}
+    >
 
       {/* Navigation Tabs */}
-      <div className="flex items-center justify-center space-x-2 bg-white/5 rounded-xl p-2 backdrop-blur-sm border border-white/10">
-        <Button
-          variant={viewMode === "overview" ? "primary" : "ghost"}
+      <div className="flex items-center justify-center space-x-2 bg-white/5 rounded-xl p-2 backdrop-blur-sm border border-white/10 flex-wrap gap-2">
+        <button
           onClick={() => setViewMode("overview")}
-          className={`transition-all duration-300 ${
+          className={`tab-button ${
             viewMode === "overview"
-              ? "bg-accent text-accent-foreground shadow-lg shadow-accent/20"
-              : "text-white/70 hover:text-white hover:bg-white/10"
+              ? "tab-button-active from-accent to-accent"
+              : "tab-button-inactive"
           }`}
         >
           <Home className="h-4 w-4 mr-2" />
           {t("overview")}
-        </Button>
-        <Button
-          variant={viewMode === "users" ? "primary" : "ghost"}
+        </button>
+        <button
           onClick={() => setViewMode("users")}
-          className={`transition-all duration-300 ${
+          className={`tab-button ${
             viewMode === "users"
-              ? "bg-accent text-accent-foreground shadow-lg shadow-accent/20"
-              : "text-white/70 hover:text-white hover:bg-white/10"
+              ? "tab-button-active from-primary to-primary"
+              : "tab-button-inactive"
           }`}
         >
           <Users className="h-4 w-4 mr-2" />
           {t("userManagement")}
-        </Button>
-        <Button
-          variant={viewMode === "stats" ? "primary" : "ghost"}
+        </button>
+        <button
           onClick={() => setViewMode("stats")}
-          className={`transition-all duration-300 ${
+          className={`tab-button ${
             viewMode === "stats"
-              ? "bg-accent text-accent-foreground shadow-lg shadow-accent/20"
-              : "text-white/70 hover:text-white hover:bg-white/10"
+              ? "tab-button-active from-secondary to-secondary"
+              : "tab-button-inactive"
           }`}
         >
           <TrendingUp className="h-4 w-4 mr-2" />
           {t("statistics")}
-        </Button>
+        </button>
       </div>
 
       {/* Content based on view mode */}
@@ -293,9 +291,14 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-accent">
-                  {soloStats?.totalGames > 0 
-                    ? (((soloStats.exactMatches + soloStats.higherWins) / soloStats.totalGames) * 100).toFixed(1)
-                    : 0}%
+                  {soloStats !== undefined && soloStats.totalGames > 0
+                    ? (
+                        ((soloStats.exactMatches + soloStats?.higherWins) /
+                          soloStats?.totalGames) *
+                        100
+                      ).toFixed(1)
+                    : 0}
+                  %
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {t("successRate")}
@@ -306,16 +309,16 @@ export default function AdminPage() {
             <Card className="game-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white">
-                  {t("averageBalance")}
+                  {t("totalUsers")}
                 </CardTitle>
-                <DollarSign className="h-4 w-4 text-green-400" />
+                <Users className="h-4 w-4 text-primary" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-400">
-                  ${users?.data ? (users.data.reduce((sum, user) => sum + user.balance, 0) / users.data.length).toFixed(2) : 0}
+                <div className="text-2xl font-bold text-primary">
+                  {users?.data?.length || 0}
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t("averageBalance")}
+                  {t("activeUsers")}
                 </p>
               </CardContent>
             </Card>
@@ -333,10 +336,10 @@ export default function AdminPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Button
                   onClick={() => setViewMode("users")}
-                  className="flex items-center space-x-2 h-16 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 text-blue-400"
+                  className="flex items-center space-x-2 h-16 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 text-blue-400 hover:scale-105 transition-all duration-200"
                   variant="outline"
                 >
                   <Users className="h-6 w-6" />
@@ -348,23 +351,10 @@ export default function AdminPage() {
                   </div>
                 </Button>
 
-                <Button
-                  onClick={() => router.push("/dashboard")}
-                  className="flex items-center space-x-2 h-16 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400"
-                  variant="outline"
-                >
-                  <GamepadIcon className="h-6 w-6" />
-                  <div className="text-left">
-                    <div className="font-semibold">{t("playGame")}</div>
-                    <div className="text-xs opacity-70">
-                      {t("playGameDescription")}
-                    </div>
-                  </div>
-                </Button>
 
                 <Button
                   onClick={() => setViewMode("stats")}
-                  className="flex items-center space-x-2 h-16 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-400"
+                  className="flex items-center space-x-2 h-16 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/50 text-purple-400 hover:scale-105 transition-all duration-200"
                   variant="outline"
                 >
                   <TrendingUp className="h-6 w-6" />
@@ -372,6 +362,20 @@ export default function AdminPage() {
                     <div className="font-semibold">{t("viewStats")}</div>
                     <div className="text-xs opacity-70">
                       {t("viewStatsDescription")}
+                    </div>
+                  </div>
+                </Button>
+
+                <Button
+                  onClick={() => router.push("/dashboard")}
+                  className="flex items-center space-x-2 h-16 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 hover:scale-105 transition-all duration-200"
+                  variant="outline"
+                >
+                  <GamepadIcon className="h-6 w-6" />
+                  <div className="text-left">
+                    <div className="font-semibold">{t("playGame")}</div>
+                    <div className="text-xs opacity-70">
+                      {t("playGameDescription")}
                     </div>
                   </div>
                 </Button>
@@ -401,41 +405,43 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {users?.data?.sort((a, b) => b.balance - a.balance).slice(0, 5).map((player, index) => (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div
-                        className={`flex items-center justify-center w-8 h-8 rounded-full text-white font-bold text-sm ${
-                          index === 0
-                            ? "bg-yellow-500"
-                            : index === 1
-                            ? "bg-gray-400"
-                            : index === 2
-                            ? "bg-amber-600"
-                            : "bg-gradient-to-r from-accent to-secondary"
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div>
-                        <div className="font-medium text-white">
-                          {player.username}
+                {users?.data
+                  ?.slice(0, 5)
+                  .map((player: UserType, index: number) => (
+                    <div
+                      key={player.id}
+                      className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className={`flex items-center justify-center w-8 h-8 rounded-full text-white font-bold text-sm ${
+                            index === 0
+                              ? "bg-yellow-500"
+                              : index === 1
+                              ? "bg-gray-400"
+                              : index === 2
+                              ? "bg-amber-600"
+                              : "bg-gradient-to-r from-accent to-secondary"
+                          }`}
+                        >
+                          {index + 1}
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {player.role}
+                        <div>
+                          <div className="font-medium text-white">
+                            {player.username}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {player.role}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-accent">
+                          Recent Player
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold text-accent">
-                        ${player.balance}
-                      </div>
-                    </div>
-                  </div>
-                )) || (
+                  )) || (
                   <p className="text-center text-muted-foreground py-4">
                     {t("noPlayers")}
                   </p>
@@ -601,7 +607,7 @@ export default function AdminPage() {
 
             {/* Users List */}
             <div className="space-y-4">
-              {users?.data?.map((userData: UserType, index: number) => (
+              {paginatedUsers?.data?.map((userData: UserType, index: number) => (
                 <div
                   key={userData.id}
                   className={`group p-6 rounded-xl glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300 hover:scale-[1.02] ${
@@ -665,10 +671,10 @@ export default function AdminPage() {
                     <div className="flex items-center space-x-6">
                       <div className="text-right">
                         <div className="text-xl font-bold text-accent">
-                          ${userData.balance}
+                          {userData.role}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          {t("balance")}
+                          {t("role")}
                         </div>
                       </div>
 
@@ -798,10 +804,10 @@ export default function AdminPage() {
                           </h4>
                           <div className="space-y-1 text-sm text-muted-foreground">
                             <div>
-                              {t("balance")}: ${userData.balance}
+                              {t("role")}: {userData.role}
                             </div>
                             <div>
-                              {t("role")}: {userData.role}
+                              Status: Active
                             </div>
                           </div>
                         </div>
@@ -820,6 +826,18 @@ export default function AdminPage() {
                 </div>
               )}
             </div>
+
+            {/* Users Pagination */}
+            {paginatedUsers && paginatedUsers.totalPages > 1 && (
+              <div className="mt-8 pt-6 border-t border-white/20">
+                <Pagination
+                  currentPage={usersPage}
+                  totalPages={paginatedUsers.totalPages}
+                  onPageChange={setUsersPage}
+                  isLoading={usersLoading}
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -847,7 +865,8 @@ export default function AdminPage() {
                           {t("wonGames")}
                         </p>
                         <p className="text-3xl font-bold text-green-400">
-                          {(soloStats?.exactMatches || 0) + (soloStats?.higherWins || 0)}
+                          {(soloStats?.exactMatches || 0) +
+                            (soloStats?.higherWins || 0)}
                         </p>
                       </div>
                       <TrendingUp className="h-8 w-8 text-green-400" />
@@ -879,10 +898,10 @@ export default function AdminPage() {
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center space-x-2">
                 <Users className="h-5 w-5 text-accent" />
-                <span>Multiplayer Statistics</span>
+                <span>{t("multiplayerStatistics")}</span>
               </CardTitle>
               <CardDescription className="text-muted-foreground">
-                Statistics from multiplayer games
+                {t("multiplayerStatisticsDescription")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -892,7 +911,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-primary">
-                          Total Games
+                          {t("totalGames")}
                         </p>
                         <p className="text-3xl font-bold text-primary">
                           {multiplayerStats?.totalGames || 0}
@@ -908,7 +927,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-green-400">
-                          Active Games
+                          {t("activeGames")}
                         </p>
                         <p className="text-3xl font-bold text-green-400">
                           {multiplayerStats?.activeGames || 0}
@@ -924,7 +943,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-yellow-400">
-                          Waiting Games
+                          {t("waitingGames")}
                         </p>
                         <p className="text-3xl font-bold text-yellow-400">
                           {multiplayerStats?.waitingGames || 0}
@@ -940,7 +959,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-accent">
-                          Average Bet
+                          {t("averageBet")}
                         </p>
                         <p className="text-3xl font-bold text-accent">
                           ${multiplayerStats?.averageBet.toFixed(0) || 0}
@@ -953,42 +972,51 @@ export default function AdminPage() {
               </div>
 
               {/* Top Multiplayer Winners */}
-              {multiplayerStats?.topWinners && multiplayerStats.topWinners.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Top Multiplayer Winners</h3>
-                  <div className="space-y-3">
-                    {multiplayerStats.topWinners.slice(0, 5).map((player, index) => (
-                      <div
-                        key={player.id}
-                        className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
-                      >
-                        <div className="flex items-center space-x-4">
+              {multiplayerStats?.topWinners &&
+                multiplayerStats.topWinners.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">
+                      {t("topMultiplayerWinners")}
+                    </h3>
+                    <div className="space-y-3">
+                      {multiplayerStats.topWinners
+                        .slice(0, 5)
+                        .map((player, index) => (
                           <div
-                            className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
-                              index === 0
-                                ? "bg-yellow-500"
-                                : index === 1
-                                ? "bg-gray-400"
-                                : index === 2
-                                ? "bg-amber-600"
-                                : "bg-primary"
-                            }`}
+                            key={player.id}
+                            className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
                           >
-                            {index + 1}
+                            <div className="flex items-center space-x-4">
+                              <div
+                                className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
+                                  index === 0
+                                    ? "bg-yellow-500"
+                                    : index === 1
+                                    ? "bg-gray-400"
+                                    : index === 2
+                                    ? "bg-amber-600"
+                                    : "bg-primary"
+                                }`}
+                              >
+                                {index + 1}
+                              </div>
+                              <div>
+                                <p className="font-medium text-white">
+                                  {player.username}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {player.wins} {t("wins")} •{" "}
+                                  {player.totalGames} {t("games")} •{" "}
+                                  {player.winRate.toFixed(1)}% {t("winRate")}
+                                </p>
+                              </div>
+                            </div>
+                            <Trophy className="h-5 w-5 text-accent" />
                           </div>
-                          <div>
-                            <p className="font-medium text-white">{player.username}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {player.wins} wins • {player.totalGames} games • {player.winRate.toFixed(1)}% win rate
-                            </p>
-                          </div>
-                        </div>
-                        <Trophy className="h-5 w-5 text-accent" />
-                      </div>
-                    ))}
+                        ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </CardContent>
           </Card>
 
@@ -1005,46 +1033,47 @@ export default function AdminPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {users?.data?.sort((a, b) => b.balance - a.balance).map((player, index) => (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div
-                        className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
-                          index === 0
-                            ? "bg-yellow-500 shadow-yellow-500/30"
-                            : index === 1
-                            ? "bg-gray-400 shadow-gray-400/30"
-                            : index === 2
-                            ? "bg-amber-600 shadow-amber-600/30"
-                            : "bg-gradient-to-r from-accent to-secondary"
-                        } shadow-lg`}
-                      >
-                        {index + 1}
-                      </div>
-                      <div>
-                        <div className="font-medium text-white text-lg">
-                          {player.username}
+                {users?.data
+                  ?.map((player: UserType, index: number) => (
+                    <div
+                      key={player.id}
+                      className="flex items-center justify-between p-4 rounded-lg glass-effect border border-white/20 hover:border-accent/50 transition-all duration-300"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div
+                          className={`flex items-center justify-center w-10 h-10 rounded-full text-white font-bold ${
+                            index === 0
+                              ? "bg-yellow-500 shadow-yellow-500/30"
+                              : index === 1
+                              ? "bg-gray-400 shadow-gray-400/30"
+                              : index === 2
+                              ? "bg-amber-600 shadow-amber-600/30"
+                              : "bg-gradient-to-r from-accent to-secondary"
+                          } shadow-lg`}
+                        >
+                          {index + 1}
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div>
+                          <div className="font-medium text-white text-lg">
+                            {player.username}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {player.role}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-accent text-xl">
                           {player.role}
                         </div>
+                        {index < 3 && (
+                          <div className="text-xs text-yellow-400">
+                            🏆 Top User
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-bold text-accent text-xl">
-                        ${player.balance}
-                      </div>
-                      {index < 3 && (
-                        <div className="text-xs text-yellow-400">
-                          🏆 {t("medal")}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )) || (
+                  )) || (
                   <p className="text-center text-muted-foreground py-4">
                     {t("noPlayers")}
                   </p>
@@ -1054,6 +1083,7 @@ export default function AdminPage() {
           </Card>
         </div>
       )}
+
 
       <style jsx>{`
         @keyframes slideInUp {
@@ -1067,6 +1097,6 @@ export default function AdminPage() {
           }
         }
       `}</style>
-    </div>
+    </PageLayout>
   );
 }

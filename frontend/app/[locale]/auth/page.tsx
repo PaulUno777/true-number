@@ -111,18 +111,10 @@ export default function AuthPage() {
               />
               <Button
                 type="submit"
-                className="w-full h-12 text-lg hover:scale-105 transition-transform font-bold text-white border-2 border-white/30"
+                className="w-full h-12 text-lg btn-hover"
                 isLoading={loginForm.formState.isSubmitting}
               >
-                {loginForm.formState.isSubmitting ? (
-                  <div className="flex items-center space-x-2">
-                    <span>{t("connecting")}</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <span>{t("signInButton")}</span>
-                  </div>
-                )}
+                {t("signInButton")}
               </Button>
             </form>
           ) : (
@@ -154,20 +146,11 @@ export default function AuthPage() {
               />
               <Button
                 type="submit"
-                className="w-full h-12 text-lg rainbow-bg hover:scale-105 transition-transform font-bold text-white border-2 border-white/30"
+                className="w-full h-12 text-lg rainbow-bg btn-hover"
                 isLoading={registerForm.formState.isSubmitting}
               >
-                {registerForm.formState.isSubmitting ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>{t("creating")}</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2">
-                    <span>🎮</span>
-                    <span>{t("createAccountButton")}</span>
-                  </div>
-                )}
+                <span className="mr-2">🎮</span>
+                {t("createAccountButton")}
               </Button>
             </form>
           )}

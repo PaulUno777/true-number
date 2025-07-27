@@ -22,12 +22,12 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateUserDto, UpdateUserDto } from './dto/user-input.dto';
-import { 
-  GetUserResponseDto, 
-  GetUserWithStatsResponseDto, 
-  CreateUserResponseDto, 
-  UpdateUserResponseDto, 
-  DeleteUserResponseDto 
+import {
+  GetUserResponseDto,
+  GetUserWithStatsResponseDto,
+  CreateUserResponseDto,
+  UpdateUserResponseDto,
+  DeleteUserResponseDto,
 } from './dto/user-output.dto';
 import { Role } from '@generated/prisma';
 import { I18nLang } from 'nestjs-i18n';
@@ -42,12 +42,15 @@ export class UsersController {
 
   @Get('me')
   @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'Current user profile retrieved',
-    type: GetUserResponseDto 
+    type: GetUserResponseDto,
   })
-  findMe(@Request() req: any, @I18nLang() lang: string): Promise<GetUserResponseDto> {
+  findMe(
+    @Request() req: any,
+    @I18nLang() lang: string,
+  ): Promise<GetUserResponseDto> {
     return this.usersService.findMe(req.user.id, lang);
   }
 
@@ -58,7 +61,10 @@ export class UsersController {
     description: 'Current user profile with stats retrieved',
     type: GetUserWithStatsResponseDto,
   })
-  findMeWithStats(@Request() req: any, @I18nLang() lang: string): Promise<GetUserWithStatsResponseDto> {
+  findMeWithStats(
+    @Request() req: any,
+    @I18nLang() lang: string,
+  ): Promise<GetUserWithStatsResponseDto> {
     return this.usersService.getUserWithGameStats(req.user.id, lang);
   }
 
@@ -66,13 +72,16 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Create a new user (Admin only)' })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User created successfully',
-    type: CreateUserResponseDto 
+    type: CreateUserResponseDto,
   })
   @ApiResponse({ status: 409, description: 'User already exists' })
-  create(@Body() createUserDto: CreateUserDto, @I18nLang() lang: string): Promise<CreateUserResponseDto> {
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @I18nLang() lang: string,
+  ): Promise<CreateUserResponseDto> {
     return this.usersService.create(createUserDto, lang);
   }
 
@@ -89,13 +98,16 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get user by ID (Admin only)' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User retrieved',
-    type: GetUserResponseDto 
+    type: GetUserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findOne(@Param('id') id: string, @I18nLang() lang: string): Promise<GetUserResponseDto> {
+  findOne(
+    @Param('id') id: string,
+    @I18nLang() lang: string,
+  ): Promise<GetUserResponseDto> {
     return this.usersService.findOne(id, lang);
   }
 
@@ -103,13 +115,16 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Get user with game statistics (Admin only)' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User with statistics retrieved',
-    type: GetUserWithStatsResponseDto 
+    type: GetUserWithStatsResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findOneWithStats(@Param('id') id: string, @I18nLang() lang: string): Promise<GetUserWithStatsResponseDto> {
+  findOneWithStats(
+    @Param('id') id: string,
+    @I18nLang() lang: string,
+  ): Promise<GetUserWithStatsResponseDto> {
     return this.usersService.getUserWithGameStats(id, lang);
   }
 
@@ -117,10 +132,10 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Update user (Admin only)' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User updated successfully',
-    type: UpdateUserResponseDto 
+    type: UpdateUserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   update(
@@ -135,13 +150,16 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({ summary: 'Delete user (Admin only)' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'User deleted successfully',
-    type: DeleteUserResponseDto 
+    type: DeleteUserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  remove(@Param('id') id: string, @I18nLang() lang: string): Promise<DeleteUserResponseDto> {
+  remove(
+    @Param('id') id: string,
+    @I18nLang() lang: string,
+  ): Promise<DeleteUserResponseDto> {
     return this.usersService.remove(id, lang);
   }
 }

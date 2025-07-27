@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { soloService } from "@/services/solo";
 import { multiplayerService } from "@/services/multiplayer";
+import { transactionService } from "@/services/transaction";
 import {
   Card,
   CardContent,
@@ -14,8 +15,6 @@ import {
 import { Button } from "@/components/ui/Button";
 import { format } from "date-fns";
 import {
-  ChevronLeft,
-  ChevronRight,
   TrendingUp,
   TrendingDown,
   Calendar,
@@ -23,14 +22,22 @@ import {
   Trophy,
   Target,
   Users,
+  CreditCard,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useAuth } from "@/providers/AuthProvider";
+import PageLayout from "@/components/layout/PageLayout";
+import Pagination from "@/components/ui/Pagination";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function HistoryPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"solo" | "multiplayer">("solo");
+  const [transactionPage, setTransactionPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<
+    "solo" | "multiplayer" | "transactions"
+  >("solo");
+  const itemsPerPage = 10;
   const t = useTranslations("history");
   const router = useRouter();
   const { user } = useAuth();
@@ -46,12 +53,28 @@ export default function HistoryPage() {
       queryFn: multiplayerService.getUserGames,
     });
 
+  const { data: transactionHistory, isLoading: isLoadingTransactions } =
+    useQuery({
+      queryKey: ["transactionHistory", transactionPage],
+      queryFn: () => transactionService.getHistory(transactionPage, itemsPerPage),
+    });
+
+  const { data: userBalance, isLoading: isLoadingBalance } = useQuery({
+    queryKey: ["userBalance"],
+    queryFn: transactionService.getBalance,
+  });
+
   const totalPages = 1; // Solo service returns all data in one request
 
-  if (isLoading || isLoadingMultiplayer) {
+  if (
+    isLoading ||
+    isLoadingMultiplayer ||
+    isLoadingTransactions ||
+    isLoadingBalance
+  ) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -105,37 +128,26 @@ export default function HistoryPage() {
   const multiplayerStats = calculateMultiplayerStats();
   const currentStats = activeTab === "solo" ? soloStats : multiplayerStats;
 
-
   return (
-    <div className="space-y-8 relative">
-      {/* Header Section */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold neon-text bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-          {t("title")}
-        </h1>
-        <p className="text-lg text-muted-foreground">{t("subtitle")}</p>
-      </div>
-
-      {/* Breadcrumb Navigation */}
-      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-        <button
-          onClick={() => router.push("/dashboard")}
-          className="hover:text-primary transition-colors"
-        >
-          Dashboard
-        </button>
-        <span>/</span>
-        <span className="text-white">{t("title")}</span>
-      </div>
+    <PageLayout
+      title={t("title")}
+      subtitle={t("subtitle")}
+      breadcrumbs={[
+        {
+          label: t("title"),
+          current: true,
+        },
+      ]}
+    >
 
       {/* Tab Navigation */}
-      <div className="flex items-center justify-center space-x-4">
+      <div className="flex items-center justify-center space-x-2 flex-wrap gap-2">
         <button
           onClick={() => setActiveTab("solo")}
-          className={`px-6 py-3 rounded-lg font-medium transition-all ${
+          className={`tab-button ${
             activeTab === "solo"
-              ? "bg-primary text-primary-foreground shadow-lg"
-              : "text-muted-foreground hover:text-white hover:bg-white/10"
+              ? "tab-button-active from-primary to-primary"
+              : "tab-button-inactive"
           }`}
         >
           <div className="flex items-center space-x-2">
@@ -145,10 +157,10 @@ export default function HistoryPage() {
         </button>
         <button
           onClick={() => setActiveTab("multiplayer")}
-          className={`px-6 py-3 rounded-lg font-medium transition-all ${
+          className={`tab-button ${
             activeTab === "multiplayer"
-              ? "bg-accent text-accent-foreground shadow-lg"
-              : "text-muted-foreground hover:text-white hover:bg-white/10"
+              ? "tab-button-active from-accent to-accent"
+              : "tab-button-inactive"
           }`}
         >
           <div className="flex items-center space-x-2">
@@ -156,11 +168,24 @@ export default function HistoryPage() {
             <span>Multiplayer Games</span>
           </div>
         </button>
+        <button
+          onClick={() => setActiveTab("transactions")}
+          className={`tab-button ${
+            activeTab === "transactions"
+              ? "tab-button-active from-secondary to-secondary"
+              : "tab-button-inactive"
+          }`}
+        >
+          <div className="flex items-center space-x-2">
+            <CreditCard className="h-4 w-4" />
+            <span>Transactions</span>
+          </div>
+        </button>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="game-card">
+      <div className="responsive-grid-stats">
+        <Card className="game-card card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">
               {t("totalGames")}
@@ -171,12 +196,16 @@ export default function HistoryPage() {
             <div className="text-2xl font-bold text-primary">
               {activeTab === "solo"
                 ? history?.games?.length || 0
-                : multiplayerHistory?.games.length || 0}
+                : activeTab === "multiplayer"
+                ? multiplayerHistory?.games.length || 0
+                : isLoadingTransactions
+                ? "..."
+                : transactionHistory?.transactions?.length || 0}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="game-card">
+        <Card className="game-card card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">
               {t("winRate")}
@@ -190,7 +219,7 @@ export default function HistoryPage() {
           </CardContent>
         </Card>
 
-        <Card className="game-card">
+        <Card className="game-card card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">
               {t("netChange")}
@@ -212,7 +241,7 @@ export default function HistoryPage() {
           </CardContent>
         </Card>
 
-        <Card className="game-card">
+        <Card className="game-card card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-white">
               {t("wlRatio")}
@@ -228,22 +257,109 @@ export default function HistoryPage() {
       </div>
 
       {/* Games List */}
-      <Card className="game-card">
+      <Card className="game-card card-hover">
         <CardHeader>
           <CardTitle className="text-xl text-white flex items-center space-x-2">
             <Calendar className="h-5 w-5 text-accent" />
             <span>{t("yourGames")}</span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {t("totalGames")}:{" "}
+            {activeTab === "transactions" ? t("balance", { defaultValue: "Balance" }) : t("totalGames")}:{" "}
             {activeTab === "solo"
               ? history?.games?.length || 0
-              : multiplayerHistory?.games.length || 0}
+              : activeTab === "multiplayer"
+              ? multiplayerHistory?.games.length || 0
+              : isLoadingBalance
+              ? t("loading", { defaultValue: "Loading..." })
+              : `$${userBalance?.balance || 0}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {activeTab === "solo"
+            {activeTab === "transactions"
+              ? transactionHistory?.transactions?.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-6">
+                        {/* Transaction Type */}
+                        <div
+                          className={`w-12 h-12 rounded-lg flex items-center justify-center text-white font-semibold text-lg ${
+                            transaction.type === "CREDIT"
+                              ? "bg-green-600"
+                              : "bg-red-600"
+                          }`}
+                        >
+                          {transaction.type === "CREDIT" ? "+" : "-"}
+                        </div>
+
+                        {/* Transaction Details */}
+                        <div>
+                          <div
+                            className={`font-medium ${
+                              transaction.type === "CREDIT"
+                                ? "text-green-300"
+                                : "text-red-300"
+                            }`}
+                          >
+                            {transaction.description}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {transaction.type}
+                          </div>
+                        </div>
+
+                        {/* Amount */}
+                        <div>
+                          <div
+                            className={`font-medium ${
+                              transaction.type === "CREDIT"
+                                ? "text-green-300"
+                                : "text-red-300"
+                            }`}
+                          >
+                            {transaction.type === "CREDIT" ? "+" : "-"}$
+                            {transaction.amount}
+                          </div>
+                          <div className="text-xs text-gray-400">Amount</div>
+                        </div>
+                      </div>
+
+                      {/* Right side info */}
+                      <div className="text-right space-y-1">
+                        <div className="font-medium text-white">
+                          ${transaction.balanceAfter || 0}
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {new Date(transaction.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )) || (isLoadingTransactions ? (
+                  <div className="text-center py-12">
+                    <LoadingSpinner text={t("loadingTransactions", { defaultValue: "Loading transactions..." })} />
+                  </div>
+                ) : (
+                  <div className="text-center py-12 space-y-4">
+                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-secondary/20 to-accent/20 flex items-center justify-center">
+                      <CreditCard className="w-10 h-10 text-muted-foreground" />
+                    </div>
+                    <p className="text-xl text-muted-foreground">
+                      No transactions yet
+                    </p>
+                    <Button
+                      onClick={() => router.push("/dashboard")}
+                      className="mt-4 rainbow-bg hover:scale-105 transition-transform"
+                    >
+                      Start Playing to Generate Transactions
+                    </Button>
+                  </div>
+                )
+              )
+              : activeTab === "solo"
               ? history?.games.map((game) => (
                   <div
                     key={game.id}
@@ -399,7 +515,7 @@ export default function HistoryPage() {
                         <div className="font-medium text-white">
                           vs{" "}
                           {game.players.find((p) => p.id !== user?.id)
-                            ?.username || "Unknown"}
+                            ?.username || t("unknown", { defaultValue: "Unknown" })}
                         </div>
                         <div className="text-sm text-gray-400">
                           {format(new Date(game.createdAt), "MMM dd, HH:mm")}
@@ -425,57 +541,20 @@ export default function HistoryPage() {
                 )}
           </div>
 
-          {/* Pagination - Only for solo games */}
-          {activeTab === "solo" && totalPages > 1 && (
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/20">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground"
-              >
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                {t("previous")}
-              </Button>
-
-              <div className="flex items-center space-x-2">
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  const page = i + 1;
-                  const isActive = page === currentPage;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-10 h-10 rounded-lg font-medium transition-all duration-200 ${
-                        isActive
-                          ? "bg-accent text-accent-foreground shadow-lg"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-                {totalPages > 5 && (
-                  <span className="text-muted-foreground">...</span>
-                )}
-              </div>
-
-              <Button
-                variant="outline"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground"
-              >
-                {t("next")}
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
+          {/* Pagination */}
+          {((activeTab === "solo" && totalPages > 1) || 
+            (activeTab === "transactions" && transactionHistory && transactionHistory.totalPages > 1)) && (
+            <div className="mt-8 pt-6 border-t border-white/20">
+              <Pagination
+                currentPage={activeTab === "transactions" ? transactionPage : currentPage}
+                totalPages={activeTab === "transactions" ? (transactionHistory?.totalPages || 1) : totalPages}
+                onPageChange={activeTab === "transactions" ? setTransactionPage : setCurrentPage}
+                isLoading={activeTab === "transactions" ? isLoadingTransactions : isLoading}
+              />
             </div>
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageLayout>
   );
 }

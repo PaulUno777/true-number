@@ -1,9 +1,9 @@
 'use client';
 
 import { useAuth } from '@/providers/AuthProvider';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useEffect } from 'react';
-import Navbar from '@/components/layout/Navbar';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function HistoryLayout({
   children,
@@ -15,14 +15,14 @@ export default function HistoryLayout({
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/en/auth');
+      router.push('/auth');
     }
   }, [user, isLoading, router]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <LoadingSpinner size="xl" />
       </div>
     );
   }
@@ -33,7 +33,7 @@ export default function HistoryLayout({
 
   return (
     <div className="min-h-screen bg-background relative">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {children}
       </main>
     </div>

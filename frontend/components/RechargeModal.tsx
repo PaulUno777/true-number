@@ -16,10 +16,13 @@ import {
   CreditCard,
   Zap,
   X,
+  Wallet,
+  Building,
+  Bitcoin,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
-import { RechargeRequest } from "@/types/transaction";
+import { RechargeRequest, PaymentMethod } from "@/types/transaction";
 
 interface RechargeModalProps {
   isOpen: boolean;
@@ -34,6 +37,16 @@ export default function RechargeModal({
 }: RechargeModalProps) {
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState<number>(10);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CREDIT_CARD);
+  const [paymentDetails, setPaymentDetails] = useState({
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvv: '',
+    cardholderName: '',
+    paypalEmail: '',
+    bankAccount: '',
+    cryptoWallet: '',
+  });
 
   const rechargeMutation = useMutation({
     mutationFn: (request: RechargeRequest) => transactionService.recharge(request),
@@ -50,6 +63,15 @@ export default function RechargeModal({
       queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
       
       setAmount(10);
+      setPaymentDetails({
+        cardNumber: '',
+        cardExpiry: '',
+        cardCvv: '',
+        cardholderName: '',
+        paypalEmail: '',
+        bankAccount: '',
+        cryptoWallet: '',
+      });
       onClose();
     },
     onError: (error: unknown) => {
@@ -60,6 +82,36 @@ export default function RechargeModal({
       }
     },
   });
+
+  const validatePaymentDetails = (): boolean => {
+    switch (paymentMethod) {
+      case PaymentMethod.CREDIT_CARD:
+        if (!paymentDetails.cardNumber || !paymentDetails.cardExpiry || !paymentDetails.cardCvv || !paymentDetails.cardholderName) {
+          toast.error("Please fill in all credit card details");
+          return false;
+        }
+        break;
+      case PaymentMethod.PAYPAL:
+        if (!paymentDetails.paypalEmail) {
+          toast.error("Please enter your PayPal email");
+          return false;
+        }
+        break;
+      case PaymentMethod.BANK_TRANSFER:
+        if (!paymentDetails.bankAccount) {
+          toast.error("Please enter your bank account number");
+          return false;
+        }
+        break;
+      case PaymentMethod.CRYPTO:
+        if (!paymentDetails.cryptoWallet) {
+          toast.error("Please enter your crypto wallet address");
+          return false;
+        }
+        break;
+    }
+    return true;
+  };
 
   const handleRecharge = () => {
     if (amount < 1) {
@@ -72,7 +124,35 @@ export default function RechargeModal({
       return;
     }
 
-    rechargeMutation.mutate({ amount });
+    if (!validatePaymentDetails()) {
+      return;
+    }
+
+    const request: RechargeRequest = {
+      amount,
+      method: paymentMethod,
+    };
+
+    // Add payment-specific fields based on method
+    switch (paymentMethod) {
+      case PaymentMethod.CREDIT_CARD:
+        request.cardNumber = paymentDetails.cardNumber;
+        request.cardExpiry = paymentDetails.cardExpiry;
+        request.cardCvv = paymentDetails.cardCvv;
+        request.cardholderName = paymentDetails.cardholderName;
+        break;
+      case PaymentMethod.PAYPAL:
+        request.paypalEmail = paymentDetails.paypalEmail;
+        break;
+      case PaymentMethod.BANK_TRANSFER:
+        request.bankAccount = paymentDetails.bankAccount;
+        break;
+      case PaymentMethod.CRYPTO:
+        request.cryptoWallet = paymentDetails.cryptoWallet;
+        break;
+    }
+
+    rechargeMutation.mutate(request);
   };
 
   const quickAmounts = [10, 25, 50, 100, 250, 500];
@@ -81,7 +161,7 @@ export default function RechargeModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-md bg-gray-900/95 border-primary/30 animate-scale-in">
+      <Card className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-gray-900/95 border-primary/30 animate-scale-in">
         <CardHeader className="relative">
           <button
             onClick={onClose}
@@ -144,10 +224,120 @@ export default function RechargeModal({
             </div>
           </div>
 
+          {/* Payment Method Selection */}
+          <div className="space-y-3">
+            <label className="text-sm text-white font-medium">Payment Method</label>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.values(PaymentMethod).map((method) => {
+                const getMethodInfo = (method: PaymentMethod) => {
+                  switch (method) {
+                    case PaymentMethod.CREDIT_CARD:
+                      return { icon: CreditCard, label: "Credit Card" };
+                    case PaymentMethod.PAYPAL:
+                      return { icon: Wallet, label: "PayPal" };
+                    case PaymentMethod.BANK_TRANSFER:
+                      return { icon: Building, label: "Bank Transfer" };
+                    case PaymentMethod.CRYPTO:
+                      return { icon: Bitcoin, label: "Crypto" };
+                  }
+                };
+                
+                const { icon: Icon, label } = getMethodInfo(method);
+                
+                return (
+                  <Button
+                    key={method}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setPaymentMethod(method)}
+                    className={`flex items-center space-x-2 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                      paymentMethod === method
+                        ? "border-blue-500 bg-blue-500/20 text-blue-400 shadow-lg shadow-blue-500/30"
+                        : "border-white/30 text-white/70 hover:bg-white/10 hover:border-white/50"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="text-xs">{label}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Payment Details Form */}
+          <div className="space-y-3">
+            {paymentMethod === PaymentMethod.CREDIT_CARD && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Cardholder Name"
+                    value={paymentDetails.cardholderName}
+                    onChange={(e) => setPaymentDetails({...paymentDetails, cardholderName: e.target.value})}
+                    className="bg-white/10 border-white/20 text-white"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Card Number (e.g., 4111111111111111)"
+                    value={paymentDetails.cardNumber}
+                    onChange={(e) => setPaymentDetails({...paymentDetails, cardNumber: e.target.value})}
+                    className="bg-white/10 border-white/20 text-white"
+                  />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input
+                      type="text"
+                      placeholder="MM/YY"
+                      value={paymentDetails.cardExpiry}
+                      onChange={(e) => setPaymentDetails({...paymentDetails, cardExpiry: e.target.value})}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                    <Input
+                      type="text"
+                      placeholder="CVV"
+                      value={paymentDetails.cardCvv}
+                      onChange={(e) => setPaymentDetails({...paymentDetails, cardCvv: e.target.value})}
+                      className="bg-white/10 border-white/20 text-white"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {paymentMethod === PaymentMethod.PAYPAL && (
+              <Input
+                type="email"
+                placeholder="PayPal Email"
+                value={paymentDetails.paypalEmail}
+                onChange={(e) => setPaymentDetails({...paymentDetails, paypalEmail: e.target.value})}
+                className="bg-white/10 border-white/20 text-white"
+              />
+            )}
+
+            {paymentMethod === PaymentMethod.BANK_TRANSFER && (
+              <Input
+                type="text"
+                placeholder="Bank Account Number"
+                value={paymentDetails.bankAccount}
+                onChange={(e) => setPaymentDetails({...paymentDetails, bankAccount: e.target.value})}
+                className="bg-white/10 border-white/20 text-white"
+              />
+            )}
+
+            {paymentMethod === PaymentMethod.CRYPTO && (
+              <Input
+                type="text"
+                placeholder="Crypto Wallet Address"
+                value={paymentDetails.cryptoWallet}
+                onChange={(e) => setPaymentDetails({...paymentDetails, cryptoWallet: e.target.value})}
+                className="bg-white/10 border-white/20 text-white"
+              />
+            )}
+          </div>
+
           {/* Payment Info */}
           <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/30">
             <p className="text-xs text-blue-400 text-center">
-              💳 Secure payment processing
+              🔒 Secure payment processing - Demo mode
             </p>
           </div>
 

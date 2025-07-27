@@ -425,6 +425,19 @@ body {
   gap: 1.5rem;
 }
 
+.responsive-grid-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .responsive-grid-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
 /* Enhanced glass morphism */
 .glass-morphism {
   background: rgba(255, 255, 255, 0.1);
@@ -441,6 +454,12 @@ body {
   .game-card {
     margin: 0.5rem;
   }
+  .mobile-text-sm {
+    font-size: 0.875rem;
+  }
+  .mobile-padding {
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -451,3 +470,5 @@ body {
     padding: 1rem;
   }
 }
+
+

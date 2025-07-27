@@ -21,13 +21,12 @@ interface Props {
 export default async function RootLayout({ children, params }: Props) {
   const resolvedParams = await params;
   const locale = resolvedParams.locale;
-  console.log("Layout locale:", locale);
 
   const messages = await getMessages({ locale });
 
   return (
     <html lang={locale} className="dark">
-      <body className="dark bg-gray-900 text-white min-h-screen">
+      <body>
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
             <AuthProvider>

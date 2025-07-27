@@ -13,12 +13,17 @@ export class TransactionService {
     description: string,
     reference?: string,
   ) {
+    const balance = await this.getUserBalance(userId);
+    const balanceAfter =
+      type == TransactionType.CREDIT ? balance + amount : balance - amount;
+
     return this.prisma.transaction.create({
       data: {
         userId,
         type,
-        amount,
         description,
+        amount,
+        balanceAfter,
         reference,
         status: TransactionStatus.COMPLETED,
       },

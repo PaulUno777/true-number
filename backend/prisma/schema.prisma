@@ -82,14 +82,15 @@ model MultiplayerParticipant {
 }
 
 model Transaction {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String            @db.ObjectId
-  type        TransactionType
-  amount      Int
-  description String
-  reference   String?
-  status      TransactionStatus @default(COMPLETED)
-  createdAt   DateTime          @default(now())
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String          @db.ObjectId
+  type         TransactionType
+  amount       Int
+  description  String
+  balanceAfter Int
+  reference String?
+  status    TransactionStatus @default(COMPLETED)
+  createdAt DateTime          @default(now())
 
   user                    User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   soloGames               SoloGame[]

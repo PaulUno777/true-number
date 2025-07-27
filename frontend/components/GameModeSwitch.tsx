@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Dice1, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GameModeSwitchProps {
   defaultMode?: "solo" | "multiplayer";
@@ -13,6 +14,7 @@ export default function GameModeSwitch({
   onModeChange 
 }: GameModeSwitchProps) {
   const [activeMode, setActiveMode] = useState<"solo" | "multiplayer">(defaultMode);
+  const t = useTranslations("gameMode");
 
   const handleModeChange = (mode: "solo" | "multiplayer") => {
     setActiveMode(mode);
@@ -20,7 +22,7 @@ export default function GameModeSwitch({
   };
 
   return (
-    <div className="flex items-center justify-center mb-8">
+    <div className="flex items-center justify-center my-6">
       <div className="relative bg-white/10 rounded-full p-1 backdrop-blur-sm border border-white/20">
         <div className="flex items-center">
           <button
@@ -32,7 +34,7 @@ export default function GameModeSwitch({
             }`}
           >
             <Dice1 className={`h-4 w-4 ${activeMode === "solo" ? "animate-bounce" : ""}`} />
-            <span className="font-medium">Solo</span>
+            <span className="font-medium">{t("solo", { defaultValue: "Solo" })}</span>
           </button>
           <button
             onClick={() => handleModeChange("multiplayer")}
@@ -42,8 +44,8 @@ export default function GameModeSwitch({
                 : "text-white/70 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Users className={`h-4 w-4 ${activeMode === "multiplayer" ? "animate-pulse" : ""}`} />
-            <span className="font-medium">Multiplayer</span>
+            <Users className={`h-4 w-4 ${activeMode === "multiplayer" ? "animate-bounce" : ""}`} />
+            <span className="font-medium">{t("multiplayer", { defaultValue: "Multiplayer" })}</span>
           </button>
         </div>
       </div>

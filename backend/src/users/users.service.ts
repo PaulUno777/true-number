@@ -92,7 +92,6 @@ export class UsersService {
         email: true,
         phone: true,
         role: true,
-        balance: true,
         createdAt: true,
         _count: {
           select: {

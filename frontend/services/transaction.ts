@@ -13,8 +13,10 @@ class TransactionService {
     return response.data;
   }
 
-  async getHistory(): Promise<TransactionHistory> {
-    const response = await api.get<TransactionHistory>('/transaction/history');
+  async getHistory(page: number = 1, size: number = 10): Promise<TransactionHistory> {
+    const response = await api.get<TransactionHistory>(
+      `/transaction/history?page=${page}&size=${size}`
+    );
     return response.data;
   }
 

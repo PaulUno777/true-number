@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { multiplayerService } from "@/services/multiplayer";
-import { transactionService } from "@/services/transaction";
+import { useBalance } from "@/hooks/useBalance";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -24,8 +24,8 @@ import {
   Play,
   Timer,
   Loader2,
-  DollarSign,
   CreditCard,
+  DollarSign,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Confetti from "@/components/ui/Confetti";
@@ -33,6 +33,9 @@ import { AxiosError } from "axios";
 import GameModeSwitch from "@/components/GameModeSwitch";
 import SoloGame from "@/components/SoloGame";
 import RechargeModal from "@/components/RechargeModal";
+import ClientOnlyBalance from "@/components/ClientOnlyBalance";
+import PageLayout from "@/components/layout/PageLayout";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import {
   MultiplayerGame,
   CreateGameDto,
@@ -44,7 +47,8 @@ import {
 export default function GameDashboard() {
   const { user, refreshUser } = useAuth();
   const queryClient = useQueryClient();
-  const t = useTranslations("multiplayer");
+  const t = useTranslations("dashboard");
+  const [mounted, setMounted] = useState(false);
 
   const [gameMode, setGameMode] = useState<"solo" | "multiplayer">("solo");
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -61,16 +65,17 @@ export default function GameDashboard() {
 
   const socket = useSocket();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Queries
   const { data: waitingGames, refetch: refetchWaitingGames } = useQuery({
     queryKey: ["waitingGames"],
     queryFn: multiplayerService.getWaitingGames,
   });
 
-  const { data: balance } = useQuery({
-    queryKey: ["balance"],
-    queryFn: transactionService.getBalance,
-  });
+  const { balance, isLoading: isLoadingBalance } = useBalance();
 
   // Mutations
   const createGameMutation = useMutation({
@@ -263,7 +268,7 @@ export default function GameDashboard() {
   }, [gameTimer]);
 
   const handleCreateGame = () => {
-    if (createGameData.bet > (balance?.balance || 0)) {
+    if (createGameData.bet > balance) {
       toast.error(t("insufficientBalance"));
       return;
     }
@@ -271,7 +276,7 @@ export default function GameDashboard() {
   };
 
   const handleJoinGame = (game: MultiplayerGame) => {
-    if (game.bet > (balance?.balance || 0)) {
+    if (game.bet > balance) {
       toast.error(t("insufficientBalanceJoin"));
       return;
     }
@@ -301,34 +306,39 @@ export default function GameDashboard() {
     queryClient.invalidateQueries({ queryKey: ["balance"] });
   };
 
+  if (!mounted) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 relative">
+    <PageLayout
+      title={t("gameTitle", { defaultValue: "True Number Game" })}
+      subtitle={t("gameSubtitle", { defaultValue: "Choose your mode and start playing!" })}
+      breadcrumbs={[
+        {
+          label: t("gameDashboard", { defaultValue: "Game Dashboard" }),
+          current: true,
+        },
+      ]}
+    >
       <Confetti
         active={showConfetti}
         onComplete={() => setShowConfetti(false)}
       />
 
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold neon-text bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-          True Number Game
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Choose your mode and start playing!
-        </p>
-      </div>
-
       {/* Balance Card */}
-      <Card className="game-card">
-        <CardContent className="p-6">
+      <Card className="game-card card-hover">
+        <CardContent className="p-6 pt-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <DollarSign className="h-6 w-6 text-green-400" />
               <div>
-                <p className="text-sm text-muted-foreground">Your Balance</p>
-                <p className="text-3xl font-bold text-green-400">
-                  ${balance?.balance || 0}
-                </p>
+                <p className="text-sm text-muted-foreground">{t("currentBalance", { defaultValue: "Your Balance" })}</p>
+                <ClientOnlyBalance className="text-3xl font-bold text-green-400" />
               </div>
             </div>
             <Button
@@ -336,7 +346,7 @@ export default function GameDashboard() {
               className="btn-primary flex items-center space-x-2 hover:scale-105 active:scale-95 transition-all duration-200"
             >
               <CreditCard className="h-4 w-4" />
-              <span>Recharge</span>
+              <span>{t("recharge", { defaultValue: "Recharge" })}</span>
             </Button>
           </div>
         </CardContent>
@@ -347,24 +357,24 @@ export default function GameDashboard() {
 
       {/* Game Content */}
       {gameMode === "solo" ? (
-        <SoloGame
-          balance={balance?.balance || 0}
-          onGameComplete={handleGameComplete}
+        <SoloGame 
+          balance={isLoadingBalance ? 0 : balance} 
+          onGameComplete={handleGameComplete} 
         />
       ) : (
         <div className="space-y-6">
           {/* Create Game Section */}
-          <Card className="game-card">
+          <Card className="game-card card-hover">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center justify-between">
-                <span>Multiplayer Game</span>
+                <span>{t("multiplayerGame", { defaultValue: "Multiplayer Game" })}</span>
                 <Button
                   onClick={() => setShowCreateForm(!showCreateForm)}
                   variant="outline"
                   size="sm"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {showCreateForm ? "Cancel" : "Create Game"}
+                  {showCreateForm ? t("cancel", { defaultValue: "Cancel" }) : t("createGame", { defaultValue: "Create Game" })}
                 </Button>
               </CardTitle>
             </CardHeader>
@@ -373,7 +383,7 @@ export default function GameDashboard() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Bet Points
+                      {t("betPoints", { defaultValue: "Bet Points" })}
                     </label>
                     <Input
                       type="number"
@@ -391,7 +401,7 @@ export default function GameDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      Thinking Time (sec)
+                      {t("thinkingTime", { defaultValue: "Thinking Time (sec)" })}
                     </label>
                     <Input
                       type="number"
@@ -411,16 +421,16 @@ export default function GameDashboard() {
                 <Button
                   onClick={handleCreateGame}
                   isLoading={createGameMutation.isPending}
-                  className="w-full bg-primary hover:bg-primary/90"
+                  className="w-full bg-primary hover:bg-primary-900"
                 >
-                  Create Game
+                  {t("createGame", { defaultValue: "Create Game" })}
                 </Button>
               </CardContent>
             )}
           </Card>
 
           {/* Quick Actions */}
-          <Card className="game-card">
+          <Card className="game-card card-hover">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center space-x-2">
                 <Play className="h-5 w-5 text-accent" />
@@ -561,7 +571,7 @@ export default function GameDashboard() {
           )}
 
           {/* Waiting Games */}
-          <Card className="game-card">
+          <Card className="game-card card-hover">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center space-x-2">
                 <Users className="h-5 w-5 text-accent" />
@@ -604,7 +614,7 @@ export default function GameDashboard() {
                           <Button
                             onClick={() => handleJoinGame(game)}
                             isLoading={joinGameMutation.isPending}
-                            disabled={game.bet > (balance?.balance || 0)}
+                            disabled={isLoadingBalance || game.bet > balance}
                             className="bg-accent hover:bg-accent/90"
                           >
                             {t("join")}
@@ -629,8 +639,8 @@ export default function GameDashboard() {
       <RechargeModal
         isOpen={showRechargeModal}
         onClose={() => setShowRechargeModal(false)}
-        currentBalance={balance?.balance || 0}
+        currentBalance={isLoadingBalance ? 0 : balance}
       />
-    </div>
+    </PageLayout>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
 import { useAuth } from '@/providers/AuthProvider';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useEffect } from 'react';
-import Navbar from '@/components/layout/Navbar';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 export default function AdminLayout({
   children,
@@ -16,9 +16,9 @@ export default function AdminLayout({
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
-        router.push('/en/auth');
+        router.push('/auth');
       } else if (user.role !== 'ADMIN') {
-        router.push('/en/dashboard');
+        router.push('/dashboard');
       }
     }
   }, [user, isLoading, router]);
@@ -26,7 +26,7 @@ export default function AdminLayout({
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <LoadingSpinner size="xl" />
       </div>
     );
   }
@@ -37,8 +37,7 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {children}
       </main>
     </div>

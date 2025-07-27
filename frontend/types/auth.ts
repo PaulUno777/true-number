@@ -4,7 +4,6 @@ export interface User {
   email: string;
   phone: string;
   role: "CLIENT" | "ADMIN";
-  balance: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -82,14 +82,15 @@ model MultiplayerParticipant {
 }
 
 model Transaction {
-  id          String            @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String            @db.ObjectId
-  type        TransactionType
-  amount      Int // Amount in cents/points
-  description String
-  reference   String? // Reference to game ID, recharge ID, etc.
-  status      TransactionStatus @default(COMPLETED)
-  createdAt   DateTime          @default(now())
+  id           String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String            @db.ObjectId
+  type         TransactionType
+  amount       Int
+  description  String
+  balanceAfter Int
+  reference    String?
+  status       TransactionStatus @default(COMPLETED)
+  createdAt    DateTime          @default(now())
 
   user                    User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
   soloGames               SoloGame[]
@@ -121,9 +122,9 @@ enum Role {
 }
 
 enum SoloGameResult {
-  EXACT_MATCH // Nombre exact = 2x la mise
-  HIGHER // Généré > choisi = 1.5x la mise  
-  LOWER // Généré < choisi = perte
+  EXACT_MATCH // 2x 
+  HIGHER // 1.5x  
+  LOWER // loose
 }
 
 enum GameStatus {

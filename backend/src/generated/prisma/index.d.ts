@@ -5938,10 +5938,12 @@ export namespace Prisma {
 
   export type TransactionAvgAggregateOutputType = {
     amount: number | null
+    balanceAfter: number | null
   }
 
   export type TransactionSumAggregateOutputType = {
     amount: number | null
+    balanceAfter: number | null
   }
 
   export type TransactionMinAggregateOutputType = {
@@ -5950,6 +5952,7 @@ export namespace Prisma {
     type: $Enums.TransactionType | null
     amount: number | null
     description: string | null
+    balanceAfter: number | null
     reference: string | null
     status: $Enums.TransactionStatus | null
     createdAt: Date | null
@@ -5961,6 +5964,7 @@ export namespace Prisma {
     type: $Enums.TransactionType | null
     amount: number | null
     description: string | null
+    balanceAfter: number | null
     reference: string | null
     status: $Enums.TransactionStatus | null
     createdAt: Date | null
@@ -5972,6 +5976,7 @@ export namespace Prisma {
     type: number
     amount: number
     description: number
+    balanceAfter: number
     reference: number
     status: number
     createdAt: number
@@ -5981,10 +5986,12 @@ export namespace Prisma {
 
   export type TransactionAvgAggregateInputType = {
     amount?: true
+    balanceAfter?: true
   }
 
   export type TransactionSumAggregateInputType = {
     amount?: true
+    balanceAfter?: true
   }
 
   export type TransactionMinAggregateInputType = {
@@ -5993,6 +6000,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     description?: true
+    balanceAfter?: true
     reference?: true
     status?: true
     createdAt?: true
@@ -6004,6 +6012,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     description?: true
+    balanceAfter?: true
     reference?: true
     status?: true
     createdAt?: true
@@ -6015,6 +6024,7 @@ export namespace Prisma {
     type?: true
     amount?: true
     description?: true
+    balanceAfter?: true
     reference?: true
     status?: true
     createdAt?: true
@@ -6113,6 +6123,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference: string | null
     status: $Enums.TransactionStatus
     createdAt: Date
@@ -6143,6 +6154,7 @@ export namespace Prisma {
     type?: boolean
     amount?: boolean
     description?: boolean
+    balanceAfter?: boolean
     reference?: boolean
     status?: boolean
     createdAt?: boolean
@@ -6161,12 +6173,13 @@ export namespace Prisma {
     type?: boolean
     amount?: boolean
     description?: boolean
+    balanceAfter?: boolean
     reference?: boolean
     status?: boolean
     createdAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "description" | "reference" | "status" | "createdAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "description" | "balanceAfter" | "reference" | "status" | "createdAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     soloGames?: boolean | Transaction$soloGamesArgs<ExtArgs>
@@ -6189,6 +6202,7 @@ export namespace Prisma {
       type: $Enums.TransactionType
       amount: number
       description: string
+      balanceAfter: number
       reference: string | null
       status: $Enums.TransactionStatus
       createdAt: Date
@@ -6593,6 +6607,7 @@ export namespace Prisma {
     readonly type: FieldRef<"Transaction", 'TransactionType'>
     readonly amount: FieldRef<"Transaction", 'Int'>
     readonly description: FieldRef<"Transaction", 'String'>
+    readonly balanceAfter: FieldRef<"Transaction", 'Int'>
     readonly reference: FieldRef<"Transaction", 'String'>
     readonly status: FieldRef<"Transaction", 'TransactionStatus'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
@@ -8175,6 +8190,7 @@ export namespace Prisma {
     type: 'type',
     amount: 'amount',
     description: 'description',
+    balanceAfter: 'balanceAfter',
     reference: 'reference',
     status: 'status',
     createdAt: 'createdAt'
@@ -8732,6 +8748,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     amount?: IntFilter<"Transaction"> | number
     description?: StringFilter<"Transaction"> | string
+    balanceAfter?: IntFilter<"Transaction"> | number
     reference?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
@@ -8747,6 +8764,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     description?: SortOrder
+    balanceAfter?: SortOrder
     reference?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -8765,6 +8783,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     amount?: IntFilter<"Transaction"> | number
     description?: StringFilter<"Transaction"> | string
+    balanceAfter?: IntFilter<"Transaction"> | number
     reference?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
@@ -8780,6 +8799,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     description?: SortOrder
+    balanceAfter?: SortOrder
     reference?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -8799,6 +8819,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeWithAggregatesFilter<"Transaction"> | $Enums.TransactionType
     amount?: IntWithAggregatesFilter<"Transaction"> | number
     description?: StringWithAggregatesFilter<"Transaction"> | string
+    balanceAfter?: IntWithAggregatesFilter<"Transaction"> | number
     reference?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
@@ -9227,6 +9248,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -9242,6 +9264,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -9254,6 +9277,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9268,6 +9292,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9282,6 +9307,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -9291,6 +9317,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9301,6 +9328,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9920,6 +9948,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     description?: SortOrder
+    balanceAfter?: SortOrder
     reference?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -9927,6 +9956,7 @@ export namespace Prisma {
 
   export type TransactionAvgOrderByAggregateInput = {
     amount?: SortOrder
+    balanceAfter?: SortOrder
   }
 
   export type TransactionMaxOrderByAggregateInput = {
@@ -9935,6 +9965,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     description?: SortOrder
+    balanceAfter?: SortOrder
     reference?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -9946,6 +9977,7 @@ export namespace Prisma {
     type?: SortOrder
     amount?: SortOrder
     description?: SortOrder
+    balanceAfter?: SortOrder
     reference?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
@@ -9953,6 +9985,7 @@ export namespace Prisma {
 
   export type TransactionSumOrderByAggregateInput = {
     amount?: SortOrder
+    balanceAfter?: SortOrder
   }
 
   export type EnumTransactionTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -11054,6 +11087,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11067,6 +11101,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11203,6 +11238,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFilter<"Transaction"> | $Enums.TransactionType
     amount?: IntFilter<"Transaction"> | number
     description?: StringFilter<"Transaction"> | string
+    balanceAfter?: IntFilter<"Transaction"> | number
     reference?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
@@ -11248,6 +11284,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11262,6 +11299,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11328,6 +11366,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11341,6 +11380,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11538,6 +11578,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11552,6 +11593,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11651,6 +11693,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11664,6 +11707,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11904,6 +11948,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11918,6 +11963,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -11945,6 +11991,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11958,6 +12005,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12004,6 +12052,7 @@ export namespace Prisma {
     type: $Enums.TransactionType
     amount: number
     description: string
+    balanceAfter: number
     reference?: string | null
     status?: $Enums.TransactionStatus
     createdAt?: Date | string
@@ -12108,6 +12157,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12120,6 +12170,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12132,6 +12183,7 @@ export namespace Prisma {
     type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: IntFieldUpdateOperationsInput | number
     description?: StringFieldUpdateOperationsInput | string
+    balanceAfter?: IntFieldUpdateOperationsInput | number
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
