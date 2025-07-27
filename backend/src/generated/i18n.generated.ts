@@ -63,6 +63,8 @@ export type I18nTranslations = {
         "multiplayerForfeitWin": string;
         "gameStarted": string;
         "timeUp": string;
+        "leavePenalty": string;
+        "leftWithPenalty": string;
         "solo": {
             "exactMatch": string;
             "higher": string;

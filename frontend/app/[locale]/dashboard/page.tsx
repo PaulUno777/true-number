@@ -212,9 +212,13 @@ export default function GameDashboard() {
 
     socket.onTurnPlayed((data: WSTurnPlayed) => {
       setSelectedGame(data.game);
-      // Blink the opponent's player card
+
+      // Handle notifications differently for current player vs opponent
       if (data.userId !== user?.id) {
+        // Opponent played - visual notification with blinking
         triggerBlink(`player-${data.userId}`);
+
+        triggerBlink("current-game");
       }
     });
 
@@ -226,24 +230,12 @@ export default function GameDashboard() {
         setShowConfetti(true);
       }
 
-      // Different toast styles for winners vs losers
-      const toastStyle = data.isWinner
-        ? {
-            background: "linear-gradient(45deg, #10b981, #059669)",
-            color: "white",
-          }
-        : {
-            background: "linear-gradient(45deg, #ef4444, #dc2626)",
-            color: "white",
-          };
+      // No more toast notifications for game finish - using the visual display instead
 
-      toast.success(data.message, {
-        duration: 5000,
-        style: toastStyle,
-      });
-
+      // Refresh user data and balance
       refreshUser();
       queryClient.invalidateQueries({ queryKey: ["userGames"] });
+      queryClient.invalidateQueries({ queryKey: ["balance"] });
     });
 
     socket.onNewGameCreated(() => {
@@ -256,11 +248,13 @@ export default function GameDashboard() {
 
     socket.onPlayerLeft((data) => {
       setSelectedGame(data.game);
-      // Important toast for opponent leaving
-      toast.error(t("playerLeft", { username: data.username }));
-      if (data.game.status === "CANCELLED") {
-        setSelectedGame(null);
-        toast.error(t("gameCancelled"));
+
+      if (data.username !== user?.username) {
+        toast.error(t("playerLeft", { username: data.username }), {
+          duration: 4000,
+          icon: "🚪",
+        });
+        triggerBlink("current-game");
       }
     });
 
@@ -283,6 +277,7 @@ export default function GameDashboard() {
     socket.isConnected,
     t,
     user?.id,
+    user?.username,
   ]);
 
   // Timer effect
@@ -455,6 +450,14 @@ export default function GameDashboard() {
                       className="bg-gray-800 border-gray-600 text-white"
                     />
                   </div>
+                </div>
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-4">
+                  <p className="text-yellow-300 text-sm">
+                    {t("leavePenalty", {
+                      defaultValue:
+                        "Warning: Leaving a game incurs a 10% penalty of the bet amount.",
+                    })}
+                  </p>
                 </div>
                 <Button
                   onClick={handleCreateGame}
@@ -634,7 +637,18 @@ export default function GameDashboard() {
                       );
                     })()}
                     <Button
-                      onClick={handleLeaveGame}
+                      onClick={() => {
+                        // Show penalty warning for IN_PROGRESS games
+                        const penaltyAmount = Math.floor(
+                          selectedGame.bet * 0.1
+                        );
+                        const confirmMessage = t("leaveConfirmation", {
+                          penalty: penaltyAmount,
+                        });
+                        if (window.confirm(confirmMessage)) {
+                          handleLeaveGame();
+                        }
+                      }}
                       isLoading={leaveGameMutation.isPending}
                       variant="outline"
                       size="sm"
@@ -659,17 +673,44 @@ export default function GameDashboard() {
                   </div>
                 )}
 
-                {selectedGame.status === "FINISHED" && (
-                  <div className="text-center p-4 rounded-lg bg-green-500/20 border border-green-500/50">
-                    <p className="text-green-300 font-bold">
-                      {t("gameFinished", {
-                        winner:
-                          selectedGame.players.find((p) => p.isWinner)
-                            ?.username ?? "",
-                      })}
-                    </p>
-                  </div>
-                )}
+                {selectedGame.status === "FINISHED" &&
+                  (() => {
+                    const currentPlayer = selectedGame.players.find(
+                      (p) => p.id === user?.id
+                    );
+                    const isWinner = currentPlayer?.isWinner;
+                    const winner = selectedGame.players.find((p) => p.isWinner);
+
+                    return (
+                      <div
+                        className={`text-center p-4 rounded-lg ${
+                          isWinner
+                            ? "bg-green-500/20 border border-green-500/50"
+                            : "bg-red-500/20 border border-red-500/50"
+                        }`}
+                      >
+                        <p
+                          className={`font-bold ${
+                            isWinner ? "text-green-300" : "text-red-300"
+                          }`}
+                        >
+                          {isWinner
+                            ? "Congratulations! You won the game!"
+                            : `${winner?.username} won this time. Better luck next time!`}
+                        </p>
+                        {isWinner && (
+                          <p className="text-green-400 text-sm mt-1">
+                            +{selectedGame.bet} points earned!
+                          </p>
+                        )}
+                        {!isWinner && (
+                          <p className="text-red-400 text-sm mt-1">
+                            -{selectedGame.bet} points lost
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
               </CardContent>
             </Card>
           )}
@@ -682,6 +723,15 @@ export default function GameDashboard() {
                 <span>{t("waitingGames")}</span>
               </CardTitle>
               <CardDescription>{t("waitingGamesDescription")}</CardDescription>
+              <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mt-3">
+                <p className="text-yellow-300 text-sm">
+                  ⚠️{" "}
+                  {t("leavePenalty", {
+                    defaultValue:
+                      "Warning: Leaving a game incurs a 10% penalty of the bet amount.",
+                  })}
+                </p>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">

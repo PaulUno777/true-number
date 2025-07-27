@@ -95,7 +95,11 @@
     "noActiveGame": "Aucune partie active trouvée",
     "gameCreatedAndJoined": "Partie créée avec succès ! Vous l'avez automatiquement rejointe.",
     "playerLeft": "{username} a quitté la partie",
-    "gameCancelled": "La partie a été annulée"
+    "gameCancelled": "La partie a été annulée",
+    "leavePenalty": "⚠️ Attention : Quitter une partie entraîne une pénalité de 10% du montant de la mise.",
+    "leftWithPenalty": "Vous avez quitté la partie et perdu {penalty} points de pénalité (10% de la mise : {bet} + pénalité : {penalty} = {total} perte totale).",
+    "leftWaitingGame": "Vous avez quitté la partie en attente. Aucune pénalité appliquée.",
+    "leaveConfirmation": "⚠️ Attention : Quitter cette partie entraînera une pénalité de {penalty} points (10% du montant de la mise). Êtes-vous sûr ?"
   },
   "history": {
     "title": "Historique des jeux",

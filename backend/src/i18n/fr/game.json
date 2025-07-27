@@ -28,6 +28,8 @@
   "multiplayerForfeitWin": "Félicitations ! Vous avez gagné par forfait et reçu {{points}} points !",
   "gameStarted": "La partie commence ! Que le meilleur gagne !",
   "timeUp": "Temps écoulé !",
+  "leavePenalty": "⚠️ Attention : Quitter une partie entraîne une pénalité de 10% du montant de la mise.",
+  "leftWithPenalty": "Vous avez quitté la partie et perdu {{penalty}} points de pénalité (10% de la mise).",
   "solo": {
     "exactMatch": "Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
     "higher": "Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",

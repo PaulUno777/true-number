@@ -633,10 +633,10 @@ export class MultiGameService {
         },
       });
     } else if (game.status === GameStatus.IN_PROGRESS) {
-      // If player leaves during game, forfeit and award win to opponent
+      // If player leaves during game, forfeit and award win to opponent + 10% penalty
       const opponent = game.players.find((p) => p.playerId !== userId);
       if (opponent) {
-        await this.forfeitGame(gameId, userId, opponent.playerId, game.bet);
+        await this.forfeitGameWithPenalty(gameId, userId, opponent.playerId, game.bet);
       }
     } else if (game.status === GameStatus.WAITING) {
       // If non-creator leaves waiting game, just remove them
@@ -710,6 +710,70 @@ export class MultiGameService {
         data: {
           isWinner: false,
           balanceChange: -bet,
+          transactionId: forfeitDebitTransaction.id,
+        },
+      }),
+      // Update the winning player
+      this.prisma.multiplayerParticipant.updateMany({
+        where: {
+          gameId,
+          playerId: winnerId,
+        },
+        data: {
+          isWinner: true,
+          balanceChange: bet,
+          transactionId: winnerCreditTransaction.id,
+        },
+      }),
+      // Finish the game
+      this.prisma.multiplayerGame.update({
+        where: { id: gameId },
+        data: {
+          status: GameStatus.FINISHED,
+          winnerId: winnerId,
+          finishedAt: new Date(),
+        },
+      }),
+    ]);
+  }
+
+  private async forfeitGameWithPenalty(
+    gameId: string,
+    forfeitUserId: string,
+    winnerId: string,
+    bet: number,
+  ): Promise<void> {
+    const penaltyAmount = Math.floor(bet * 0.1); // 10% penalty
+    const totalLoss = bet + penaltyAmount;
+
+    // Create debit transaction for forfeiting player (bet + penalty)
+    const forfeitDebitTransaction =
+      await this.transactionService.createGameDebitTransaction(
+        forfeitUserId,
+        totalLoss,
+        'multiplayer',
+        gameId,
+      );
+
+    // Create credit transaction for winning player (just the bet amount)
+    const winnerCreditTransaction =
+      await this.transactionService.createGameCreditTransaction(
+        winnerId,
+        bet,
+        'multiplayer',
+        gameId,
+      );
+
+    await this.prisma.$transaction([
+      // Update the forfeiting player
+      this.prisma.multiplayerParticipant.updateMany({
+        where: {
+          gameId,
+          playerId: forfeitUserId,
+        },
+        data: {
+          isWinner: false,
+          balanceChange: -totalLoss,
           transactionId: forfeitDebitTransaction.id,
         },
       }),

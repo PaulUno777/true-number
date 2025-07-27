@@ -95,7 +95,11 @@
     "noActiveGame": "No active game found",
     "gameCreatedAndJoined": "Game created successfully! You have automatically joined it.",
     "playerLeft": "{username} left the game",
-    "gameCancelled": "Game was cancelled"
+    "gameCancelled": "Game was cancelled",
+    "leavePenalty": "⚠️ Warning: Leaving a game incurs a 10% penalty of the bet amount.",
+    "leftWithPenalty": "You left the game and lost {penalty} points as penalty (10% of bet: {bet} + penalty: {penalty} = {total} total loss).",
+    "leftWaitingGame": "You left the waiting game. No penalty applied.",
+    "leaveConfirmation": "⚠️ Warning: Leaving this game will result in a {penalty} point penalty (10% of bet amount). Are you sure?"
   },
   "history": {
     "title": "Game History",
@@ -274,7 +278,7 @@
     "winRate": "Win Rate",
     "currentGame": "Current Game",
     "bet": "Bet",
-    "createdBy": "Created by",
+    "createdBy": "i by",
     "hasPlayed": "Has played",
     "waiting": "Waiting...",
     "playTurn": "Play My Turn",
@@ -347,7 +351,6 @@
     "exactMatchMultiplier": "Exact match multiplier",
     "quickNavigation": "Quick Navigation",
     "exploreGameModes": "Explore other game modes and features",
-    "multiplayerGames": "Multiplayer Games",
     "challengeOtherPlayers": "Challenge other players",
     "gameHistory": "Game History",
     "viewPastGames": "View past games",

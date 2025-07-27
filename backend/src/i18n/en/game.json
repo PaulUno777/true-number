@@ -28,6 +28,8 @@
   "multiplayerForfeitWin": "Congratulations! You won by forfeit and received {{points}} points!",
   "gameStarted": "The game begins! May the best player win!",
   "timeUp": "Time's up!",
+  "leavePenalty": "⚠️ Warning: Leaving a game incurs a 10% penalty of the bet amount.",
+  "leftWithPenalty": "You left the game and lost {{penalty}} points as penalty (10% of bet).",
   "solo": {
     "exactMatch": "Perfect! Exact match! You win {{points}} points!",
     "higher": "Great! The generated number is higher! You win {{points}} points!",
