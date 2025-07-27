@@ -23,10 +23,15 @@
   "gameLeft": "Game left successfully",
   "alreadyHasActiveGame": "You already have an active game. Please finish or leave it before creating a new one.",
   "notYourTurn": "It's not your turn to play.",
+  "multiplayerGameWon": "Congratulations! You won the game and received {{points}} points!",
+  "multiplayerGameLost": "Too bad! {{winner}} won this time. Good luck next time!",
+  "multiplayerForfeitWin": "Congratulations! You won by forfeit and received {{points}} points!",
+  "gameStarted": "The game begins! May the best player win!",
+  "timeUp": "Time's up!",
   "solo": {
-    "exactMatch": "🎯 Perfect! Exact match! You win {{points}} points!",
-    "higher": "🎉 Great! The generated number is higher! You win {{points}} points!",
-    "lower": "😞 Too bad! The generated number is lower. You lose {{points}} points.",
+    "exactMatch": "Perfect! Exact match! You win {{points}} points!",
+    "higher": "Great! The generated number is higher! You win {{points}} points!",
+    "lower": "Too bad! The generated number is lower. You lose {{points}} points.",
     "historyRetrieved": "Solo game history retrieved successfully",
     "statsRetrieved": "Solo game statistics retrieved successfully"
   }

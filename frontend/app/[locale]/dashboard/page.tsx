@@ -264,7 +264,7 @@ export default function GameDashboard() {
       }
     });
 
-    socket.onGameLeft((data) => {
+    socket.onGameLeft(() => {
       setSelectedGame(null);
     });
 

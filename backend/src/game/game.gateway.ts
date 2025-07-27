@@ -10,6 +10,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
 import { MultiGameService } from './multi-game.service';
+import { I18nService } from 'nestjs-i18n';
+import { I18nTranslations } from '@generated/i18n.generated';
 
 interface AuthenticatedSocket extends Socket {
   userId?: string;
@@ -30,7 +32,10 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger = new Logger('GameGateway');
   private userSockets = new Map<string, AuthenticatedSocket>();
 
-  constructor(private gameService: MultiGameService) {
+  constructor(
+    private gameService: MultiGameService,
+    private i18n: I18nService<I18nTranslations>,
+  ) {
     // Set circular reference after construction
     this.gameService.setGameGateway(this);
   }
@@ -147,7 +152,9 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
             winnerId: result.game.winnerId,
             winnerUsername: winner?.username,
             game: result.game,
-            message: `Félicitations ! Vous avez gagné par forfait et reçu ${result.game.bet} points !`,
+            message: this.i18n.t('game.multiplayerForfeitWin', { 
+              args: { points: result.game.bet } 
+            }),
             isWinner: true,
             timestamp: new Date(),
           });
@@ -186,39 +193,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Play the turn via service
       const result = await this.gameService.playTurn(client.userId, gameId);
 
-      // Notify all players in the game about the turn
-      this.server.to(`game:${gameId}`).emit('turn-played', {
-        userId: client.userId,
-        username: client.username,
-        generatedNumber: result.generatedNumber,
-        game: result.game,
-        timestamp: new Date(),
-      });
-
-      // If game is finished, notify each player individually with appropriate message
-      if (result.game.status === 'FINISHED') {
-        const winner = result.game.players.find((p) => p.isWinner);
-        
-        // Send personalized messages to each player
-        result.game.players.forEach(player => {
-          const playerSocket = this.userSockets.get(player.id);
-          if (playerSocket) {
-            const isWinner = player.isWinner;
-            const message = isWinner 
-              ? `Félicitations ! Vous avez gagné la partie et reçu ${result.game.bet} points !`
-              : `Dommage ! ${winner?.username} a gagné cette fois. Bonne chance pour la prochaine !`;
-            
-            playerSocket.emit('game-finished', {
-              winnerId: result.game.winnerId,
-              winnerUsername: winner?.username,
-              game: result.game,
-              message: message,
-              isWinner: isWinner,
-              timestamp: new Date(),
-            });
-          }
-        });
-      }
+      // Socket events are now handled by the service method automatically
 
       this.logger.log(
         `User ${client.username} played turn in game ${gameId}: ${result.generatedNumber}`,
@@ -263,7 +238,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   notifyGameJoined(gameId: string, game: any) {
     this.server.to(`game:${gameId}`).emit('game-started', {
       game,
-      message: 'La partie commence ! Que le meilleur gagne !',
+      message: this.i18n.t('game.gameStarted'),
       timestamp: new Date(),
     });
   }
@@ -282,7 +257,7 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (remainingTime < 0) {
         clearInterval(timer);
         this.server.to(`game:${gameId}`).emit('game-timer-ended', {
-          message: 'Temps écoulé !',
+          message: this.i18n.t('game.timeUp'),
           timestamp: new Date(),
         });
       }

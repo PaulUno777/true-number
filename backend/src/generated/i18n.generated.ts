@@ -58,6 +58,11 @@ export type I18nTranslations = {
         "gameLeft": string;
         "alreadyHasActiveGame": string;
         "notYourTurn": string;
+        "multiplayerGameWon": string;
+        "multiplayerGameLost": string;
+        "multiplayerForfeitWin": string;
+        "gameStarted": string;
+        "timeUp": string;
         "solo": {
             "exactMatch": string;
             "higher": string;

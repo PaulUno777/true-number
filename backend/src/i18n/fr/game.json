@@ -23,10 +23,15 @@
   "gameLeft": "Partie quittée avec succès",
   "alreadyHasActiveGame": "Vous avez déjà une partie active. Veuillez la terminer ou la quitter avant d'en créer une nouvelle.",
   "notYourTurn": "Ce n'est pas à ton tour de jouer.",
+  "multiplayerGameWon": "Félicitations ! Vous avez gagné la partie et reçu {{points}} points !",
+  "multiplayerGameLost": "Dommage ! {{winner}} a gagné cette fois. Bonne chance pour la prochaine !",
+  "multiplayerForfeitWin": "Félicitations ! Vous avez gagné par forfait et reçu {{points}} points !",
+  "gameStarted": "La partie commence ! Que le meilleur gagne !",
+  "timeUp": "Temps écoulé !",
   "solo": {
-    "exactMatch": "🎯 Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
-    "higher": "🎉 Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",
-    "lower": "😞 Dommage ! Le nombre généré est plus faible. Vous perdez {{points}} points.",
+    "exactMatch": "Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
+    "higher": "Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",
+    "lower": "Dommage ! Le nombre généré est plus faible. Vous perdez {{points}} points.",
     "historyRetrieved": "Historique des parties solo récupéré avec succès",
     "statsRetrieved": "Statistiques des parties solo récupérées avec succès"
   }

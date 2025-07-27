@@ -229,6 +229,9 @@ export class MultiGameService {
         throw error;
       }
     }
+    
+    // This should never be reached, but TypeScript requires it
+    throw new Error('Maximum retries exceeded');
   }
 
   private async attemptPlayTurn(
@@ -237,7 +240,7 @@ export class MultiGameService {
     lang?: string,
   ): Promise<PlayTurnResponseDto> {
     // Use a transaction with isolation to prevent race conditions
-    return await this.prisma.$transaction(async (tx) => {
+    const transactionResult = await this.prisma.$transaction(async (tx) => {
       // Get game with fresh data inside transaction
       const game = await tx.multiplayerGame.findUnique({
         where: { id: gameId },
@@ -326,8 +329,10 @@ export class MultiGameService {
 
       const allPlayed = allParticipants.every((p) => p.generatedNumber !== null);
 
+      let gameFinished = false;
       if (allPlayed) {
-        await this.finishGameInTransaction(tx, game.id, allParticipants, game.bet);
+        gameFinished = true;
+        await this.finishGameInTransactionOnly(tx, game.id, allParticipants, game.bet);
       }
 
       // Get updated game within the same transaction
@@ -343,17 +348,85 @@ export class MultiGameService {
         },
       });
 
-      const gameDto = this.mapGameToDto(updatedGame);
-
       return {
+        updatedGame,
+        gameFinished,
+        allParticipants,
         generatedNumber,
-        game: gameDto,
-        message: this.i18n.t('game.turnPlayed', { lang }),
+        participantUsername: participant.player.username,
       };
     }, {
       maxWait: 5000, // Maximum time to wait for a transaction slot
       timeout: 10000, // Maximum time for the transaction to run
     });
+
+    // Handle post-transaction operations
+    if (!transactionResult.updatedGame) {
+      throw new Error('Transaction failed to return updated game');
+    }
+    const gameDto = this.mapGameToDto(transactionResult.updatedGame);
+
+    // Handle balance transactions outside of the main transaction if game finished
+    if (transactionResult.gameFinished && transactionResult.updatedGame) {
+      await this.createGameFinishTransactions(
+        gameId, 
+        transactionResult.allParticipants, 
+        transactionResult.updatedGame.bet
+      );
+    }
+
+    // Emit socket events for turn played
+    if (this.gameGateway) {
+      // Notify all players about the turn
+      this.gameGateway.server.to(`game:${gameId}`).emit('turn-played', {
+        userId: userId,
+        username: transactionResult.participantUsername,
+        generatedNumber: transactionResult.generatedNumber,
+        game: gameDto,
+        timestamp: new Date(),
+      });
+
+      // If game is finished, send personalized messages to each player
+      if (gameDto.status === 'FINISHED') {
+        const winner = gameDto.players.find((p) => p.isWinner);
+        
+        gameDto.players.forEach(player => {
+          // Find the socket connection for this player
+          const playerSockets = Array.from(this.gameGateway.server.sockets.sockets.values())
+            .filter(socket => (socket as any).userId === player.id);
+          
+          if (playerSockets.length > 0) {
+            const isWinner = player.isWinner;
+            const message = isWinner 
+              ? this.i18n.t('game.multiplayerGameWon', { 
+                  lang, 
+                  args: { points: gameDto.bet } 
+                })
+              : this.i18n.t('game.multiplayerGameLost', { 
+                  lang, 
+                  args: { winner: winner?.username } 
+                });
+            
+            playerSockets.forEach(playerSocket => {
+              playerSocket.emit('game-finished', {
+                winnerId: gameDto.winnerId,
+                winnerUsername: winner?.username,
+                game: gameDto,
+                message: message,
+                isWinner: isWinner,
+                timestamp: new Date(),
+              });
+            });
+          }
+        });
+      }
+    }
+
+    return {
+      generatedNumber: transactionResult.generatedNumber,
+      game: gameDto,
+      message: this.i18n.t('game.turnPlayed', { lang }),
+    };
   }
 
   async getGameDetails(
@@ -664,78 +737,8 @@ export class MultiGameService {
     ]);
   }
 
-  private async finishGame(
-    gameId: string,
-    participants: any[],
-    bet: number,
-  ): Promise<void> {
-    // Check winner
-    const [player1, player2] = participants;
-    const winner =
-      player1.generatedNumber > player2.generatedNumber ? player1 : player2;
-    const loser = winner === player1 ? player2 : player1;
 
-    // Create debit transactions for both players (they both placed bets)
-    const player1DebitTransaction =
-      await this.transactionService.createGameDebitTransaction(
-        player1.playerId,
-        bet,
-        'multiplayer',
-        gameId,
-      );
-
-    const player2DebitTransaction =
-      await this.transactionService.createGameDebitTransaction(
-        player2.playerId,
-        bet,
-        'multiplayer',
-        gameId,
-      );
-
-    // Create credit transaction for winner (winner gets both bets)
-    const winnerCreditTransaction =
-      await this.transactionService.createGameCreditTransaction(
-        winner.playerId,
-        bet * 2, // Winner gets their bet back plus opponent's bet
-        'multiplayer',
-        gameId,
-      );
-
-    await this.prisma.$transaction([
-      // update winner
-      this.prisma.multiplayerParticipant.update({
-        where: { id: winner.id },
-        data: {
-          isWinner: true,
-          balanceChange: bet, // Net change is +bet (gets opponent's bet)
-          transactionId: winnerCreditTransaction.id,
-        },
-      }),
-      // Update loser
-      this.prisma.multiplayerParticipant.update({
-        where: { id: loser.id },
-        data: {
-          isWinner: false,
-          balanceChange: -bet, // Net change is -bet (loses their bet)
-          transactionId:
-            loser.playerId === player1.playerId
-              ? player1DebitTransaction.id
-              : player2DebitTransaction.id,
-        },
-      }),
-      // Finish game
-      this.prisma.multiplayerGame.update({
-        where: { id: gameId },
-        data: {
-          status: GameStatus.FINISHED,
-          winnerId: winner.playerId,
-          finishedAt: new Date(),
-        },
-      }),
-    ]);
-  }
-
-  private async finishGameInTransaction(
+  private async finishGameInTransactionOnly(
     tx: any,
     gameId: string,
     participants: any[],
@@ -747,52 +750,21 @@ export class MultiGameService {
       player1.generatedNumber > player2.generatedNumber ? player1 : player2;
     const loser = winner === player1 ? player2 : player1;
 
-    // Create debit transactions for both players (they both placed bets)
-    const player1DebitTransaction =
-      await this.transactionService.createGameDebitTransaction(
-        player1.playerId,
-        bet,
-        'multiplayer',
-        gameId,
-      );
-
-    const player2DebitTransaction =
-      await this.transactionService.createGameDebitTransaction(
-        player2.playerId,
-        bet,
-        'multiplayer',
-        gameId,
-      );
-
-    // Create credit transaction for winner (winner gets both bets)
-    const winnerCreditTransaction =
-      await this.transactionService.createGameCreditTransaction(
-        winner.playerId,
-        bet * 2, // Winner gets their bet back plus opponent's bet
-        'multiplayer',
-        gameId,
-      );
-
-    // Update winner within the transaction
+    // Update winner within the transaction (without transaction ID for now)
     await tx.multiplayerParticipant.update({
       where: { id: winner.id },
       data: {
         isWinner: true,
         balanceChange: bet, // Net change is +bet (gets opponent's bet)
-        transactionId: winnerCreditTransaction.id,
       },
     });
 
-    // Update loser within the transaction
+    // Update loser within the transaction (without transaction ID for now)
     await tx.multiplayerParticipant.update({
       where: { id: loser.id },
       data: {
         isWinner: false,
         balanceChange: -bet, // Net change is -bet (loses their bet)
-        transactionId:
-          loser.playerId === player1.playerId
-            ? player1DebitTransaction.id
-            : player2DebitTransaction.id,
       },
     });
 
@@ -805,6 +777,63 @@ export class MultiGameService {
         finishedAt: new Date(),
       },
     });
+  }
+
+  private async createGameFinishTransactions(
+    gameId: string,
+    participants: any[],
+    bet: number,
+  ): Promise<void> {
+    // Check winner
+    const [player1, player2] = participants;
+    const winner =
+      player1.generatedNumber > player2.generatedNumber ? player1 : player2;
+    const loser = winner === player1 ? player2 : player1;
+
+    // Create debit transactions for both players (they both placed bets)
+    const player1DebitTransaction =
+      await this.transactionService.createGameDebitTransaction(
+        player1.playerId,
+        bet,
+        'multiplayer',
+        gameId,
+      );
+
+    const player2DebitTransaction =
+      await this.transactionService.createGameDebitTransaction(
+        player2.playerId,
+        bet,
+        'multiplayer',
+        gameId,
+      );
+
+    // Create credit transaction for winner (winner gets both bets)
+    const winnerCreditTransaction =
+      await this.transactionService.createGameCreditTransaction(
+        winner.playerId,
+        bet * 2, // Winner gets their bet back plus opponent's bet
+        'multiplayer',
+        gameId,
+      );
+
+    // Update participants with transaction IDs
+    await this.prisma.$transaction([
+      this.prisma.multiplayerParticipant.update({
+        where: { id: winner.id },
+        data: {
+          transactionId: winnerCreditTransaction.id,
+        },
+      }),
+      this.prisma.multiplayerParticipant.update({
+        where: { id: loser.id },
+        data: {
+          transactionId:
+            loser.playerId === player1.playerId
+              ? player1DebitTransaction.id
+              : player2DebitTransaction.id,
+        },
+      }),
+    ]);
   }
 
   private async getGameByIdOrFail(gameId: string, lang?: string) {
@@ -848,7 +877,7 @@ export class MultiGameService {
   }
 
   private mapGameToDto(game: any): MultiplayerGameDto {
-    const players: GamePlayerDto[] = game.players.map((p) => ({
+    const players: GamePlayerDto[] = game.players.map((p: any) => ({
       id: p.player.id,
       username: p.player.username,
       generatedNumber: p.generatedNumber,
