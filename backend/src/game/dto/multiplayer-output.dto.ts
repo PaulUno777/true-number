@@ -87,6 +87,13 @@ export class MultiplayerGameDto {
   winnerId?: string;
 
   @ApiProperty({
+    description: 'ID du joueur dont c\'est le tour',
+    example: '507f1f77bcf86cd799439011',
+    nullable: true,
+  })
+  currentTurnPlayerId?: string;
+
+  @ApiProperty({
     description: 'Date de création',
     example: '2024-01-01T12:00:00Z',
   })

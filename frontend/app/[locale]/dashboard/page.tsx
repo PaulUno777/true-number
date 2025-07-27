@@ -42,6 +42,7 @@ import {
   WSGameFinished,
   WSGameStarted,
   WSTurnPlayed,
+  WSPlayerJoined,
 } from "@/types/multiplayer";
 
 export default function GameDashboard() {
@@ -58,12 +59,19 @@ export default function GameDashboard() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [gameTimer, setGameTimer] = useState<number | null>(null);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+  const [blinkingElement, setBlinkingElement] = useState<string | null>(null);
   const [createGameData, setCreateGameData] = useState<CreateGameDto>({
     bet: 50,
     thinkingTime: 30,
   });
 
   const socket = useSocket();
+
+  // Helper function to trigger blinking
+  const triggerBlink = (elementId: string) => {
+    setBlinkingElement(elementId);
+    setTimeout(() => setBlinkingElement(null), 2000); // Stop blinking after 2 seconds
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -187,32 +195,53 @@ export default function GameDashboard() {
   useEffect(() => {
     if (!socket.isConnected) return;
 
+    socket.onPlayerJoined((data: WSPlayerJoined) => {
+      setSelectedGame(data.game);
+      // Only blink if it's NOT the current user
+      if (data.userId !== user?.id) {
+        triggerBlink("current-game");
+      }
+      refetchWaitingGames();
+    });
+
     socket.onGameStarted((data: WSGameStarted) => {
-      toast.success(data.message);
       setSelectedGame(data.game);
       setGameTimer(data.game.thinkingTime);
+      triggerBlink("current-game");
     });
 
     socket.onTurnPlayed((data: WSTurnPlayed) => {
       setSelectedGame(data.game);
-      toast.success(
-        t("playerPlayed", {
-          username: data.username,
-          number: data.generatedNumber,
-        })
-      );
+      // Blink the opponent's player card
+      if (data.userId !== user?.id) {
+        triggerBlink(`player-${data.userId}`);
+      }
     });
 
     socket.onGameFinished((data: WSGameFinished) => {
       setSelectedGame(data.game);
-      setShowConfetti(true);
+
+      // Show confetti only for winners
+      if (data.isWinner) {
+        setShowConfetti(true);
+      }
+
+      // Different toast styles for winners vs losers
+      const toastStyle = data.isWinner
+        ? {
+            background: "linear-gradient(45deg, #10b981, #059669)",
+            color: "white",
+          }
+        : {
+            background: "linear-gradient(45deg, #ef4444, #dc2626)",
+            color: "white",
+          };
+
       toast.success(data.message, {
         duration: 5000,
-        style: {
-          background: "linear-gradient(45deg, #667eea, #764ba2)",
-          color: "white",
-        },
+        style: toastStyle,
       });
+
       refreshUser();
       queryClient.invalidateQueries({ queryKey: ["userGames"] });
     });
@@ -223,12 +252,12 @@ export default function GameDashboard() {
 
     socket.onGameState((data) => {
       setSelectedGame(data.game);
-      toast.success(t("gameCreatedAndJoined"));
     });
 
     socket.onPlayerLeft((data) => {
       setSelectedGame(data.game);
-      toast.success(t("playerLeft", { username: data.username }));
+      // Important toast for opponent leaving
+      toast.error(t("playerLeft", { username: data.username }));
       if (data.game.status === "CANCELLED") {
         setSelectedGame(null);
         toast.error(t("gameCancelled"));
@@ -236,7 +265,6 @@ export default function GameDashboard() {
     });
 
     socket.onGameLeft((data) => {
-      toast.success(data.message);
       setSelectedGame(null);
     });
 
@@ -254,6 +282,7 @@ export default function GameDashboard() {
     socket,
     socket.isConnected,
     t,
+    user?.id,
   ]);
 
   // Timer effect
@@ -285,7 +314,6 @@ export default function GameDashboard() {
 
   const handlePlayTurn = () => {
     if (!selectedGame) return;
-    socket.playTurn(selectedGame.id);
     playTurnMutation.mutate(selectedGame.id);
   };
 
@@ -317,7 +345,9 @@ export default function GameDashboard() {
   return (
     <PageLayout
       title={t("gameTitle", { defaultValue: "True Number Game" })}
-      subtitle={t("gameSubtitle", { defaultValue: "Choose your mode and start playing!" })}
+      subtitle={t("gameSubtitle", {
+        defaultValue: "Choose your mode and start playing!",
+      })}
       breadcrumbs={[
         {
           label: t("gameDashboard", { defaultValue: "Game Dashboard" }),
@@ -337,7 +367,9 @@ export default function GameDashboard() {
             <div className="flex items-center space-x-2">
               <DollarSign className="h-6 w-6 text-green-400" />
               <div>
-                <p className="text-sm text-muted-foreground">{t("currentBalance", { defaultValue: "Your Balance" })}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("currentBalance", { defaultValue: "Your Balance" })}
+                </p>
                 <ClientOnlyBalance className="text-3xl font-bold text-green-400" />
               </div>
             </div>
@@ -357,9 +389,9 @@ export default function GameDashboard() {
 
       {/* Game Content */}
       {gameMode === "solo" ? (
-        <SoloGame 
-          balance={isLoadingBalance ? 0 : balance} 
-          onGameComplete={handleGameComplete} 
+        <SoloGame
+          balance={isLoadingBalance ? 0 : balance}
+          onGameComplete={handleGameComplete}
         />
       ) : (
         <div className="space-y-6">
@@ -367,14 +399,18 @@ export default function GameDashboard() {
           <Card className="game-card card-hover">
             <CardHeader>
               <CardTitle className="text-xl text-white flex items-center justify-between">
-                <span>{t("multiplayerGame", { defaultValue: "Multiplayer Game" })}</span>
+                <span>
+                  {t("multiplayerGame", { defaultValue: "Multiplayer Game" })}
+                </span>
                 <Button
                   onClick={() => setShowCreateForm(!showCreateForm)}
                   variant="outline"
                   size="sm"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  {showCreateForm ? t("cancel", { defaultValue: "Cancel" }) : t("createGame", { defaultValue: "Create Game" })}
+                  {showCreateForm
+                    ? t("cancel", { defaultValue: "Cancel" })
+                    : t("createGame", { defaultValue: "Create Game" })}
                 </Button>
               </CardTitle>
             </CardHeader>
@@ -401,7 +437,9 @@ export default function GameDashboard() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-white mb-2">
-                      {t("thinkingTime", { defaultValue: "Thinking Time (sec)" })}
+                      {t("thinkingTime", {
+                        defaultValue: "Thinking Time (sec)",
+                      })}
                     </label>
                     <Input
                       type="number"
@@ -464,7 +502,14 @@ export default function GameDashboard() {
 
           {/* Current Game */}
           {selectedGame && (
-            <Card className="game-card border-accent">
+            <Card
+              id="current-game"
+              className={`game-card border-accent ${
+                blinkingElement === "current-game"
+                  ? "animate-pulse border-yellow-400"
+                  : ""
+              }`}
+            >
               <CardHeader>
                 <CardTitle className="text-xl text-white flex items-center justify-between">
                   <span>{t("currentGame")}</span>
@@ -482,53 +527,112 @@ export default function GameDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {selectedGame.players.map((player) => (
-                    <div
-                      key={player.id}
-                      className="p-4 rounded-lg glass-effect"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium text-white">
-                            {player.username}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {player.playedAt ? t("hasPlayed") : t("waiting")}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-white">
-                            {player.generatedNumber || "?"}
-                          </p>
-                          {player.isWinner &&
-                            selectedGame.status === "FINISHED" && (
-                              <Trophy className="h-5 w-5 text-yellow-500 ml-auto" />
-                            )}
+                  {selectedGame.players.map((player) => {
+                    const isCurrentPlayer = player.id === user?.id;
+                    const isBlinking =
+                      blinkingElement === `player-${player.id}`;
+                    const isPlayersTurn =
+                      selectedGame.currentTurnPlayerId === player.id;
+
+                    return (
+                      <div
+                        key={player.id}
+                        id={`player-${player.id}`}
+                        className={`p-4 rounded-lg transition-all duration-200 ${
+                          isCurrentPlayer
+                            ? "bg-gradient-to-br from-blue-600/20 to-blue-800/20 border-2 border-blue-400/50"
+                            : "glass-effect border border-gray-600/50"
+                        } ${
+                          isPlayersTurn && selectedGame.status === "IN_PROGRESS"
+                            ? "ring-2 ring-green-400 ring-opacity-75 shadow-lg shadow-green-400/25"
+                            : ""
+                        } ${
+                          isBlinking
+                            ? "animate-pulse border-yellow-400 shadow-lg shadow-yellow-400/50"
+                            : ""
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center space-x-2">
+                              <p
+                                className={`font-medium ${
+                                  isCurrentPlayer
+                                    ? "text-blue-200"
+                                    : "text-white"
+                                }`}
+                              >
+                                {player.username}
+                                {isCurrentPlayer && (
+                                  <span className="ml-2 text-xs bg-blue-500 px-2 py-1 rounded-full text-white">
+                                    You
+                                  </span>
+                                )}
+                                {isPlayersTurn &&
+                                  selectedGame.status === "IN_PROGRESS" && (
+                                    <span className="ml-2 text-xs bg-green-500 px-2 py-1 rounded-full text-white animate-pulse">
+                                      Your Turn
+                                    </span>
+                                  )}
+                              </p>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              {player.playedAt ? t("hasPlayed") : t("waiting")}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p
+                              className={`text-2xl font-bold ${
+                                isCurrentPlayer ? "text-blue-200" : "text-white"
+                              }`}
+                            >
+                              {player.generatedNumber || "?"}
+                            </p>
+                            {player.isWinner &&
+                              selectedGame.status === "FINISHED" && (
+                                <Trophy className="h-5 w-5 text-yellow-500 ml-auto" />
+                              )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {selectedGame.status === "IN_PROGRESS" && (
                   <div className="text-center space-y-4">
-                    {selectedGame.players.find(
-                      (p) => p.id === user?.id && !p.playedAt
-                    ) ? (
-                      <Button
-                        onClick={handlePlayTurn}
-                        isLoading={playTurnMutation.isPending}
-                        size="lg"
-                        className="bg-accent hover:bg-accent/90"
-                      >
-                        <Play className="h-5 w-5 mr-2" />
-                        {t("playTurn")}
-                      </Button>
-                    ) : (
-                      <p className="text-muted-foreground">
-                        {t("waitingForOpponent")}
-                      </p>
-                    )}
+                    {(() => {
+                      const currentPlayer = selectedGame.players.find(
+                        (p) => p.id === user?.id
+                      );
+                      const hasCurrentPlayerPlayed =
+                        currentPlayer?.playedAt ||
+                        currentPlayer?.generatedNumber !== null;
+                      const isCurrentPlayerTurn =
+                        selectedGame.currentTurnPlayerId === user?.id;
+
+                      return (
+                        <>
+                          {!hasCurrentPlayerPlayed && isCurrentPlayerTurn ? (
+                            <Button
+                              onClick={handlePlayTurn}
+                              isLoading={playTurnMutation.isPending}
+                              size="lg"
+                              className="bg-accent hover:bg-accent/90 animate-pulse"
+                            >
+                              <Play className="h-5 w-5 mr-2" />
+                              {t("playTurn")}
+                            </Button>
+                          ) : (
+                            <p className="text-muted-foreground">
+                              {hasCurrentPlayerPlayed
+                                ? "You have already played your turn"
+                                : t("waitingForOpponent")}
+                            </p>
+                          )}
+                        </>
+                      );
+                    })()}
                     <Button
                       onClick={handleLeaveGame}
                       isLoading={leaveGameMutation.isPending}
@@ -612,10 +716,11 @@ export default function GameDashboard() {
                             </div>
                           </div>
                           <Button
+                            variant="outline"
                             onClick={() => handleJoinGame(game)}
                             isLoading={joinGameMutation.isPending}
                             disabled={isLoadingBalance || game.bet > balance}
-                            className="bg-accent hover:bg-accent/90"
+                            className="bg-primary hover:bg-primary/90"
                           >
                             {t("join")}
                           </Button>

@@ -145,6 +145,7 @@ exports.Prisma.MultiplayerGameScalarFieldEnum = {
   status: 'status',
   createdBy: 'createdBy',
   winnerId: 'winnerId',
+  currentTurnPlayerId: 'currentTurnPlayerId',
   createdAt: 'createdAt',
   startedAt: 'startedAt',
   finishedAt: 'finishedAt'

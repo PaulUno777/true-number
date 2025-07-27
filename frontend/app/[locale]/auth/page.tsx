@@ -53,7 +53,9 @@ export default function AuthPage() {
     try {
       await login(data.login, data.password);
       toast.success(t("welcomeBack"));
-      router.push("/dashboard");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 100);
     } catch (error: unknown) {
       if (error instanceof AxiosError)
         toast.error(error.response?.data?.message || "Login failed");
@@ -65,7 +67,9 @@ export default function AuthPage() {
     try {
       await register(data);
       toast.success(t("accountCreated"));
-      router.push("/dashboard");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 100);
     } catch (error: unknown) {
       if (error instanceof AxiosError)
         toast.error(error.response?.data?.message || "Registration failed");

@@ -115,6 +115,7 @@
     "startAdventure": "Start your adventure!",
     "transactionHistory": "Transaction History",
     "transactions": "Transactions",
+    "balance": "Current Balance",
     "unknown": "Unknown"
   },
   "admin": {

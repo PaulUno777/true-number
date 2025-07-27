@@ -6,7 +6,7 @@ import { soloService } from "@/services/solo";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Dice1, Zap, Trophy, TrendingUp, TrendingDown } from "lucide-react";
+import { Dice1, Trophy, TrendingUp, TrendingDown, Dice2 } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { PlaySoloGameDto, PlaySoloGameResponseDto } from "@/types/solo";
 import toast from "react-hot-toast";
@@ -141,7 +141,6 @@ export default function SoloGame({
           color: "white",
           border: "1px solid rgba(245, 158, 11, 0.3)",
         },
-        icon: "🎯",
       });
       return;
     }
@@ -153,7 +152,6 @@ export default function SoloGame({
           color: "white",
           border: "1px solid rgba(245, 158, 11, 0.3)",
         },
-        icon: "💸",
       });
       return;
     }
@@ -283,7 +281,7 @@ export default function SoloGame({
               <label className="text-sm sm:text-base text-white font-medium">{t("guessNumber")}</label>
               <Input
                 type="number"
-                min="20"
+                min="1"
                 max="100"
                 value={gameData.chosenNumber}
                 onChange={(e) =>
@@ -343,7 +341,6 @@ export default function SoloGame({
                 {isPlaying ? (
                   <>
                     <div className="relative">
-                      <Zap className="h-6 w-6 sm:h-7 sm:w-7 mr-3 animate-spin text-white" />
                       <div className="absolute inset-0 bg-white/30 rounded-full blur-md animate-ping" />
                     </div>
                     <span className="animate-pulse font-extrabold tracking-wide">
@@ -362,11 +359,11 @@ export default function SoloGame({
                 ) : (
                   <>
                     <div className="relative">
-                      <Dice1 className="h-6 w-6 sm:h-7 sm:w-7 mr-3 animate-bounce text-white" />
+                      <Dice2 className="h-6 w-6 sm:h-7 sm:w-7 mr-3 animate-bounce text-white" />
                       <div className="absolute inset-0 bg-white/20 rounded-full blur-sm group-hover:animate-pulse" />
                     </div>
                     <span className="font-extrabold tracking-wide">
-                      🎲 {t("playGame")} - ${gameData.bet}
+                      {t("playGame")} - ${gameData.bet}
                     </span>
                   </>
                 )}

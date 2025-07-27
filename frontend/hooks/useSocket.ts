@@ -50,6 +50,10 @@ export const useSocket = (): UseSocketReturn => {
     const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
       path: "/socket.io",
       transports: ["websocket"],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
       auth: {
         token: Cookies.get("accessToken"),
       },
@@ -64,9 +68,18 @@ export const useSocket = (): UseSocketReturn => {
       setIsConnected(true);
     });
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from game server");
+    socket.on("disconnect", (reason) => {
+      console.log("Disconnected from game server:", reason);
       setIsConnected(false);
+    });
+
+    socket.on("reconnect", (attemptNumber) => {
+      console.log("Reconnected to game server after", attemptNumber, "attempts");
+      setIsConnected(true);
+    });
+
+    socket.on("reconnect_error", (error) => {
+      console.error("Reconnection error:", error);
     });
 
     socket.on("connect_error", (error) => {

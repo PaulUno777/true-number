@@ -57,6 +57,7 @@ export type I18nTranslations = {
         "activeGameRetrieved": string;
         "gameLeft": string;
         "alreadyHasActiveGame": string;
+        "notYourTurn": string;
         "solo": {
             "exactMatch": string;
             "higher": string;

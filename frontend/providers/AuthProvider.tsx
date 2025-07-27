@@ -7,13 +7,13 @@ import { authService } from '@/services/auth';
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<any>;
   register: (data: {
     username: string;
     email: string;
     password: string;
     phone: string;
-  }) => Promise<void>;
+  }) => Promise<any>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -64,6 +64,7 @@ export default function AuthProvider({
   const login = async (email: string, password: string) => {
     const response = await authService.login({ login: email, password });
     setUser(response.user);
+    return response;
   };
 
   const register = async (data: {
@@ -74,6 +75,7 @@ export default function AuthProvider({
   }) => {
     const response = await authService.register(data);
     setUser(response.user);
+    return response;
   };
 
   const logout = async () => {

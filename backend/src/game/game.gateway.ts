@@ -137,16 +137,21 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         timestamp: new Date(),
       });
 
-      // If game was forfeited, notify about the winner
+      // If game was forfeited, notify remaining player about the win
       if (result.game.status === 'FINISHED' && result.game.winnerId) {
         const winner = result.game.players.find((p) => p.isWinner);
-        this.server.to(`game:${gameId}`).emit('game-finished', {
-          winnerId: result.game.winnerId,
-          winnerUsername: winner?.username,
-          game: result.game,
-          message: `${winner?.username} gagne par forfait et reçoit ${result.game.bet} points !`,
-          timestamp: new Date(),
-        });
+        const winnerSocket = this.userSockets.get(result.game.winnerId);
+        
+        if (winnerSocket) {
+          winnerSocket.emit('game-finished', {
+            winnerId: result.game.winnerId,
+            winnerUsername: winner?.username,
+            game: result.game,
+            message: `Félicitations ! Vous avez gagné par forfait et reçu ${result.game.bet} points !`,
+            isWinner: true,
+            timestamp: new Date(),
+          });
+        }
       }
 
       // Send confirmation to the leaving player
@@ -190,15 +195,28 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
         timestamp: new Date(),
       });
 
-      // If game is finished, notify about winner
+      // If game is finished, notify each player individually with appropriate message
       if (result.game.status === 'FINISHED') {
         const winner = result.game.players.find((p) => p.isWinner);
-        this.server.to(`game:${gameId}`).emit('game-finished', {
-          winnerId: result.game.winnerId,
-          winnerUsername: winner?.username,
-          game: result.game,
-          message: `${winner?.username} gagne la partie et reçoit ${result.game.bet} points !`,
-          timestamp: new Date(),
+        
+        // Send personalized messages to each player
+        result.game.players.forEach(player => {
+          const playerSocket = this.userSockets.get(player.id);
+          if (playerSocket) {
+            const isWinner = player.isWinner;
+            const message = isWinner 
+              ? `Félicitations ! Vous avez gagné la partie et reçu ${result.game.bet} points !`
+              : `Dommage ! ${winner?.username} a gagné cette fois. Bonne chance pour la prochaine !`;
+            
+            playerSocket.emit('game-finished', {
+              winnerId: result.game.winnerId,
+              winnerUsername: winner?.username,
+              game: result.game,
+              message: message,
+              isWinner: isWinner,
+              timestamp: new Date(),
+            });
+          }
         });
       }
 

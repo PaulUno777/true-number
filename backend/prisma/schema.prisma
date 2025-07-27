@@ -46,15 +46,16 @@ model SoloGame {
 }
 
 model MultiplayerGame {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  bet          Int
-  thinkingTime Int
-  status       GameStatus @default(WAITING)
-  createdBy    String     @db.ObjectId
-  winnerId     String?    @db.ObjectId
-  createdAt    DateTime   @default(now())
-  startedAt    DateTime?
-  finishedAt   DateTime?
+  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
+  bet                Int
+  thinkingTime       Int
+  status             GameStatus @default(WAITING)
+  createdBy          String     @db.ObjectId
+  winnerId           String?    @db.ObjectId
+  currentTurnPlayerId String?   @db.ObjectId // ID of player whose turn it is
+  createdAt          DateTime   @default(now())
+  startedAt          DateTime?
+  finishedAt         DateTime?
 
   creator User                     @relation("CreatedGames", fields: [createdBy], references: [id])
   players MultiplayerParticipant[]

@@ -261,10 +261,12 @@ export default function HistoryPage() {
         <CardHeader>
           <CardTitle className="text-xl text-white flex items-center space-x-2">
             <Calendar className="h-5 w-5 text-accent" />
-            <span>{t("yourGames")}</span>
+            <span>
+              {activeTab === "transactions" ? t("transactionHistory") : t("yourGames")}
+            </span>
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            {activeTab === "transactions" ? t("balance", { defaultValue: "Balance" }) : t("totalGames")}:{" "}
+            {activeTab === "transactions" ? t("balance") : t("totalGames")}:{" "}
             {activeTab === "solo"
               ? history?.games?.length || 0
               : activeTab === "multiplayer"

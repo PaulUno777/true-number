@@ -15,6 +15,7 @@ export interface MultiplayerGame {
   createdBy: string;
   creatorUsername: string;
   winnerId?: string;
+  currentTurnPlayerId?: string;
   createdAt: string;
   startedAt?: string;
   finishedAt?: string;
@@ -102,6 +103,7 @@ export interface WSGameFinished {
   winnerUsername: string;
   game: MultiplayerGame;
   message: string;
+  isWinner?: boolean;
   timestamp: string;
 }
 

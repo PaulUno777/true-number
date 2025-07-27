@@ -30,14 +30,14 @@ model User {
 model SoloGame {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
   userId          String         @db.ObjectId
-  bet             Int // Mise du joueur
-  chosenNumber    Int // Nombre choisi par le joueur (20-100)
-  generatedNumber Int // Nombre généré aléatoirement
-  result          SoloGameResult // Résultat de la partie
-  balanceChange   Int // Changement de balance (+/-)
-  multiplier      Float // 2.0, 1.5, ou 0 selon le résultat
+  bet             Int // Bet
+  chosenNumber    Int // Guessed number
+  generatedNumber Int // Generated
+  result          SoloGameResult // result
+  balanceChange   Int // balance change(+/-)
+  multiplier      Float
   playedAt        DateTime       @default(now())
-  transactionId   String?        @db.ObjectId // Reference to the transaction
+  transactionId   String?        @db.ObjectId
 
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transaction Transaction? @relation(fields: [transactionId], references: [id])
@@ -46,15 +46,16 @@ model SoloGame {
 }
 
 model MultiplayerGame {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
-  bet          Int
-  thinkingTime Int
-  status       GameStatus @default(WAITING)
-  createdBy    String     @db.ObjectId
-  winnerId     String?    @db.ObjectId
-  createdAt    DateTime   @default(now())
-  startedAt    DateTime?
-  finishedAt   DateTime?
+  id                  String     @id @default(auto()) @map("_id") @db.ObjectId
+  bet                 Int
+  thinkingTime        Int
+  status              GameStatus @default(WAITING)
+  createdBy           String     @db.ObjectId
+  winnerId            String?    @db.ObjectId
+  currentTurnPlayerId String?    @db.ObjectId // ID of player whose turn it is
+  createdAt           DateTime   @default(now())
+  startedAt           DateTime?
+  finishedAt          DateTime?
 
   creator User                     @relation("CreatedGames", fields: [createdBy], references: [id])
   players MultiplayerParticipant[]

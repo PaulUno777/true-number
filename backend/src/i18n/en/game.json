@@ -22,6 +22,7 @@
   "activeGameRetrieved": "Active game retrieved successfully",
   "gameLeft": "Game left successfully",
   "alreadyHasActiveGame": "You already have an active game. Please finish or leave it before creating a new one.",
+  "notYourTurn": "It's not your turn to play.",
   "solo": {
     "exactMatch": "🎯 Perfect! Exact match! You win {{points}} points!",
     "higher": "🎉 Great! The generated number is higher! You win {{points}} points!",

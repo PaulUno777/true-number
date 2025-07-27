@@ -24,10 +24,19 @@ import { PageOption, PrismaParams } from 'prisma-paginator';
 import { GameGateway } from './game.gateway';
 import { TransactionService } from '../transaction/transaction.service';
 
+const gameIncludeFields = {
+  creator: { select: { id: true, username: true } },
+  players: {
+    include: {
+      player: { select: { id: true, username: true } },
+    },
+  },
+};
+
 @Injectable()
 export class MultiGameService {
   private gameGateway: GameGateway;
-  
+
   constructor(
     private prisma: PrismaService,
     private i18n: I18nService<I18nTranslations>,
@@ -60,53 +69,21 @@ export class MultiGameService {
     }
 
     // Check user exists and has sufficient balance
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { username: true },
-    });
+    await this.ensureUserExists(userId, lang);
 
-    if (!user) {
-      throw new NotFoundException(this.i18n.t('user.userNotFound', { lang }));
-    }
+    await this.ensureSufficientBalance(userId, createGameDto.bet, lang);
 
-    const hasBalance = await this.transactionService.hasUserSufficientBalance(
-      userId,
-      createGameDto.bet,
-    );
-    if (!hasBalance) {
-      throw new BadRequestException(
-        this.i18n.t('game.insufficientBalance', { lang }),
-      );
-    }
-
-    // Créer la partie
+    // Create party
     const game = await this.prisma.multiplayerGame.create({
       data: {
         bet: createGameDto.bet,
         thinkingTime: createGameDto.thinkingTime,
         createdBy: userId,
       },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
+      include: gameIncludeFields,
     });
 
-    // Ajouter le créateur comme premier joueur
+    // Add le creator as participant
     await this.prisma.multiplayerParticipant.create({
       data: {
         gameId: game.id,
@@ -132,24 +109,7 @@ export class MultiGameService {
       where: {
         status: GameStatus.WAITING,
       },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
+      include: gameIncludeFields,
       orderBy: {
         createdAt: 'desc',
       },
@@ -168,32 +128,8 @@ export class MultiGameService {
     gameId: string,
     lang?: string,
   ): Promise<JoinGameResponseDto> {
-    // Vérifier que la partie existe et est en attente
-    const game = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!game) {
-      throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
-    }
+    // Check if game exists and In WAITING status
+    const game = await this.getGameByIdOrFail(gameId, lang);
 
     if (game.status !== GameStatus.WAITING) {
       throw new BadRequestException(
@@ -211,26 +147,17 @@ export class MultiGameService {
       throw new BadRequestException(this.i18n.t('game.gameFull', { lang }));
     }
 
-    // Vérifier le solde de l'utilisateur
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
+    // Check user exists and has sufficient balance
+    const user = await this.ensureUserExists(userId, lang);
 
-    if (!user) {
-      throw new NotFoundException(this.i18n.t('user.userNotFound', { lang }));
-    }
+    await this.ensureSufficientBalance(userId, game.bet, lang);
 
-    const hasBalance = await this.transactionService.hasUserSufficientBalance(
-      userId,
-      game.bet,
-    );
-    if (!hasBalance) {
-      throw new BadRequestException(
-        this.i18n.t('game.insufficientBalance', { lang }),
-      );
-    }
+    // Randomly select first player
+    const players = [game.createdBy, userId];
+    const randomFirstPlayer =
+      players[Math.floor(Math.random() * players.length)];
 
-    // Ajouter le joueur et mettre à jour le statut de la partie
+    // Add player and update game status
     await this.prisma.$transaction([
       this.prisma.multiplayerParticipant.create({
         data: {
@@ -243,11 +170,12 @@ export class MultiGameService {
         data: {
           status: GameStatus.IN_PROGRESS,
           startedAt: new Date(),
+          currentTurnPlayerId: randomFirstPlayer,
         },
       }),
     ]);
 
-    // Récupérer la partie mise à jour
+    // Get updated party
     const updatedGame = await this.prisma.multiplayerGame.findUnique({
       where: { id: gameId },
       include: {
@@ -283,147 +211,156 @@ export class MultiGameService {
     gameId: string,
     lang?: string,
   ): Promise<PlayTurnResponseDto> {
-    // Vérifier que la partie existe et est en cours
-    const game = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      try {
+        return await this.attemptPlayTurn(userId, gameId, lang);
+      } catch (error) {
+        // Check if it's a write conflict error (P2034)
+        if (error.code === 'P2034' && retryCount < maxRetries - 1) {
+          retryCount++;
+          // Exponential backoff: wait 100ms, 200ms, 400ms
+          const delay = 100 * Math.pow(2, retryCount - 1);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+
+  private async attemptPlayTurn(
+    userId: string,
+    gameId: string,
+    lang?: string,
+  ): Promise<PlayTurnResponseDto> {
+    // Use a transaction with isolation to prevent race conditions
+    return await this.prisma.$transaction(async (tx) => {
+      // Get game with fresh data inside transaction
+      const game = await tx.multiplayerGame.findUnique({
+        where: { id: gameId },
+        include: {
+          creator: { select: { id: true, username: true } },
+          players: {
+            include: {
+              player: { select: { id: true, username: true } },
             },
           },
         },
-      },
-    });
+      });
 
-    if (!game) {
-      throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
-    }
+      if (!game) {
+        throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
+      }
 
-    if (game.status !== GameStatus.IN_PROGRESS) {
-      throw new BadRequestException(
-        this.i18n.t('game.gameNotInProgress', { lang }),
-      );
-    }
+      if (game.status !== GameStatus.IN_PROGRESS) {
+        throw new BadRequestException(
+          this.i18n.t('game.gameNotInProgress', { lang }),
+        );
+      }
 
-    // Vérifier que l'utilisateur participe à la partie
-    const participant = game.players.find((p) => p.playerId === userId);
-    if (!participant) {
-      throw new ForbiddenException(
-        this.i18n.t('game.notParticipant', { lang }),
-      );
-    }
+      // Check if user is participant
+      const participant = game.players.find((p) => p.playerId === userId);
+      if (!participant) {
+        throw new ForbiddenException(
+          this.i18n.t('game.notParticipant', { lang }),
+        );
+      }
 
-    // Vérifier que le joueur n'a pas encore joué
-    if (participant.generatedNumber !== null) {
-      throw new BadRequestException(
-        this.i18n.t('game.alreadyPlayed', { lang }),
-      );
-    }
+      // Check if it is user turn
+      if (game.currentTurnPlayerId !== userId) {
+        throw new BadRequestException(
+          this.i18n.t('game.notYourTurn', {
+            lang,
+            args: { defaultMessage: 'It is not your turn to play' },
+          }),
+        );
+      }
 
-    // Générer le nombre aléatoire
-    const generatedNumber = Math.floor(Math.random() * 101);
+      // Check if user has not played yet
+      if (participant.generatedNumber !== null) {
+        throw new BadRequestException(
+          this.i18n.t('game.alreadyPlayed', { lang }),
+        );
+      }
 
-    // Mettre à jour le participant
-    await this.prisma.multiplayerParticipant.update({
-      where: { id: participant.id },
-      data: {
+      // Generate random number
+      const generatedNumber = Math.floor(Math.random() * 101);
+
+      // Get the other player to switch turns
+      const otherParticipant = game.players.find((p) => p.playerId !== userId);
+      const nextTurnPlayerId = otherParticipant
+        ? otherParticipant.playerId
+        : null;
+
+      // Update participant and game in atomic operations
+      await tx.multiplayerParticipant.update({
+        where: { id: participant.id },
+        data: {
+          generatedNumber,
+          playedAt: new Date(),
+        },
+      });
+
+      await tx.multiplayerGame.update({
+        where: { id: gameId },
+        data: {
+          currentTurnPlayerId: nextTurnPlayerId,
+        },
+      });
+
+      // Check if all players have played
+      const allParticipants = await tx.multiplayerParticipant.findMany({
+        where: { gameId },
+        include: {
+          player: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
+      });
+
+      const allPlayed = allParticipants.every((p) => p.generatedNumber !== null);
+
+      if (allPlayed) {
+        await this.finishGameInTransaction(tx, game.id, allParticipants, game.bet);
+      }
+
+      // Get updated game within the same transaction
+      const updatedGame = await tx.multiplayerGame.findUnique({
+        where: { id: gameId },
+        include: {
+          creator: { select: { id: true, username: true } },
+          players: {
+            include: {
+              player: { select: { id: true, username: true } },
+            },
+          },
+        },
+      });
+
+      const gameDto = this.mapGameToDto(updatedGame);
+
+      return {
         generatedNumber,
-        playedAt: new Date(),
-      },
+        game: gameDto,
+        message: this.i18n.t('game.turnPlayed', { lang }),
+      };
+    }, {
+      maxWait: 5000, // Maximum time to wait for a transaction slot
+      timeout: 10000, // Maximum time for the transaction to run
     });
-
-    // Vérifier si les deux joueurs ont joué
-    const allParticipants = await this.prisma.multiplayerParticipant.findMany({
-      where: { gameId },
-      include: {
-        player: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-      },
-    });
-
-    const allPlayed = allParticipants.every((p) => p.generatedNumber !== null);
-
-    if (allPlayed) {
-      // Déterminer le gagnant et mettre à jour les soldes
-      await this.finishGame(game.id, allParticipants, game.bet);
-    }
-
-    // Récupérer la partie mise à jour
-    const updatedGame = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const gameDto = this.mapGameToDto(updatedGame);
-
-    return {
-      generatedNumber,
-      game: gameDto,
-      message: this.i18n.t('game.turnPlayed', { lang }),
-    };
   }
 
   async getGameDetails(
     gameId: string,
     lang?: string,
   ): Promise<CreateGameResponseDto> {
-    const game = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!game) {
-      throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
-    }
+    const game = await this.getGameByIdOrFail(gameId, lang);
 
     const gameDto = this.mapGameToDto(game);
 
@@ -449,24 +386,7 @@ export class MultiGameService {
       where: { playerId: userId },
       include: {
         game: {
-          include: {
-            creator: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-            players: {
-              include: {
-                player: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
+          include: gameIncludeFields,
         },
       },
     };
@@ -565,24 +485,7 @@ export class MultiGameService {
           in: [GameStatus.WAITING, GameStatus.IN_PROGRESS],
         },
       },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
+      include: gameIncludeFields,
       orderBy: {
         createdAt: 'desc',
       },
@@ -613,24 +516,7 @@ export class MultiGameService {
       },
       include: {
         game: {
-          include: {
-            creator: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-            players: {
-              include: {
-                player: {
-                  select: {
-                    id: true,
-                    username: true,
-                  },
-                },
-              },
-            },
-          },
+          include: gameIncludeFields,
         },
       },
       orderBy: {
@@ -655,31 +541,7 @@ export class MultiGameService {
     gameId: string,
     lang?: string,
   ): Promise<CreateGameResponseDto> {
-    const game = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!game) {
-      throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
-    }
+    const game = await this.getGameByIdOrFail(gameId, lang);
 
     const participant = game.players.find((p) => p.playerId === userId);
     if (!participant) {
@@ -807,7 +669,7 @@ export class MultiGameService {
     participants: any[],
     bet: number,
   ): Promise<void> {
-    // Déterminer le gagnant
+    // Check winner
     const [player1, player2] = participants;
     const winner =
       player1.generatedNumber > player2.generatedNumber ? player1 : player2;
@@ -839,9 +701,8 @@ export class MultiGameService {
         gameId,
       );
 
-    // Mettre à jour les soldes et marquer le gagnant
     await this.prisma.$transaction([
-      // Mettre à jour le gagnant
+      // update winner
       this.prisma.multiplayerParticipant.update({
         where: { id: winner.id },
         data: {
@@ -850,7 +711,7 @@ export class MultiGameService {
           transactionId: winnerCreditTransaction.id,
         },
       }),
-      // Mettre à jour le perdant
+      // Update loser
       this.prisma.multiplayerParticipant.update({
         where: { id: loser.id },
         data: {
@@ -862,7 +723,7 @@ export class MultiGameService {
               : player2DebitTransaction.id,
         },
       }),
-      // Finaliser la partie
+      // Finish game
       this.prisma.multiplayerGame.update({
         where: { id: gameId },
         data: {
@@ -872,6 +733,118 @@ export class MultiGameService {
         },
       }),
     ]);
+  }
+
+  private async finishGameInTransaction(
+    tx: any,
+    gameId: string,
+    participants: any[],
+    bet: number,
+  ): Promise<void> {
+    // Check winner
+    const [player1, player2] = participants;
+    const winner =
+      player1.generatedNumber > player2.generatedNumber ? player1 : player2;
+    const loser = winner === player1 ? player2 : player1;
+
+    // Create debit transactions for both players (they both placed bets)
+    const player1DebitTransaction =
+      await this.transactionService.createGameDebitTransaction(
+        player1.playerId,
+        bet,
+        'multiplayer',
+        gameId,
+      );
+
+    const player2DebitTransaction =
+      await this.transactionService.createGameDebitTransaction(
+        player2.playerId,
+        bet,
+        'multiplayer',
+        gameId,
+      );
+
+    // Create credit transaction for winner (winner gets both bets)
+    const winnerCreditTransaction =
+      await this.transactionService.createGameCreditTransaction(
+        winner.playerId,
+        bet * 2, // Winner gets their bet back plus opponent's bet
+        'multiplayer',
+        gameId,
+      );
+
+    // Update winner within the transaction
+    await tx.multiplayerParticipant.update({
+      where: { id: winner.id },
+      data: {
+        isWinner: true,
+        balanceChange: bet, // Net change is +bet (gets opponent's bet)
+        transactionId: winnerCreditTransaction.id,
+      },
+    });
+
+    // Update loser within the transaction
+    await tx.multiplayerParticipant.update({
+      where: { id: loser.id },
+      data: {
+        isWinner: false,
+        balanceChange: -bet, // Net change is -bet (loses their bet)
+        transactionId:
+          loser.playerId === player1.playerId
+            ? player1DebitTransaction.id
+            : player2DebitTransaction.id,
+      },
+    });
+
+    // Finish game within the transaction
+    await tx.multiplayerGame.update({
+      where: { id: gameId },
+      data: {
+        status: GameStatus.FINISHED,
+        winnerId: winner.playerId,
+        finishedAt: new Date(),
+      },
+    });
+  }
+
+  private async getGameByIdOrFail(gameId: string, lang?: string) {
+    const game = await this.prisma.multiplayerGame.findUnique({
+      where: { id: gameId },
+      include: gameIncludeFields,
+    });
+
+    if (!game) {
+      throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
+    }
+    return game;
+  }
+
+  private async ensureUserExists(userId: string, lang?: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, username: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException(this.i18n.t('user.userNotFound', { lang }));
+    }
+    return user;
+  }
+
+  private async ensureSufficientBalance(
+    userId: string,
+    amount: number,
+    lang?: string,
+  ) {
+    const hasBalance = await this.transactionService.hasUserSufficientBalance(
+      userId,
+      amount,
+    );
+    if (!hasBalance) {
+      throw new BadRequestException(
+        this.i18n.t('game.insufficientBalance', { lang }),
+      );
+    }
   }
 
   private mapGameToDto(game: any): MultiplayerGameDto {
@@ -892,6 +865,7 @@ export class MultiGameService {
       createdBy: game.createdBy,
       creatorUsername: game.creator.username,
       winnerId: game.winnerId,
+      currentTurnPlayerId: game.currentTurnPlayerId,
       createdAt: game.createdAt,
       startedAt: game.startedAt,
       finishedAt: game.finishedAt,

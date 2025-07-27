@@ -22,6 +22,7 @@
   "activeGameRetrieved": "Partie active récupérée avec succès",
   "gameLeft": "Partie quittée avec succès",
   "alreadyHasActiveGame": "Vous avez déjà une partie active. Veuillez la terminer ou la quitter avant d'en créer une nouvelle.",
+  "notYourTurn": "Ce n'est pas à ton tour de jouer.",
   "solo": {
     "exactMatch": "🎯 Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
     "higher": "🎉 Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",

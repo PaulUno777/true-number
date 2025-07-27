@@ -6,8 +6,18 @@ import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // Enable CORS
+  const allowedOrigins = [
+    'http://192.168.1.167:3000',
+    `${process.env.FRONTEND_URL || 'http://localhost:3000'}`,
+  ];
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
 

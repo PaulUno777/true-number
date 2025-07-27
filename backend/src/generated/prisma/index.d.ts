@@ -3774,6 +3774,7 @@ export namespace Prisma {
     status: $Enums.GameStatus | null
     createdBy: string | null
     winnerId: string | null
+    currentTurnPlayerId: string | null
     createdAt: Date | null
     startedAt: Date | null
     finishedAt: Date | null
@@ -3786,6 +3787,7 @@ export namespace Prisma {
     status: $Enums.GameStatus | null
     createdBy: string | null
     winnerId: string | null
+    currentTurnPlayerId: string | null
     createdAt: Date | null
     startedAt: Date | null
     finishedAt: Date | null
@@ -3798,6 +3800,7 @@ export namespace Prisma {
     status: number
     createdBy: number
     winnerId: number
+    currentTurnPlayerId: number
     createdAt: number
     startedAt: number
     finishedAt: number
@@ -3822,6 +3825,7 @@ export namespace Prisma {
     status?: true
     createdBy?: true
     winnerId?: true
+    currentTurnPlayerId?: true
     createdAt?: true
     startedAt?: true
     finishedAt?: true
@@ -3834,6 +3838,7 @@ export namespace Prisma {
     status?: true
     createdBy?: true
     winnerId?: true
+    currentTurnPlayerId?: true
     createdAt?: true
     startedAt?: true
     finishedAt?: true
@@ -3846,6 +3851,7 @@ export namespace Prisma {
     status?: true
     createdBy?: true
     winnerId?: true
+    currentTurnPlayerId?: true
     createdAt?: true
     startedAt?: true
     finishedAt?: true
@@ -3945,6 +3951,7 @@ export namespace Prisma {
     status: $Enums.GameStatus
     createdBy: string
     winnerId: string | null
+    currentTurnPlayerId: string | null
     createdAt: Date
     startedAt: Date | null
     finishedAt: Date | null
@@ -3976,6 +3983,7 @@ export namespace Prisma {
     status?: boolean
     createdBy?: boolean
     winnerId?: boolean
+    currentTurnPlayerId?: boolean
     createdAt?: boolean
     startedAt?: boolean
     finishedAt?: boolean
@@ -3993,12 +4001,13 @@ export namespace Prisma {
     status?: boolean
     createdBy?: boolean
     winnerId?: boolean
+    currentTurnPlayerId?: boolean
     createdAt?: boolean
     startedAt?: boolean
     finishedAt?: boolean
   }
 
-  export type MultiplayerGameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bet" | "thinkingTime" | "status" | "createdBy" | "winnerId" | "createdAt" | "startedAt" | "finishedAt", ExtArgs["result"]["multiplayerGame"]>
+  export type MultiplayerGameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bet" | "thinkingTime" | "status" | "createdBy" | "winnerId" | "currentTurnPlayerId" | "createdAt" | "startedAt" | "finishedAt", ExtArgs["result"]["multiplayerGame"]>
   export type MultiplayerGameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     creator?: boolean | UserDefaultArgs<ExtArgs>
     players?: boolean | MultiplayerGame$playersArgs<ExtArgs>
@@ -4018,6 +4027,7 @@ export namespace Prisma {
       status: $Enums.GameStatus
       createdBy: string
       winnerId: string | null
+      currentTurnPlayerId: string | null
       createdAt: Date
       startedAt: Date | null
       finishedAt: Date | null
@@ -4421,6 +4431,7 @@ export namespace Prisma {
     readonly status: FieldRef<"MultiplayerGame", 'GameStatus'>
     readonly createdBy: FieldRef<"MultiplayerGame", 'String'>
     readonly winnerId: FieldRef<"MultiplayerGame", 'String'>
+    readonly currentTurnPlayerId: FieldRef<"MultiplayerGame", 'String'>
     readonly createdAt: FieldRef<"MultiplayerGame", 'DateTime'>
     readonly startedAt: FieldRef<"MultiplayerGame", 'DateTime'>
     readonly finishedAt: FieldRef<"MultiplayerGame", 'DateTime'>
@@ -8161,6 +8172,7 @@ export namespace Prisma {
     status: 'status',
     createdBy: 'createdBy',
     winnerId: 'winnerId',
+    currentTurnPlayerId: 'currentTurnPlayerId',
     createdAt: 'createdAt',
     startedAt: 'startedAt',
     finishedAt: 'finishedAt'
@@ -8585,6 +8597,7 @@ export namespace Prisma {
     status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
     createdBy?: StringFilter<"MultiplayerGame"> | string
     winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    currentTurnPlayerId?: StringNullableFilter<"MultiplayerGame"> | string | null
     createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
     startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
@@ -8599,6 +8612,7 @@ export namespace Prisma {
     status?: SortOrder
     createdBy?: SortOrder
     winnerId?: SortOrder
+    currentTurnPlayerId?: SortOrder
     createdAt?: SortOrder
     startedAt?: SortOrder
     finishedAt?: SortOrder
@@ -8616,6 +8630,7 @@ export namespace Prisma {
     status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
     createdBy?: StringFilter<"MultiplayerGame"> | string
     winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    currentTurnPlayerId?: StringNullableFilter<"MultiplayerGame"> | string | null
     createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
     startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
@@ -8630,6 +8645,7 @@ export namespace Prisma {
     status?: SortOrder
     createdBy?: SortOrder
     winnerId?: SortOrder
+    currentTurnPlayerId?: SortOrder
     createdAt?: SortOrder
     startedAt?: SortOrder
     finishedAt?: SortOrder
@@ -8650,6 +8666,7 @@ export namespace Prisma {
     status?: EnumGameStatusWithAggregatesFilter<"MultiplayerGame"> | $Enums.GameStatus
     createdBy?: StringWithAggregatesFilter<"MultiplayerGame"> | string
     winnerId?: StringNullableWithAggregatesFilter<"MultiplayerGame"> | string | null
+    currentTurnPlayerId?: StringNullableWithAggregatesFilter<"MultiplayerGame"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"MultiplayerGame"> | Date | string
     startedAt?: DateTimeNullableWithAggregatesFilter<"MultiplayerGame"> | Date | string | null
     finishedAt?: DateTimeNullableWithAggregatesFilter<"MultiplayerGame"> | Date | string | null
@@ -9089,6 +9106,7 @@ export namespace Prisma {
     thinkingTime: number
     status?: $Enums.GameStatus
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -9103,6 +9121,7 @@ export namespace Prisma {
     status?: $Enums.GameStatus
     createdBy: string
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -9114,6 +9133,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9127,6 +9147,7 @@ export namespace Prisma {
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     createdBy?: StringFieldUpdateOperationsInput | string
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9140,6 +9161,7 @@ export namespace Prisma {
     status?: $Enums.GameStatus
     createdBy: string
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -9150,6 +9172,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9161,6 +9184,7 @@ export namespace Prisma {
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     createdBy?: StringFieldUpdateOperationsInput | string
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -9761,6 +9785,7 @@ export namespace Prisma {
     status?: SortOrder
     createdBy?: SortOrder
     winnerId?: SortOrder
+    currentTurnPlayerId?: SortOrder
     createdAt?: SortOrder
     startedAt?: SortOrder
     finishedAt?: SortOrder
@@ -9778,6 +9803,7 @@ export namespace Prisma {
     status?: SortOrder
     createdBy?: SortOrder
     winnerId?: SortOrder
+    currentTurnPlayerId?: SortOrder
     createdAt?: SortOrder
     startedAt?: SortOrder
     finishedAt?: SortOrder
@@ -9790,6 +9816,7 @@ export namespace Prisma {
     status?: SortOrder
     createdBy?: SortOrder
     winnerId?: SortOrder
+    currentTurnPlayerId?: SortOrder
     createdAt?: SortOrder
     startedAt?: SortOrder
     finishedAt?: SortOrder
@@ -10991,6 +11018,7 @@ export namespace Prisma {
     thinkingTime: number
     status?: $Enums.GameStatus
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -11003,6 +11031,7 @@ export namespace Prisma {
     thinkingTime: number
     status?: $Enums.GameStatus
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -11145,6 +11174,7 @@ export namespace Prisma {
     status?: EnumGameStatusFilter<"MultiplayerGame"> | $Enums.GameStatus
     createdBy?: StringFilter<"MultiplayerGame"> | string
     winnerId?: StringNullableFilter<"MultiplayerGame"> | string | null
+    currentTurnPlayerId?: StringNullableFilter<"MultiplayerGame"> | string | null
     createdAt?: DateTimeFilter<"MultiplayerGame"> | Date | string
     startedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
     finishedAt?: DateTimeNullableFilter<"MultiplayerGame"> | Date | string | null
@@ -11515,6 +11545,7 @@ export namespace Prisma {
     thinkingTime: number
     status?: $Enums.GameStatus
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -11528,6 +11559,7 @@ export namespace Prisma {
     status?: $Enums.GameStatus
     createdBy: string
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -11622,6 +11654,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -11634,6 +11667,7 @@ export namespace Prisma {
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     createdBy?: StringFieldUpdateOperationsInput | string
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12019,6 +12053,7 @@ export namespace Prisma {
     thinkingTime: number
     status?: $Enums.GameStatus
     winnerId?: string | null
+    currentTurnPlayerId?: string | null
     createdAt?: Date | string
     startedAt?: Date | string | null
     finishedAt?: Date | string | null
@@ -12063,6 +12098,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12074,6 +12110,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -12085,6 +12122,7 @@ export namespace Prisma {
     thinkingTime?: IntFieldUpdateOperationsInput | number
     status?: EnumGameStatusFieldUpdateOperationsInput | $Enums.GameStatus
     winnerId?: NullableStringFieldUpdateOperationsInput | string | null
+    currentTurnPlayerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

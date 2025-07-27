@@ -115,6 +115,7 @@
     "startAdventure": "Commencez votre aventure !",
     "transactionHistory": "Historique des Transactions",
     "transactions": "Transactions",
+    "balance": "Solde Actuel",
     "unknown": "Inconnu"
   },
   "admin": {
