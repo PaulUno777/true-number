@@ -3,7 +3,7 @@ import { IsInt, IsPositive, Min, Max } from 'class-validator';
 
 export class CreateGameDto {
   @ApiProperty({
-    description: 'Mise de la partie (points à gagner/perdre)',
+    description: 'Game bet (points to win/lose)',
     example: 100,
     minimum: 1,
     maximum: 1000,
@@ -15,7 +15,7 @@ export class CreateGameDto {
   bet: number;
 
   @ApiProperty({
-    description: 'Temps de réflexion par joueur en secondes',
+    description: 'Thinking time per player in seconds',
     example: 30,
     minimum: 10,
     maximum: 300,
@@ -29,7 +29,7 @@ export class CreateGameDto {
 
 export class JoinGameDto {
   @ApiProperty({
-    description: 'ID de la partie à rejoindre',
+    description: 'ID of the game to join',
     example: '507f1f77bcf86cd799439011',
   })
   gameId: string;
@@ -37,7 +37,7 @@ export class JoinGameDto {
 
 export class PlayTurnDto {
   @ApiProperty({
-    description: 'ID de la partie',
+    description: 'ID of the game',
     example: '507f1f77bcf86cd799439011',
   })
   gameId: string;

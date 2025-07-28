@@ -30,6 +30,8 @@
   "timeUp": "Time's up!",
   "leavePenalty": "⚠️ Warning: Leaving a game incurs a 10% penalty of the bet amount.",
   "leftWithPenalty": "You left the game and lost {{penalty}} points as penalty (10% of bet).",
+  "timeoutForfeit": "Player forfeited due to timeout",
+  "forfeitedByTimeout": "You have been forfeited due to timeout",
   "solo": {
     "exactMatch": "Perfect! Exact match! You win {{points}} points!",
     "higher": "Great! The generated number is higher! You win {{points}} points!",

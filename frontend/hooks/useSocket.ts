@@ -3,18 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/providers/AuthProvider";
+import { WSGameLeft } from "@/types/multiplayer";
 import {
-  WSPlayerJoined,
-  WSPlayerLeft,
-  WSTurnPlayed,
-  WSGameFinished,
-  WSGameStarted,
-  WSGameTimer,
-  WSNewGameCreated,
-  WSGameLeft,
-  MultiplayerGame,
-  GetWaitingGamesResponse,
-} from "@/types/multiplayer";
+  GAME_EVENTS,
+  GameLifecycleEvents,
+  PlayerActionEvents,
+  TimerEvents,
+  SystemEvents,
+} from "@/types/game-events";
 import Cookies from "js-cookie";
 
 export interface UseSocketReturn {
@@ -22,29 +18,64 @@ export interface UseSocketReturn {
   isConnected: boolean;
   joinGame: (gameId: string) => void;
   leaveGame: (gameId: string) => void;
-  playTurn: (gameId: string) => void;
-  getWaitingGames: () => void;
   // Event listeners
-  onPlayerJoined: (callback: (data: WSPlayerJoined) => void) => void;
-  onPlayerLeft: (callback: (data: WSPlayerLeft) => void) => void;
-  onTurnPlayed: (callback: (data: WSTurnPlayed) => void) => void;
-  onGameFinished: (callback: (data: WSGameFinished) => void) => void;
-  onGameStarted: (callback: (data: WSGameStarted) => void) => void;
-  onGameTimer: (callback: (data: WSGameTimer) => void) => void;
-  onNewGameCreated: (callback: (data: WSNewGameCreated) => void) => void;
-  onWaitingGames: (callback: (data: GetWaitingGamesResponse) => void) => void;
-  onGameState: (callback: (data: { game: MultiplayerGame }) => void) => void;
+  onPlayerJoined: (
+    callback: (data: GameLifecycleEvents["GameJoined"]) => void
+  ) => void;
+  onPlayerLeft: (
+    callback: (data: PlayerActionEvents["PlayerLeftGame"]) => void
+  ) => void;
+  onTurnPlayed: (
+    callback: (data: PlayerActionEvents["TurnPlayed"]) => void
+  ) => void;
+  onGameFinished: (
+    callback: (data: GameLifecycleEvents["GameFinished"]) => void
+  ) => void;
+  onGameStarted: (
+    callback: (data: GameLifecycleEvents["GameStarted"]) => void
+  ) => void;
+  onGameTimer: (callback: (data: TimerEvents["TimerUpdate"]) => void) => void;
+  onNewGameCreated: (
+    callback: (data: GameLifecycleEvents["GameCreated"]) => void
+  ) => void;
+  onWaitingGames: (
+    callback: (data: SystemEvents["WaitingGames"]) => void
+  ) => void;
+  onGameState: (callback: (data: SystemEvents["GameState"]) => void) => void;
   onGameLeft: (callback: (data: WSGameLeft) => void) => void;
-  onError: (callback: (data: { message: string }) => void) => void;
+  onError: (callback: (data: SystemEvents["Error"]) => void) => void;
+  onGameTimerEnded: (
+    callback: (data: TimerEvents["TimerEnded"]) => void
+  ) => void;
+  onGameTimeoutForfeit: (
+    callback: (data: TimerEvents["TimeoutForfeit"]) => void
+  ) => void;
+  onGameCancelled: (
+    callback: (data: GameLifecycleEvents["GameCancelled"]) => void
+  ) => void;
 }
 
 export const useSocket = (): UseSocketReturn => {
   const { user } = useAuth();
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
+  const currentGameIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      // Clean up socket if user is null
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+        setIsConnected(false);
+      }
+      return;
+    }
+
+    // Don't recreate socket if it exists and is connected
+    if (socketRef.current && socketRef.current.connected) {
+      return;
+    }
 
     // Initialize socket connection
     const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
@@ -52,8 +83,12 @@ export const useSocket = (): UseSocketReturn => {
       transports: ["websocket"],
       autoConnect: true,
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      randomizationFactor: 0.5,
+      timeout: 20000,
+      forceNew: false,
       auth: {
         token: Cookies.get("accessToken"),
       },
@@ -64,18 +99,26 @@ export const useSocket = (): UseSocketReturn => {
     });
 
     socket.on("connect", () => {
-      console.log("Connected to game server");
+      console.log("🟢 Connected to game server");
       setIsConnected(true);
     });
 
     socket.on("disconnect", (reason) => {
-      console.log("Disconnected from game server:", reason);
+      console.log("🔴 Disconnected from game server:", reason);
       setIsConnected(false);
     });
 
     socket.on("reconnect", (attemptNumber) => {
-      console.log("Reconnected to game server after", attemptNumber, "attempts");
+      console.log(
+        "🔄 Reconnected to game server after",
+        attemptNumber,
+        "attempts"
+      );
       setIsConnected(true);
+      
+      // Backend will automatically rejoin user to their active game room
+      // and send game state - no additional frontend action needed
+      console.log("✅ Auto-rejoin handled by backend");
     });
 
     socket.on("reconnect_error", (error) => {
@@ -97,65 +140,92 @@ export const useSocket = (): UseSocketReturn => {
   }, [user]);
 
   const joinGame = (gameId: string) => {
+    console.log(`🚀 Joining game room: ${gameId}`);
     socketRef.current?.emit("join-game", { gameId });
   };
 
   const leaveGame = (gameId: string) => {
+    console.log(`👋 Leaving game room: ${gameId}`);
     socketRef.current?.emit("leave-game", { gameId });
   };
 
-  const playTurn = (gameId: string) => {
-    socketRef.current?.emit("play-turn", { gameId });
+  const onPlayerJoined = (
+    callback: (data: GameLifecycleEvents["GameJoined"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_JOINED, callback);
   };
 
-  const getWaitingGames = () => {
-    socketRef.current?.emit("get-waiting-games");
+  const onPlayerLeft = (
+    callback: (data: PlayerActionEvents["PlayerLeftGame"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.PLAYER_LEFT_GAME, callback);
   };
 
-  const onPlayerJoined = (callback: (data: WSPlayerJoined) => void) => {
-    socketRef.current?.on("player-joined", callback);
+  const onTurnPlayed = (
+    callback: (data: PlayerActionEvents["TurnPlayed"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.TURN_PLAYED, callback);
   };
 
-  const onPlayerLeft = (callback: (data: WSPlayerLeft) => void) => {
-    socketRef.current?.on("player-left", callback);
+  const onGameFinished = (
+    callback: (data: GameLifecycleEvents["GameFinished"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_FINISHED, callback);
   };
 
-  const onTurnPlayed = (callback: (data: WSTurnPlayed) => void) => {
-    socketRef.current?.on("turn-played", callback);
+  const onGameStarted = (
+    callback: (data: GameLifecycleEvents["GameStarted"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_STARTED, callback);
   };
 
-  const onGameFinished = (callback: (data: WSGameFinished) => void) => {
-    socketRef.current?.on("game-finished", callback);
+  const onGameTimer = (
+    callback: (data: TimerEvents["TimerUpdate"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.TIMER_UPDATE, callback);
   };
 
-  const onGameStarted = (callback: (data: WSGameStarted) => void) => {
-    socketRef.current?.on("game-started", callback);
-  };
-
-  const onGameTimer = (callback: (data: WSGameTimer) => void) => {
-    socketRef.current?.on("game-timer", callback);
-  };
-
-  const onNewGameCreated = (callback: (data: WSNewGameCreated) => void) => {
-    socketRef.current?.on("new-game-created", callback);
+  const onNewGameCreated = (
+    callback: (data: GameLifecycleEvents["GameCreated"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_CREATED, callback);
   };
 
   const onWaitingGames = (
-    callback: (data: GetWaitingGamesResponse) => void
+    callback: (data: SystemEvents["WaitingGames"]) => void
   ) => {
-    socketRef.current?.on("waiting-games", callback);
+    socketRef.current?.on(GAME_EVENTS.WAITING_GAMES, callback);
   };
 
-  const onGameState = (callback: (data: { game: MultiplayerGame }) => void) => {
-    socketRef.current?.on("game-state", callback);
+  const onGameState = (callback: (data: SystemEvents["GameState"]) => void) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_STATE, callback);
   };
 
   const onGameLeft = (callback: (data: WSGameLeft) => void) => {
+    // This event is now handled by the REST API response, keeping for backward compatibility
     socketRef.current?.on("game-left", callback);
   };
 
-  const onError = (callback: (data: { message: string }) => void) => {
-    socketRef.current?.on("error", callback);
+  const onGameCancelled = (
+    callback: (data: GameLifecycleEvents["GameCancelled"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.GAME_CANCELLED, callback);
+  };
+
+  const onError = (callback: (data: SystemEvents["Error"]) => void) => {
+    socketRef.current?.on(GAME_EVENTS.ERROR, callback);
+  };
+
+  const onGameTimerEnded = (
+    callback: (data: TimerEvents["TimerEnded"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.TIMER_ENDED, callback);
+  };
+
+  const onGameTimeoutForfeit = (
+    callback: (data: TimerEvents["TimeoutForfeit"]) => void
+  ) => {
+    socketRef.current?.on(GAME_EVENTS.TIMEOUT_FORFEIT, callback);
   };
 
   return {
@@ -163,8 +233,6 @@ export const useSocket = (): UseSocketReturn => {
     isConnected,
     joinGame,
     leaveGame,
-    playTurn,
-    getWaitingGames,
     onPlayerJoined,
     onPlayerLeft,
     onTurnPlayed,
@@ -176,5 +244,8 @@ export const useSocket = (): UseSocketReturn => {
     onGameState,
     onGameLeft,
     onError,
+    onGameTimerEnded,
+    onGameTimeoutForfeit,
+    onGameCancelled,
   };
 };

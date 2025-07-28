@@ -30,6 +30,8 @@
   "timeUp": "Temps écoulé !",
   "leavePenalty": "⚠️ Attention : Quitter une partie entraîne une pénalité de 10% du montant de la mise.",
   "leftWithPenalty": "Vous avez quitté la partie et perdu {{penalty}} points de pénalité (10% de la mise).",
+  "timeoutForfeit": "Le joueur a perdu par timeout",
+  "forfeitedByTimeout": "Vous avez perdu par dépassement de temps",
   "solo": {
     "exactMatch": "Parfait ! Nombre exact ! Vous gagnez {{points}} points !",
     "higher": "Bravo ! Le nombre généré est plus élevé ! Vous gagnez {{points}} points !",

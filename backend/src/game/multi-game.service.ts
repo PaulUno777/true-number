@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '@shared/prisma';
 import { CreateGameDto } from './dto/multiplayer-input.dto';
 import {
-  CreateGameResponseDto,
+  GameResponseDto,
   GetWaitingGamesResponseDto,
   JoinGameResponseDto,
   PlayTurnResponseDto,
@@ -35,23 +35,18 @@ const gameIncludeFields = {
 
 @Injectable()
 export class MultiGameService {
-  private gameGateway: GameGateway;
-
   constructor(
     private prisma: PrismaService,
     private i18n: I18nService<I18nTranslations>,
     private transactionService: TransactionService,
+    private gameGateway: GameGateway,
   ) {}
-
-  public setGameGateway(gameGateway: GameGateway) {
-    this.gameGateway = gameGateway;
-  }
 
   async createGame(
     userId: string,
     createGameDto: CreateGameDto,
     lang?: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     // Check if user already has an active game (waiting or in progress)
     const existingGame = await this.prisma.multiplayerGame.findFirst({
       where: {
@@ -93,10 +88,11 @@ export class MultiGameService {
 
     const gameDto = this.mapGameToDto(game);
 
-    // Notify gateway about new game creation
-    if (this.gameGateway) {
-      this.gameGateway.notifyGameCreated(gameDto);
-    }
+    // Emit game created event
+    this.gameGateway.emitGameCreated({
+      game: gameDto,
+      timestamp: new Date(),
+    });
 
     return {
       game: gameDto,
@@ -148,14 +144,12 @@ export class MultiGameService {
     }
 
     // Check user exists and has sufficient balance
-    const user = await this.ensureUserExists(userId, lang);
+    await this.ensureUserExists(userId, lang);
 
     await this.ensureSufficientBalance(userId, game.bet, lang);
 
-    // Randomly select first player
-    const players = [game.createdBy, userId];
-    const randomFirstPlayer =
-      players[Math.floor(Math.random() * players.length)];
+    // Creator always plays first
+    const firstPlayer = game.createdBy;
 
     // Add player and update game status
     await this.prisma.$transaction([
@@ -170,35 +164,31 @@ export class MultiGameService {
         data: {
           status: GameStatus.IN_PROGRESS,
           startedAt: new Date(),
-          currentTurnPlayerId: randomFirstPlayer,
+          currentTurnPlayerId: firstPlayer,
         },
       }),
     ]);
 
     // Get updated party
-    const updatedGame = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const updatedGame = await this.getGameByIdOrFail(gameId, lang);
 
     const gameDto = this.mapGameToDto(updatedGame);
+
+    // Emit game joined and started events
+    this.gameGateway.emitGameJoined({
+      gameId,
+      game: gameDto,
+      joinedPlayerId: userId,
+      joinedPlayerUsername: updatedGame.players.find(p => p.playerId === userId)?.player.username || 'Unknown',
+      timestamp: new Date(),
+    });
+
+    this.gameGateway.emitGameStarted({
+      gameId,
+      game: gameDto,
+      message: this.i18n.t('game.gameStarted', { lang }),
+      timestamp: new Date(),
+    });
 
     return {
       game: gameDto,
@@ -223,13 +213,13 @@ export class MultiGameService {
           retryCount++;
           // Exponential backoff: wait 100ms, 200ms, 400ms
           const delay = 100 * Math.pow(2, retryCount - 1);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
         }
         throw error;
       }
     }
-    
+
     // This should never be reached, but TypeScript requires it
     throw new Error('Maximum retries exceeded');
   }
@@ -240,125 +230,139 @@ export class MultiGameService {
     lang?: string,
   ): Promise<PlayTurnResponseDto> {
     // Use a transaction with isolation to prevent race conditions
-    const transactionResult = await this.prisma.$transaction(async (tx) => {
-      // Get game with fresh data inside transaction
-      const game = await tx.multiplayerGame.findUnique({
-        where: { id: gameId },
-        include: {
-          creator: { select: { id: true, username: true } },
-          players: {
-            include: {
-              player: { select: { id: true, username: true } },
+    const transactionResult = await this.prisma.$transaction(
+      async (tx) => {
+        // Get game with fresh data inside transaction
+        const game = await tx.multiplayerGame.findUnique({
+          where: { id: gameId },
+          include: {
+            creator: { select: { id: true, username: true } },
+            players: {
+              include: {
+                player: { select: { id: true, username: true } },
+              },
             },
           },
-        },
-      });
+        });
 
-      if (!game) {
-        throw new NotFoundException(this.i18n.t('game.gameNotFound', { lang }));
-      }
+        if (!game) {
+          throw new NotFoundException(
+            this.i18n.t('game.gameNotFound', { lang }),
+          );
+        }
 
-      if (game.status !== GameStatus.IN_PROGRESS) {
-        throw new BadRequestException(
-          this.i18n.t('game.gameNotInProgress', { lang }),
+        if (game.status !== GameStatus.IN_PROGRESS) {
+          throw new BadRequestException(
+            this.i18n.t('game.gameNotInProgress', { lang }),
+          );
+        }
+
+        // Check if user is participant
+        const participant = game.players.find((p) => p.playerId === userId);
+        if (!participant) {
+          throw new ForbiddenException(
+            this.i18n.t('game.notParticipant', { lang }),
+          );
+        }
+
+        // Check if it is user turn
+        if (game.currentTurnPlayerId !== userId) {
+          throw new BadRequestException(
+            this.i18n.t('game.notYourTurn', {
+              lang,
+              args: { defaultMessage: 'It is not your turn to play' },
+            }),
+          );
+        }
+
+        // Check if user has not played yet
+        if (participant.generatedNumber !== null) {
+          throw new BadRequestException(
+            this.i18n.t('game.alreadyPlayed', { lang }),
+          );
+        }
+
+        // Generate random number
+        const generatedNumber = Math.floor(Math.random() * 101);
+
+        // Get the other player to switch turns
+        const otherParticipant = game.players.find(
+          (p) => p.playerId !== userId,
         );
-      }
+        const nextTurnPlayerId = otherParticipant
+          ? otherParticipant.playerId
+          : null;
 
-      // Check if user is participant
-      const participant = game.players.find((p) => p.playerId === userId);
-      if (!participant) {
-        throw new ForbiddenException(
-          this.i18n.t('game.notParticipant', { lang }),
+        // Update participant and game in atomic operations
+        await tx.multiplayerParticipant.update({
+          where: { id: participant.id },
+          data: {
+            generatedNumber,
+            playedAt: new Date(),
+          },
+        });
+
+        await tx.multiplayerGame.update({
+          where: { id: gameId },
+          data: {
+            currentTurnPlayerId: nextTurnPlayerId,
+          },
+        });
+
+        // Check if all players have played
+        const allParticipants = await tx.multiplayerParticipant.findMany({
+          where: { gameId },
+          include: {
+            player: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
+        });
+
+        const allPlayed = allParticipants.every(
+          (p) => p.generatedNumber !== null,
         );
-      }
 
-      // Check if it is user turn
-      if (game.currentTurnPlayerId !== userId) {
-        throw new BadRequestException(
-          this.i18n.t('game.notYourTurn', {
-            lang,
-            args: { defaultMessage: 'It is not your turn to play' },
-          }),
-        );
-      }
+        let gameFinished = false;
+        if (allPlayed) {
+          gameFinished = true;
+          await this.finishGameInTransactionOnly(
+            tx,
+            game.id,
+            allParticipants,
+            game.bet,
+          );
+        }
 
-      // Check if user has not played yet
-      if (participant.generatedNumber !== null) {
-        throw new BadRequestException(
-          this.i18n.t('game.alreadyPlayed', { lang }),
-        );
-      }
+        // Get updated game within the same transaction
+        const updatedGame = await tx.multiplayerGame.findUnique({
+          where: { id: gameId },
+          include: {
+            creator: { select: { id: true, username: true } },
+            players: {
+              include: {
+                player: { select: { id: true, username: true } },
+              },
+            },
+          },
+        });
 
-      // Generate random number
-      const generatedNumber = Math.floor(Math.random() * 101);
-
-      // Get the other player to switch turns
-      const otherParticipant = game.players.find((p) => p.playerId !== userId);
-      const nextTurnPlayerId = otherParticipant
-        ? otherParticipant.playerId
-        : null;
-
-      // Update participant and game in atomic operations
-      await tx.multiplayerParticipant.update({
-        where: { id: participant.id },
-        data: {
+        return {
+          updatedGame,
+          gameFinished,
+          allParticipants,
           generatedNumber,
-          playedAt: new Date(),
-        },
-      });
-
-      await tx.multiplayerGame.update({
-        where: { id: gameId },
-        data: {
-          currentTurnPlayerId: nextTurnPlayerId,
-        },
-      });
-
-      // Check if all players have played
-      const allParticipants = await tx.multiplayerParticipant.findMany({
-        where: { gameId },
-        include: {
-          player: {
-            select: {
-              id: true,
-              username: true,
-            },
-          },
-        },
-      });
-
-      const allPlayed = allParticipants.every((p) => p.generatedNumber !== null);
-
-      let gameFinished = false;
-      if (allPlayed) {
-        gameFinished = true;
-        await this.finishGameInTransactionOnly(tx, game.id, allParticipants, game.bet);
-      }
-
-      // Get updated game within the same transaction
-      const updatedGame = await tx.multiplayerGame.findUnique({
-        where: { id: gameId },
-        include: {
-          creator: { select: { id: true, username: true } },
-          players: {
-            include: {
-              player: { select: { id: true, username: true } },
-            },
-          },
-        },
-      });
-
-      return {
-        updatedGame,
-        gameFinished,
-        allParticipants,
-        generatedNumber,
-        participantUsername: participant.player.username,
-      };
-    }, {
-      maxWait: 5000, // Maximum time to wait for a transaction slot
-      timeout: 10000, // Maximum time for the transaction to run
-    });
+          participantUsername: participant.player.username,
+        };
+      },
+      {
+        maxWait: 5000, // Maximum time to wait for a transaction slot
+        timeout: 10000, // Maximum time for the transaction to run
+      },
+    );
 
     // Handle post-transaction operations
     if (!transactionResult.updatedGame) {
@@ -369,57 +373,30 @@ export class MultiGameService {
     // Handle balance transactions outside of the main transaction if game finished
     if (transactionResult.gameFinished && transactionResult.updatedGame) {
       await this.createGameFinishTransactions(
-        gameId, 
-        transactionResult.allParticipants, 
-        transactionResult.updatedGame.bet
+        gameId,
+        transactionResult.allParticipants,
+        transactionResult.updatedGame.bet,
       );
     }
 
-    // Emit socket events for turn played
-    if (this.gameGateway) {
-      // Notify all players about the turn
-      this.gameGateway.server.to(`game:${gameId}`).emit('turn-played', {
-        userId: userId,
-        username: transactionResult.participantUsername,
-        generatedNumber: transactionResult.generatedNumber,
+    // Always emit turn played event first
+    this.gameGateway.emitTurnPlayed({
+      gameId,
+      game: gameDto,
+      playerId: userId,
+      playerUsername: transactionResult.participantUsername,
+      generatedNumber: transactionResult.generatedNumber,
+      timestamp: new Date(),
+    });
+
+    // Then emit game finished if the game is finished
+    if (gameDto.status === 'FINISHED') {
+      this.gameGateway.emitGameFinished({
+        gameId,
         game: gameDto,
+        winnerId: gameDto.winnerId!,
         timestamp: new Date(),
       });
-
-      // If game is finished, send personalized messages to each player
-      if (gameDto.status === 'FINISHED') {
-        const winner = gameDto.players.find((p) => p.isWinner);
-        
-        gameDto.players.forEach(player => {
-          // Find the socket connection for this player
-          const playerSockets = Array.from(this.gameGateway.server.sockets.sockets.values())
-            .filter(socket => (socket as any).userId === player.id);
-          
-          if (playerSockets.length > 0) {
-            const isWinner = player.isWinner;
-            const message = isWinner 
-              ? this.i18n.t('game.multiplayerGameWon', { 
-                  lang, 
-                  args: { points: gameDto.bet } 
-                })
-              : this.i18n.t('game.multiplayerGameLost', { 
-                  lang, 
-                  args: { winner: winner?.username } 
-                });
-            
-            playerSockets.forEach(playerSocket => {
-              playerSocket.emit('game-finished', {
-                winnerId: gameDto.winnerId,
-                winnerUsername: winner?.username,
-                game: gameDto,
-                message: message,
-                isWinner: isWinner,
-                timestamp: new Date(),
-              });
-            });
-          }
-        });
-      }
     }
 
     return {
@@ -432,7 +409,7 @@ export class MultiGameService {
   async getGameDetails(
     gameId: string,
     lang?: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     const game = await this.getGameByIdOrFail(gameId, lang);
 
     const gameDto = this.mapGameToDto(game);
@@ -496,7 +473,6 @@ export class MultiGameService {
       _avg: { thinkingTime: true },
     });
 
-    // Top gagnants
     const participants = await this.prisma.multiplayerParticipant.findMany({
       where: {
         game: { status: GameStatus.FINISHED },
@@ -550,7 +526,7 @@ export class MultiGameService {
   async getLastCreatedGame(
     userId: string,
     lang?: string,
-  ): Promise<CreateGameResponseDto | null> {
+  ): Promise<GameResponseDto | null> {
     const game = await this.prisma.multiplayerGame.findFirst({
       where: {
         createdBy: userId,
@@ -579,7 +555,7 @@ export class MultiGameService {
   async getActiveGame(
     userId: string,
     lang?: string,
-  ): Promise<CreateGameResponseDto | null> {
+  ): Promise<GameResponseDto | null> {
     const participation = await this.prisma.multiplayerParticipant.findFirst({
       where: {
         playerId: userId,
@@ -613,7 +589,7 @@ export class MultiGameService {
     userId: string,
     gameId: string,
     lang?: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     const game = await this.getGameByIdOrFail(gameId, lang);
 
     const participant = game.players.find((p) => p.playerId === userId);
@@ -622,6 +598,8 @@ export class MultiGameService {
         this.i18n.t('game.notParticipant', { lang }),
       );
     }
+
+    const leavingPlayerUsername = participant.player.username;
 
     if (game.status === GameStatus.WAITING && game.createdBy === userId) {
       // If creator leaves a waiting game, cancel it
@@ -636,7 +614,12 @@ export class MultiGameService {
       // If player leaves during game, forfeit and award win to opponent + 10% penalty
       const opponent = game.players.find((p) => p.playerId !== userId);
       if (opponent) {
-        await this.forfeitGameWithPenalty(gameId, userId, opponent.playerId, game.bet);
+        await this.forfeitGameWithPenalty(
+          gameId,
+          userId,
+          opponent.playerId,
+          game.bet,
+        );
       }
     } else if (game.status === GameStatus.WAITING) {
       // If non-creator leaves waiting game, just remove them
@@ -646,29 +629,39 @@ export class MultiGameService {
     }
 
     // Get updated game
-    const updatedGame = await this.prisma.multiplayerGame.findUnique({
-      where: { id: gameId },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            username: true,
-          },
-        },
-        players: {
-          include: {
-            player: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
-          },
-        },
-      },
-    });
-
+    const updatedGame = await this.getGameByIdOrFail(gameId, lang);
     const gameDto = this.mapGameToDto(updatedGame);
+
+    // Emit appropriate events based on what happened
+    if (game.status === GameStatus.WAITING && game.createdBy === userId) {
+      // Game was cancelled
+      this.gameGateway.emitGameCancelled({
+        gameId,
+        game: gameDto,
+        reason: `Creator ${leavingPlayerUsername} left the game`,
+        timestamp: new Date(),
+      });
+    } else if (game.status === GameStatus.IN_PROGRESS) {
+      // Game finished due to forfeit - this is handled in forfeitGameWithPenalty via emitGameFinished
+      // But we also emit playerLeftGame for immediate notification
+      this.gameGateway.emitPlayerLeftGame({
+        gameId,
+        game: gameDto,
+        message: this.i18n.t('game.leftWithPenalty', { 
+          lang, 
+          args: { penalty: Math.floor(game.bet * 0.1) } 
+        }),
+        timestamp: new Date(),
+      });
+    } else if (game.status === GameStatus.WAITING) {
+      // Player left waiting game
+      this.gameGateway.emitPlayerLeftGame({
+        gameId,
+        game: gameDto,
+        message: `${leavingPlayerUsername} left the game`,
+        timestamp: new Date(),
+      });
+    }
 
     return {
       game: gameDto,
@@ -676,65 +669,52 @@ export class MultiGameService {
     };
   }
 
-  private async forfeitGame(
+
+  async forfeitGameByTimeout(
     gameId: string,
-    forfeitUserId: string,
-    winnerId: string,
-    bet: number,
-  ): Promise<void> {
-    // Create debit transaction for forfeiting player
-    const forfeitDebitTransaction =
-      await this.transactionService.createGameDebitTransaction(
-        forfeitUserId,
-        bet,
-        'multiplayer',
-        gameId,
-      );
+    timeoutUserId: string,
+    lang?: string,
+  ): Promise<GameResponseDto> {
+    const game = await this.getGameByIdOrFail(gameId, lang);
 
-    // Create credit transaction for winning player
-    const winnerCreditTransaction =
-      await this.transactionService.createGameCreditTransaction(
-        winnerId,
-        bet,
-        'multiplayer',
-        gameId,
+    if (game.status !== GameStatus.IN_PROGRESS) {
+      throw new BadRequestException(
+        this.i18n.t('game.gameNotInProgress', { lang }),
       );
+    }
 
-    await this.prisma.$transaction([
-      // Update the forfeiting player
-      this.prisma.multiplayerParticipant.updateMany({
-        where: {
-          gameId,
-          playerId: forfeitUserId,
-        },
-        data: {
-          isWinner: false,
-          balanceChange: -bet,
-          transactionId: forfeitDebitTransaction.id,
-        },
-      }),
-      // Update the winning player
-      this.prisma.multiplayerParticipant.updateMany({
-        where: {
-          gameId,
-          playerId: winnerId,
-        },
-        data: {
-          isWinner: true,
-          balanceChange: bet,
-          transactionId: winnerCreditTransaction.id,
-        },
-      }),
-      // Finish the game
-      this.prisma.multiplayerGame.update({
-        where: { id: gameId },
-        data: {
-          status: GameStatus.FINISHED,
-          winnerId: winnerId,
-          finishedAt: new Date(),
-        },
-      }),
-    ]);
+    // Find the opponent (winner by default)
+    const opponent = game.players.find((p) => p.playerId !== timeoutUserId);
+    if (!opponent) {
+      throw new BadRequestException('Opponent not found');
+    }
+
+    // Forfeit with penalty for timeout
+    await this.forfeitGameWithPenalty(
+      gameId,
+      timeoutUserId,
+      opponent.playerId,
+      game.bet,
+    );
+
+    // Get updated game
+    const updatedGame = await this.getGameByIdOrFail(gameId, lang);
+    const gameDto = this.mapGameToDto(updatedGame);
+
+    // Notify players about timeout forfeit via socket
+    this.gameGateway.emitTimeoutForfeit({
+      gameId,
+      timeoutUserId,
+      winnerId: opponent.playerId,
+      game: gameDto,
+      message: this.i18n.t('game.timeoutForfeit', { lang }),
+      timestamp: new Date(),
+    });
+
+    return {
+      game: gameDto,
+      message: this.i18n.t('game.forfeitedByTimeout', { lang }),
+    };
   }
 
   private async forfeitGameWithPenalty(
@@ -799,8 +779,18 @@ export class MultiGameService {
         },
       }),
     ]);
-  }
 
+    // Get the updated game and emit finish event
+    const updatedGame = await this.getGameByIdOrFail(gameId);
+    const gameDto = this.mapGameToDto(updatedGame);
+    
+    this.gameGateway.emitGameFinished({
+      gameId,
+      game: gameDto,
+      winnerId,
+      timestamp: new Date(),
+    });
+  }
 
   private async finishGameInTransactionOnly(
     tx: any,

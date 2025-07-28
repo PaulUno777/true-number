@@ -5,16 +5,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionService } from "@/services/transaction";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import {
   DollarSign,
   CreditCard,
-  Zap,
   X,
   Wallet,
   Building,
@@ -30,26 +24,29 @@ interface RechargeModalProps {
   currentBalance: number;
 }
 
-export default function RechargeModal({ 
-  isOpen, 
-  onClose, 
-  currentBalance 
+export default function RechargeModal({
+  isOpen,
+  onClose,
+  currentBalance,
 }: RechargeModalProps) {
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState<number>(10);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(PaymentMethod.CREDIT_CARD);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.CREDIT_CARD
+  );
   const [paymentDetails, setPaymentDetails] = useState({
-    cardNumber: '',
-    cardExpiry: '',
-    cardCvv: '',
-    cardholderName: '',
-    paypalEmail: '',
-    bankAccount: '',
-    cryptoWallet: '',
+    cardNumber: "",
+    cardExpiry: "",
+    cardCvv: "",
+    cardholderName: "",
+    paypalEmail: "",
+    bankAccount: "",
+    cryptoWallet: "",
   });
 
   const rechargeMutation = useMutation({
-    mutationFn: (request: RechargeRequest) => transactionService.recharge(request),
+    mutationFn: (request: RechargeRequest) =>
+      transactionService.recharge(request),
     onSuccess: (data) => {
       toast.success(`Successfully recharged $${data.amount}!`, {
         duration: 5000,
@@ -58,19 +55,19 @@ export default function RechargeModal({
           color: "white",
         },
       });
-      
+
       queryClient.invalidateQueries({ queryKey: ["balance"] });
       queryClient.invalidateQueries({ queryKey: ["transactionHistory"] });
-      
+
       setAmount(10);
       setPaymentDetails({
-        cardNumber: '',
-        cardExpiry: '',
-        cardCvv: '',
-        cardholderName: '',
-        paypalEmail: '',
-        bankAccount: '',
-        cryptoWallet: '',
+        cardNumber: "",
+        cardExpiry: "",
+        cardCvv: "",
+        cardholderName: "",
+        paypalEmail: "",
+        bankAccount: "",
+        cryptoWallet: "",
       });
       onClose();
     },
@@ -86,7 +83,12 @@ export default function RechargeModal({
   const validatePaymentDetails = (): boolean => {
     switch (paymentMethod) {
       case PaymentMethod.CREDIT_CARD:
-        if (!paymentDetails.cardNumber || !paymentDetails.cardExpiry || !paymentDetails.cardCvv || !paymentDetails.cardholderName) {
+        if (
+          !paymentDetails.cardNumber ||
+          !paymentDetails.cardExpiry ||
+          !paymentDetails.cardCvv ||
+          !paymentDetails.cardholderName
+        ) {
           toast.error("Please fill in all credit card details");
           return false;
         }
@@ -118,7 +120,7 @@ export default function RechargeModal({
       toast.error("Minimum recharge amount is $1");
       return;
     }
-    
+
     if (amount > 10000) {
       toast.error("Maximum recharge amount is $10,000");
       return;
@@ -177,7 +179,7 @@ export default function RechargeModal({
             <span>Recharge Balance</span>
           </CardTitle>
         </CardHeader>
-        
+
         <CardContent className="space-y-6">
           {/* Current Balance */}
           <div className="text-center p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-xl border border-primary/30">
@@ -187,7 +189,9 @@ export default function RechargeModal({
 
           {/* Amount Input */}
           <div className="space-y-3">
-            <label className="text-sm text-white font-medium">Recharge Amount</label>
+            <label className="text-sm text-white font-medium">
+              Recharge Amount
+            </label>
             <div className="relative">
               <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/70" />
               <Input
@@ -226,7 +230,9 @@ export default function RechargeModal({
 
           {/* Payment Method Selection */}
           <div className="space-y-3">
-            <label className="text-sm text-white font-medium">Payment Method</label>
+            <label className="text-sm text-white font-medium">
+              Payment Method
+            </label>
             <div className="grid grid-cols-2 gap-2">
               {Object.values(PaymentMethod).map((method) => {
                 const getMethodInfo = (method: PaymentMethod) => {
@@ -241,9 +247,9 @@ export default function RechargeModal({
                       return { icon: Bitcoin, label: "Crypto" };
                   }
                 };
-                
+
                 const { icon: Icon, label } = getMethodInfo(method);
-                
+
                 return (
                   <Button
                     key={method}
@@ -273,14 +279,24 @@ export default function RechargeModal({
                     type="text"
                     placeholder="Cardholder Name"
                     value={paymentDetails.cardholderName}
-                    onChange={(e) => setPaymentDetails({...paymentDetails, cardholderName: e.target.value})}
+                    onChange={(e) =>
+                      setPaymentDetails({
+                        ...paymentDetails,
+                        cardholderName: e.target.value,
+                      })
+                    }
                     className="bg-white/10 border-white/20 text-white"
                   />
                   <Input
                     type="text"
                     placeholder="Card Number (e.g., 4111111111111111)"
                     value={paymentDetails.cardNumber}
-                    onChange={(e) => setPaymentDetails({...paymentDetails, cardNumber: e.target.value})}
+                    onChange={(e) =>
+                      setPaymentDetails({
+                        ...paymentDetails,
+                        cardNumber: e.target.value,
+                      })
+                    }
                     className="bg-white/10 border-white/20 text-white"
                   />
                   <div className="grid grid-cols-2 gap-3">
@@ -288,14 +304,24 @@ export default function RechargeModal({
                       type="text"
                       placeholder="MM/YY"
                       value={paymentDetails.cardExpiry}
-                      onChange={(e) => setPaymentDetails({...paymentDetails, cardExpiry: e.target.value})}
+                      onChange={(e) =>
+                        setPaymentDetails({
+                          ...paymentDetails,
+                          cardExpiry: e.target.value,
+                        })
+                      }
                       className="bg-white/10 border-white/20 text-white"
                     />
                     <Input
                       type="text"
                       placeholder="CVV"
                       value={paymentDetails.cardCvv}
-                      onChange={(e) => setPaymentDetails({...paymentDetails, cardCvv: e.target.value})}
+                      onChange={(e) =>
+                        setPaymentDetails({
+                          ...paymentDetails,
+                          cardCvv: e.target.value,
+                        })
+                      }
                       className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
@@ -308,7 +334,12 @@ export default function RechargeModal({
                 type="email"
                 placeholder="PayPal Email"
                 value={paymentDetails.paypalEmail}
-                onChange={(e) => setPaymentDetails({...paymentDetails, paypalEmail: e.target.value})}
+                onChange={(e) =>
+                  setPaymentDetails({
+                    ...paymentDetails,
+                    paypalEmail: e.target.value,
+                  })
+                }
                 className="bg-white/10 border-white/20 text-white"
               />
             )}
@@ -318,7 +349,12 @@ export default function RechargeModal({
                 type="text"
                 placeholder="Bank Account Number"
                 value={paymentDetails.bankAccount}
-                onChange={(e) => setPaymentDetails({...paymentDetails, bankAccount: e.target.value})}
+                onChange={(e) =>
+                  setPaymentDetails({
+                    ...paymentDetails,
+                    bankAccount: e.target.value,
+                  })
+                }
                 className="bg-white/10 border-white/20 text-white"
               />
             )}
@@ -328,7 +364,12 @@ export default function RechargeModal({
                 type="text"
                 placeholder="Crypto Wallet Address"
                 value={paymentDetails.cryptoWallet}
-                onChange={(e) => setPaymentDetails({...paymentDetails, cryptoWallet: e.target.value})}
+                onChange={(e) =>
+                  setPaymentDetails({
+                    ...paymentDetails,
+                    cryptoWallet: e.target.value,
+                  })
+                }
                 className="bg-white/10 border-white/20 text-white"
               />
             )}
@@ -356,23 +397,14 @@ export default function RechargeModal({
               isLoading={rechargeMutation.isPending}
               disabled={amount < 1 || rechargeMutation.isPending}
               className={`flex-1 btn-play relative overflow-hidden ${
-                rechargeMutation.isPending 
-                  ? "bg-gradient-to-r from-orange-500 to-red-500 animate-pulse cursor-not-allowed" 
+                rechargeMutation.isPending
+                  ? "bg-gradient-to-r from-orange-500 to-red-500 animate-pulse cursor-not-allowed"
                   : ""
               }`}
             >
               <div className="relative z-10 flex items-center justify-center">
-                {rechargeMutation.isPending ? (
-                  <>
-                    <Zap className="h-4 w-4 mr-2 animate-spin" />
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <>
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    <span>Recharge ${amount}</span>
-                  </>
-                )}
+                <CreditCard className="h-4 w-4 mr-2" />
+                <span>Recharge ${amount}</span>
               </div>
             </Button>
           </div>

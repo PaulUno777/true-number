@@ -3,7 +3,7 @@ import { IsInt, IsPositive, Min, Max } from 'class-validator';
 
 export class PlaySoloGameDto {
   @ApiProperty({
-    description: 'Mise de la partie (points à parier)',
+    description: 'Game bet (points to wager)',
     example: 100,
     minimum: 1,
     maximum: 1000,
@@ -15,7 +15,7 @@ export class PlaySoloGameDto {
   bet: number;
 
   @ApiProperty({
-    description: 'Nombre choisi par le joueur',
+    description: 'Number chosen by the player',
     example: 75,
     minimum: 20,
     maximum: 100,

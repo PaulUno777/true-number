@@ -65,6 +65,8 @@ export type I18nTranslations = {
         "timeUp": string;
         "leavePenalty": string;
         "leftWithPenalty": string;
+        "timeoutForfeit": string;
+        "forfeitedByTimeout": string;
         "solo": {
             "exactMatch": string;
             "higher": string;

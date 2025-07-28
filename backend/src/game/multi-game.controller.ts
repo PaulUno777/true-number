@@ -20,9 +20,9 @@ import { MultiGameService } from './multi-game.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { CreateGameDto, PlayTurnDto } from './dto/multiplayer-input.dto';
+import { CreateGameDto } from './dto/multiplayer-input.dto';
 import {
-  CreateGameResponseDto,
+  GameResponseDto,
   GetWaitingGamesResponseDto,
   JoinGameResponseDto,
   PlayTurnResponseDto,
@@ -41,25 +41,25 @@ export class MultiGameController {
   constructor(private readonly gameService: MultiGameService) {}
 
   @Post('create')
-  @ApiOperation({ summary: 'Créer une nouvelle partie multijoueur' })
+  @ApiOperation({ summary: 'Create a new multiplayer game' })
   @ApiResponse({
     status: 201,
-    description: 'Partie créée avec succès',
-    type: CreateGameResponseDto,
+    description: 'Game created successfully',
+    type: GameResponseDto,
   })
   async createGame(
     @Request() req: any,
     @Body() createGameDto: CreateGameDto,
     @I18nLang() lang: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     return this.gameService.createGame(req.user.id, createGameDto, lang);
   }
 
   @Get('waiting')
-  @ApiOperation({ summary: 'Obtenir la liste des parties en attente' })
+  @ApiOperation({ summary: 'Get list of waiting games' })
   @ApiResponse({
     status: 200,
-    description: 'Parties en attente récupérées',
+    description: 'Waiting games retrieved successfully',
     type: GetWaitingGamesResponseDto,
   })
   async getWaitingGames(
@@ -69,15 +69,15 @@ export class MultiGameController {
   }
 
   @Post('join/:gameId')
-  @ApiOperation({ summary: 'Rejoindre une partie en attente' })
+  @ApiOperation({ summary: 'Join a waiting game' })
   @ApiParam({
     name: 'gameId',
-    description: 'ID de la partie à rejoindre',
+    description: 'ID of the game to join',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiResponse({
     status: 201,
-    description: 'Partie rejointe avec succès',
+    description: 'Joined game successfully',
     type: JoinGameResponseDto,
   })
   async joinGame(
@@ -89,15 +89,15 @@ export class MultiGameController {
   }
 
   @Post('play/:gameId')
-  @ApiOperation({ summary: 'Jouer son tour dans une partie' })
+  @ApiOperation({ summary: 'Play a turn in a game' })
   @ApiParam({
     name: 'gameId',
-    description: 'ID de la partie',
+    description: 'ID of the game',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiResponse({
     status: 201,
-    description: 'Tour joué avec succès',
+    description: 'Turn played successfully',
     type: PlayTurnResponseDto,
   })
   async playTurn(
@@ -109,31 +109,31 @@ export class MultiGameController {
   }
 
   @Get('details/:gameId')
-  @ApiOperation({ summary: "Obtenir les détails d'une partie" })
+  @ApiOperation({ summary: 'Get game details' })
   @ApiParam({
     name: 'gameId',
-    description: 'ID de la partie',
+    description: 'ID of the game',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiResponse({
     status: 200,
-    description: 'Détails de la partie récupérés',
-    type: CreateGameResponseDto,
+    description: 'Game details retrieved',
+    type: GameResponseDto,
   })
   async getGameDetails(
     @Param('gameId') gameId: string,
     @I18nLang() lang: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     return this.gameService.getGameDetails(gameId, lang);
   }
 
   @Get('history')
   @ApiOperation({
-    summary: "Obtenir l'historique des parties multijoueur de l'utilisateur",
+    summary: 'Get user multiplayer game history',
   })
   @ApiResponse({
     status: 200,
-    description: 'Historique des parties multijoueur récupéré',
+    description: 'Multiplayer game history retrieved',
     type: GetUserGamesResponseDto,
   })
   async getMultiplayerGameHistory(
@@ -148,11 +148,11 @@ export class MultiGameController {
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
   @ApiOperation({
-    summary: 'Obtenir les statistiques multijoueur (Admin seulement)',
+    summary: 'Get multiplayer stats (Admin only)',
   })
   @ApiResponse({
     status: 200,
-    description: 'Statistiques multijoueur récupérées',
+    description: 'Multiplayer stats retrieved',
     type: MultiplayerStatsDto,
   })
   async getMultiplayerStats(
@@ -163,51 +163,73 @@ export class MultiGameController {
 
   @Get('last-created')
   @ApiOperation({
-    summary: "Obtenir la dernière partie créée par l'utilisateur",
+    summary: 'Get the last game created by the user',
   })
   @ApiResponse({
     status: 200,
-    description: 'Dernière partie créée récupérée',
-    type: CreateGameResponseDto,
+    description: 'Last created game retrieved',
+    type: GameResponseDto,
   })
   async getLastCreatedGame(
     @Request() req: any,
     @I18nLang() lang: string,
-  ): Promise<CreateGameResponseDto | null> {
+  ): Promise<GameResponseDto | null> {
     return this.gameService.getLastCreatedGame(req.user.id, lang);
   }
 
   @Get('active')
-  @ApiOperation({ summary: "Obtenir la partie active de l'utilisateur" })
+  @ApiOperation({ summary: "Get the user's currently active game" })
   @ApiResponse({
     status: 200,
-    description: 'Partie active récupérée',
-    type: CreateGameResponseDto,
+    description: 'Active game retrieved',
+    type: GameResponseDto,
   })
   async getActiveGame(
     @Request() req: any,
     @I18nLang() lang: string,
-  ): Promise<CreateGameResponseDto | null> {
+  ): Promise<GameResponseDto | null> {
     return this.gameService.getActiveGame(req.user.id, lang);
   }
 
   @Post('leave/:gameId')
-  @ApiOperation({ summary: 'Quitter une partie' })
+  @ApiOperation({ summary: 'Leave a game' })
   @ApiParam({
     name: 'gameId',
-    description: 'ID de la partie à quitter',
+    description: 'ID of the game to leave',
     example: '507f1f77bcf86cd799439011',
   })
   @ApiResponse({
     status: 201,
-    description: 'Partie quittée avec succès',
-    type: CreateGameResponseDto,
+    description: 'Left game successfully',
+    type: GameResponseDto,
   })
   async leaveGame(
     @Request() req: any,
     @Param('gameId') gameId: string,
     @I18nLang() lang: string,
-  ): Promise<CreateGameResponseDto> {
+  ): Promise<GameResponseDto> {
     return this.gameService.leaveGame(req.user.id, gameId, lang);
+  }
+
+  @Post('forfeit-timeout/:gameId')
+  @ApiOperation({
+    summary: 'Forfeit due to timeout - called from frontend when time is up',
+  })
+  @ApiParam({
+    name: 'gameId',
+    description: 'ID of the game',
+    example: '507f1f77bcf86cd799439011',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Timeout forfeit handled successfully',
+    type: GameResponseDto,
+  })
+  async forfeitByTimeout(
+    @Request() req: any,
+    @Param('gameId') gameId: string,
+    @I18nLang() lang: string,
+  ): Promise<GameResponseDto> {
+    return this.gameService.forfeitGameByTimeout(gameId, req.user.id, lang);
   }
 }

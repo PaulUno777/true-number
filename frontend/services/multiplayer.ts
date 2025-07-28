@@ -59,6 +59,11 @@ class MultiplayerService {
     const response = await api.post<CreateGameResponse>(`/multi-game/leave/${gameId}`);
     return response.data;
   }
+
+  async forfeitByTimeout(gameId: string): Promise<CreateGameResponse> {
+    const response = await api.post<CreateGameResponse>(`/multi-game/forfeit-timeout/${gameId}`);
+    return response.data;
+  }
 }
 
 export const multiplayerService = new MultiplayerService();

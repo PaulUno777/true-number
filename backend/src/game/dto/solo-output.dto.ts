@@ -3,56 +3,56 @@ import { SoloGameResult } from '@generated/prisma';
 
 export class SoloGameDto {
   @ApiProperty({
-    description: 'ID de la partie',
+    description: 'Game ID',
     example: '507f1f77bcf86cd799439011',
   })
   id: string;
 
   @ApiProperty({
-    description: 'ID du joueur',
+    description: 'Player ID',
     example: '507f1f77bcf86cd799439011',
   })
   userId: string;
 
   @ApiProperty({
-    description: 'Mise de la partie',
+    description: 'Game bet',
     example: 100,
   })
   bet: number;
 
   @ApiProperty({
-    description: 'Nombre choisi par le joueur',
+    description: 'Number chosen by the player',
     example: 75,
   })
   chosenNumber: number;
 
   @ApiProperty({
-    description: 'Nombre généré aléatoirement',
+    description: 'Randomly generated number',
     example: 82,
   })
   generatedNumber: number;
 
   @ApiProperty({
-    description: 'Résultat de la partie',
+    description: 'Game result',
     enum: SoloGameResult,
     example: SoloGameResult.HIGHER,
   })
   result: SoloGameResult;
 
   @ApiProperty({
-    description: 'Changement de balance',
+    description: 'Balance change',
     example: 150,
   })
   balanceChange: number;
 
   @ApiProperty({
-    description: 'Multiplicateur appliqué',
+    description: 'Applied multiplier',
     example: 1.5,
   })
   multiplier: number;
 
   @ApiProperty({
-    description: 'Date de la partie',
+    description: 'Game date',
     example: '2024-01-01T12:00:00Z',
   })
   playedAt: Date;
@@ -60,19 +60,19 @@ export class SoloGameDto {
 
 export class PlaySoloGameResponseDto {
   @ApiProperty({
-    description: 'Détails de la partie jouée',
+    description: 'Details of the game played',
     type: SoloGameDto,
   })
   game: SoloGameDto;
 
   @ApiProperty({
-    description: 'Message de résultat',
-    example: 'Bravo ! Vous avez gagné 150 points !',
+    description: 'Result message',
+    example: 'Congratulations! You won 150 points!',
   })
   message: string;
 
   @ApiProperty({
-    description: 'Nouveau solde du joueur',
+    description: 'Player\'s new balance',
     example: 1150,
   })
   newBalance: number;
@@ -80,13 +80,13 @@ export class PlaySoloGameResponseDto {
 
 export class GetSoloGameHistoryResponseDto {
   @ApiProperty({
-    description: 'Historique des parties solo',
+    description: 'Solo games history',
     type: [SoloGameDto],
   })
   games: SoloGameDto[];
 
   @ApiProperty({
-    description: 'Métadonnées de pagination',
+    description: 'Pagination metadata',
     type: 'object',
     additionalProperties: true,
   })
@@ -94,12 +94,12 @@ export class GetSoloGameHistoryResponseDto {
 
   @ApiProperty({
     description: 'Message',
-    example: 'Historique des parties solo récupéré',
+    example: 'Solo game history retrieved',
   })
   message: string;
 
   @ApiProperty({
-    description: 'Statistiques de l\'utilisateur',
+    description: 'Player\'s statistics',
     type: 'object',
     properties: {
       totalGames: { type: 'number' },
@@ -120,44 +120,44 @@ export class GetSoloGameHistoryResponseDto {
 
 export class SoloGameStatsDto {
   @ApiProperty({
-    description: 'Nombre total de parties solo jouées',
+    description: 'Total number of solo games played',
     example: 1250,
   })
   totalGames: number;
 
   @ApiProperty({
-    description: 'Nombre de victoires exactes (x2)',
+    description: 'Number of exact wins (x2)',
     example: 125,
   })
   exactMatches: number;
 
   @ApiProperty({
-    description: 'Nombre de victoires supérieures (x1.5)',
+    description: 'Number of higher wins (x1.5)',
     example: 312,
   })
   higherWins: number;
 
   @ApiProperty({
-    description: 'Nombre de défaites',
+    description: 'Number of losses',
     example: 813,
   })
   losses: number;
 
   @ApiProperty({
-    description: 'Mise totale pariée',
+    description: 'Total bet amount',
     example: 125000,
   })
   totalBet: number;
 
   @ApiProperty({
-    description: 'Gains totaux distribués',
+    description: 'Total winnings distributed',
     example: 62500,
   })
   totalWinnings: number;
 
   @ApiProperty({
     description: 'Message',
-    example: 'Statistiques des parties solo récupérées',
+    example: 'Solo game statistics retrieved',
   })
   message: string;
 }

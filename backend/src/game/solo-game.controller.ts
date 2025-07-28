@@ -35,10 +35,10 @@ export class SoloGameController {
   constructor(private readonly soloGameService: SoloGameService) {}
 
   @Post('play')
-  @ApiOperation({ summary: 'Jouer une partie solo' })
+  @ApiOperation({ summary: 'Play a solo game' })
   @ApiResponse({
     status: 201,
-    description: 'Partie solo jouée avec succès',
+    description: 'Solo game played successfully',
     type: PlaySoloGameResponseDto,
   })
   async playSoloGame(
@@ -50,10 +50,10 @@ export class SoloGameController {
   }
 
   @Get('history')
-  @ApiOperation({ summary: 'Obtenir l\'historique des parties solo de l\'utilisateur' })
+  @ApiOperation({ summary: "Get the user's solo game history" })
   @ApiResponse({
     status: 200,
-    description: 'Historique des parties solo récupéré',
+    description: 'Solo game history retrieved successfully',
     type: GetSoloGameHistoryResponseDto,
   })
   async getSoloGameHistory(
@@ -67,10 +67,10 @@ export class SoloGameController {
   @Get('stats')
   @UseGuards(RolesGuard)
   @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Obtenir les statistiques des parties solo (Admin seulement)' })
+  @ApiOperation({ summary: 'Get solo game statistics (Admin only)' })
   @ApiResponse({
     status: 200,
-    description: 'Statistiques des parties solo récupérées',
+    description: 'Solo game statistics retrieved successfully',
     type: SoloGameStatsDto,
   })
   async getSoloGameStats(
