@@ -26,9 +26,9 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
   t,
 }) => {
   const isMyTurn = selectedGame.currentTurnPlayerId === user?.id;
-  
+
   // Use the frontend timer hook
-  const { timeLeft } = useGameTimer({
+  const { timeLeft, stopTimerOnPlay } = useGameTimer({
     gameId: selectedGame.id,
     thinkingTime: selectedGame.thinkingTime,
     currentTurnPlayerId: selectedGame.currentTurnPlayerId || null,
@@ -36,8 +36,15 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
     isMyTurn,
   });
 
+  // Handle play turn with timer stop
+  const handlePlayTurn = () => {
+    stopTimerOnPlay(); // Stop timer immediately when button is pressed
+    onPlayTurn();
+  };
+
   // Use frontend timer if available, fallback to socket timer
   const displayTimer = timeLeft !== null ? timeLeft : gameTimer;
+
   const renderPlayerCard = (player: GamePlayer) => {
     const isCurrentPlayer = player.id === user?.id;
     const isBlinking = blinkingElement === `player-${player.id}`;
@@ -130,30 +137,32 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
         {!hasCurrentPlayerPlayed && isCurrentPlayerTurn ? (
           <div className="space-y-2">
             <Button
-              onClick={onPlayTurn}
+              onClick={handlePlayTurn}
               isLoading={isLoadingPlayTurn}
               size="lg"
               className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse"
               aria-label={t("playTurn")}
+              aria-describedby="play-turn-description"
               disabled={isLoadingPlayTurn}
             >
               <Play className="h-6 w-6 mr-2" />
               {isLoadingPlayTurn ? t("playing") : t("playTurn")}
             </Button>
-            <p className="text-sm text-yellow-400 animate-pulse">
+            <p
+              id="play-turn-description"
+              className="text-sm text-yellow-400 animate-pulse"
+            >
               🎯 {t("yourTurn")} - Click to generate your number!
             </p>
           </div>
         ) : (
           <div className="text-center space-y-2">
-            <p className="text-muted-foreground">
-              {hasCurrentPlayerPlayed
-                ? "✅ You have already played your turn"
-                : "⏳ " + t("waitingForOpponent")}
-            </p>
             {!isCurrentPlayerTurn && !hasCurrentPlayerPlayed && (
               <p className="text-sm text-blue-400">
-                🎮 Wait for your opponent's move
+                🎮{" "}
+                {t("waitingForMove", {
+                  defaultValue: "Wait for your opponent's move",
+                })}
               </p>
             )}
           </div>
@@ -173,8 +182,11 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
           size="sm"
           className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
           aria-label={t("leave")}
+          disabled={isLoadingLeaveGame}
         >
-          {t("leave")}
+          {isLoadingLeaveGame
+            ? t("leaving", { defaultValue: "Leaving..." })
+            : t("leave")}
         </Button>
       </div>
     );
@@ -182,18 +194,6 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
 
   const renderWaitingStatus = () => (
     <div className="text-center space-y-4">
-      <div className="bg-blue-500/20 border border-blue-500/50 rounded-lg p-4">
-        <div className="flex items-center justify-center space-x-2 mb-2">
-          <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent"></div>
-          <p className="text-blue-400 font-medium">
-            {t("waitingForPlayer")}
-          </p>
-        </div>
-        <p className="text-xs text-blue-300 mt-2">
-          🎮 {t("gameStartsWhenPlayerJoins")}
-        </p>
-      </div>
-      
       <Button
         onClick={onLeaveGame}
         isLoading={isLoadingLeaveGame}
@@ -212,6 +212,16 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
     const isWinner = currentPlayer?.isWinner;
     const winner = selectedGame.players.find((p) => p.isWinner);
 
+    if (!currentPlayer) {
+      return (
+        <div className="text-center p-4 rounded-lg bg-gray-500/20 border border-gray-500/50">
+          <p className="text-gray-300 font-medium">
+            {t("gameFinished", { defaultValue: "Game has finished" })}
+          </p>
+        </div>
+      );
+    }
+
     return (
       <div
         className={`text-center p-4 rounded-lg ${
@@ -219,6 +229,8 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
             ? "bg-green-500/20 border border-green-500/50"
             : "bg-red-500/20 border border-red-500/50"
         }`}
+        role="status"
+        aria-label={isWinner ? t("gameWon") : t("gameLost")}
       >
         <p
           className={`font-bold ${
@@ -226,17 +238,24 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
           }`}
         >
           {isWinner
-            ? "Congratulations! You won the game!"
-            : `${winner?.username} won this time. Better luck next time!`}
+            ? t("congratulations", {
+                defaultValue: "Congratulations! You won the game!",
+              })
+            : t("betterLuck", {
+                defaultValue: `${winner?.username} won this time. Better luck next time!`,
+                winnerName: winner?.username || "Unknown",
+              })}
         </p>
         {isWinner && (
           <p className="text-green-400 text-sm mt-1">
-            +{selectedGame.bet} points earned!
+            +{selectedGame.bet}{" "}
+            {t("pointsEarned", { defaultValue: "points earned!" })}
           </p>
         )}
         {!isWinner && (
           <p className="text-red-400 text-sm mt-1">
-            -{selectedGame.bet} points lost
+            -{selectedGame.bet}{" "}
+            {t("pointsLost", { defaultValue: "points lost" })}
           </p>
         )}
       </div>
@@ -255,18 +274,24 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
       <CardHeader>
         <CardTitle className="text-xl text-white flex items-center justify-between">
           <span>{t("currentGame")}</span>
-          {displayTimer !== null && selectedGame.status === "IN_PROGRESS" && isMyTurn && (
-            <div className={`flex items-center space-x-2 px-3 py-1 rounded-lg border-2 ${
-              displayTimer <= 10 ? 'text-red-400 border-red-400 bg-red-400/10 animate-pulse' : 
-              displayTimer <= 30 ? 'text-yellow-400 border-yellow-400 bg-yellow-400/10' : 
-              'text-accent border-accent bg-accent/10'
-            }`}>
-              <Timer className="h-5 w-5" />
-              <span id="game-timer" className="font-mono text-xl font-bold">
-                {Math.max(0, displayTimer)}s
-              </span>
-            </div>
-          )}
+          {displayTimer !== null &&
+            selectedGame.status === "IN_PROGRESS" &&
+            isMyTurn && (
+              <div
+                className={`flex items-center space-x-2 px-3 py-1 rounded-lg border-2 ${
+                  displayTimer <= 10
+                    ? "text-red-400 border-red-400 bg-red-400/10 animate-pulse"
+                    : displayTimer <= 30
+                    ? "text-yellow-400 border-yellow-400 bg-yellow-400/10"
+                    : "text-accent border-accent bg-accent/10"
+                }`}
+              >
+                <Timer className="h-5 w-5" />
+                <span id="game-timer" className="font-mono text-xl font-bold">
+                  {Math.max(0, displayTimer)}s
+                </span>
+              </div>
+            )}
         </CardTitle>
         <CardDescription>
           {t("bet")}: ${selectedGame.bet} • {t("createdBy")}{" "}
@@ -276,16 +301,17 @@ const CurrentGameCard: React.FC<CurrentGameCardProps> = ({
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {selectedGame.players.map(renderPlayerCard)}
-          {selectedGame.status === "WAITING" && selectedGame.players.length === 1 && (
-            <div className="p-4 rounded-lg border-2 border-dashed border-gray-600/50 bg-gray-800/30 flex items-center justify-center">
-              <div className="text-center space-y-2">
-                <div className="text-4xl">👥</div>
-                <p className="text-sm text-muted-foreground">
-                  {t("waitingForSecondPlayer")}
-                </p>
+          {selectedGame.status === "WAITING" &&
+            selectedGame.players.length === 1 && (
+              <div className="p-4 rounded-lg border-2 border-dashed border-gray-600/50 bg-gray-800/30 flex items-center justify-center">
+                <div className="text-center space-y-2">
+                  <div className="text-4xl">👥</div>
+                  <p className="text-sm text-muted-foreground">
+                    {t("waitingForSecondPlayer")}
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
         {renderGameStatus()}
       </CardContent>

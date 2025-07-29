@@ -19,21 +19,26 @@ const WaitingGamesList: React.FC<WaitingGamesListProps> = ({
   user,
   balance,
   onJoinGame,
-  isLoadingJoin,
+  joiningGameId,
   isLoadingBalance,
   t,
 }) => {
-  const filteredGames = waitingGames?.games.filter(
-    (game) => game.createdBy !== user?.id
-  ) || [];
+  // Safely filter games, excluding user's own games
+  const filteredGames = React.useMemo(() => {
+    if (!waitingGames?.games || !user?.id) return [];
+    return waitingGames.games.filter((game) => game.createdBy !== user.id);
+  }, [waitingGames?.games, user?.id]);
 
   const renderGameItem = (game: MultiplayerGame) => {
     const canJoin = !isLoadingBalance && game.bet <= balance;
+    const isJoiningThisGame = joiningGameId === game.id;
+    const isAnyGameJoining = joiningGameId !== null;
     
     return (
       <div
         key={game.id}
         className="p-4 rounded-lg glass-effect border border-white/20 hover:border-white/30 transition-colors"
+        role="listitem"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -56,23 +61,25 @@ const WaitingGamesList: React.FC<WaitingGamesListProps> = ({
           <Button
             variant="outline"
             onClick={() => onJoinGame(game)}
-            isLoading={isLoadingJoin}
-            disabled={!canJoin}
+            isLoading={isJoiningThisGame}
+            disabled={!canJoin || isAnyGameJoining}
             className="bg-primary hover:bg-primary/90"
             aria-label={t("joinGame", { 
               creator: game.creatorUsername, 
               bet: game.bet 
             })}
-            aria-describedby={!canJoin ? "insufficient-balance-error" : undefined}
+            aria-describedby={!canJoin ? `insufficient-balance-error-${game.id}` : undefined}
           >
-            {t("join")
-            }
-            
+            {isJoiningThisGame ? t("joining", { defaultValue: "Joining..." }) : t("join")}
           </Button>
         </div>
         {!canJoin && game.bet > balance && (
-          <p id="insufficient-balance-error" className="text-red-400 text-sm mt-2">
-            {t("insufficientBalanceJoin")}
+          <p id={`insufficient-balance-error-${game.id}`} className="text-red-400 text-sm mt-2">
+            {t("insufficientBalanceJoin", { 
+              defaultValue: "Insufficient balance to join this game",
+              required: game.bet,
+              current: balance
+            })}
           </p>
         )}
       </div>
@@ -80,10 +87,10 @@ const WaitingGamesList: React.FC<WaitingGamesListProps> = ({
   };
 
   const renderEmptyState = () => (
-    <div className="text-center py-8 text-muted-foreground">
+    <div className="text-center py-8 text-muted-foreground" role="status">
       <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-      <p>{t("noWaitingGames")}</p>
-      <p className="text-sm">{t("createFirstGame")}</p>
+      <p>{t("noWaitingGames", { defaultValue: "No games waiting for players" })}</p>
+      <p className="text-sm">{t("createFirstGame", { defaultValue: "Create the first game to get started!" })}</p>
     </div>
   );
 
@@ -94,7 +101,11 @@ const WaitingGamesList: React.FC<WaitingGamesListProps> = ({
           <Users className="h-5 w-5 text-accent" />
           <span>{t("waitingGames")}</span>
         </CardTitle>
-        <CardDescription>{t("waitingGamesDescription")}</CardDescription>
+        <CardDescription>
+          {t("waitingGamesDescription", { 
+            defaultValue: "Join existing games or create your own" 
+          })}
+        </CardDescription>
         <PenaltyWarning t={t} />
       </CardHeader>
       <CardContent>

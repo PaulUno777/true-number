@@ -110,8 +110,24 @@
     "leftWaitingGame": "You left the waiting game. No penalty applied.",
     "leaveConfirmation": "⚠️ Warning: Leaving this game will result in a {penalty} point penalty (10% of bet amount). Are you sure?",
     "timeUp": "⏰ Time's up!",
-  
-    "waitingTurn": "Waiting for opponent..."
+    "waitingTurn": "Waiting for opponent...",
+    "alreadyPlayed": "You have already played your turn.",
+    "waitingForMove": "Waiting for other player to play...",
+    "joining": "Joining the game...",
+    "leaving": "Leaving...",
+    "reconnecting": "Reconnecting...",
+    "congratulations": "Congratulations! You won the game!",
+    "betterLuck": "{winnerName} won this time. Better luck next time!",
+    "pointsEarned": "points earned!",
+    "pointsLost": "points lost",
+    "gameWon": "Game won",
+    "gameLost": "Game lost",
+    "gameNotFound": "Game not found",
+    "notAuthorized": "Not authorized for this action",
+    "invalidRequest": "Invalid request",
+    "serverError": "Server error. Please try again.",
+    "joinLastDescription": "Quickly rejoin your most recently created game if it's still waiting for players",
+    "reconnectActiveDescription": "Reconnect to any active game you're currently participating in"
   },
   "history": {
     "title": "Game History",

@@ -159,6 +159,13 @@ export const useSocketHandlers = ({
 
       handlePlayerLeft: (data: PlayerActionEvents["PlayerLeftGame"]) => {
         console.log("🚪 Socket Event: Player Left", data);
+        
+        // Only process if user is part of this game
+        const isUserInGame = data.game.players.some(p => p.id === latestRefs.current.user?.id);
+        if (!isUserInGame) {
+          console.log("⛔ Ignoring player left - user not in this game");
+          return;
+        }
         latestRefs.current.dispatch({
           type: "SET_SELECTED_GAME",
           payload: data.game,
@@ -169,6 +176,14 @@ export const useSocketHandlers = ({
 
       handleGameCancelled: (data: GameLifecycleEvents["GameCancelled"]) => {
         console.log("❌ Socket Event: Game Cancelled", data);
+        
+        // Only process if user was involved with this game (creator or player)
+        const wasUserInvolved = data.game?.createdBy === latestRefs.current.user?.id ||
+                               data.game?.players.some(p => p.id === latestRefs.current.user?.id);
+        if (!wasUserInvolved) {
+          console.log("⛔ Ignoring game cancelled - user not involved");
+          return;
+        }
         latestRefs.current.dispatch({
           type: "SET_SELECTED_GAME",
           payload: null,
@@ -212,6 +227,14 @@ export const useSocketHandlers = ({
 
       handleGameTimeoutForfeit: (data: TimerEvents["TimeoutForfeit"]) => {
         console.log("⏰ Socket Event: Timeout Forfeit", data);
+        
+        // Only process if user is involved in this timeout event
+        const isUserInvolved = data.timeoutUserId === latestRefs.current.user?.id ||
+                              data.winnerId === latestRefs.current.user?.id;
+        if (!isUserInvolved) {
+          console.log("⛔ Ignoring timeout forfeit - user not involved");
+          return;
+        }
         latestRefs.current.dispatch({
           type: "SET_SELECTED_GAME",
           payload: data.game,

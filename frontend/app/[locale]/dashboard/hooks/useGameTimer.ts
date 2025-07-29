@@ -43,6 +43,11 @@ export const useGameTimer = ({
     }
   }, []);
 
+  // Public method to stop timer when player plays turn
+  const stopTimerOnPlay = useCallback(() => {
+    stopTimer();
+  }, [stopTimer]);
+
   const handleTimeout = useCallback(async () => {
     if (!gameId || !isMyTurn) return;
 
@@ -110,5 +115,6 @@ export const useGameTimer = ({
     isActive,
     startTimer,
     stopTimer,
+    stopTimerOnPlay,
   };
 };

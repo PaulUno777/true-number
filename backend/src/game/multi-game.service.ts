@@ -179,7 +179,9 @@ export class MultiGameService {
       gameId,
       game: gameDto,
       joinedPlayerId: userId,
-      joinedPlayerUsername: updatedGame.players.find(p => p.playerId === userId)?.player.username || 'Unknown',
+      joinedPlayerUsername:
+        updatedGame.players.find((p) => p.playerId === userId)?.player
+          .username || 'Unknown',
       timestamp: new Date(),
     });
 
@@ -647,9 +649,9 @@ export class MultiGameService {
       this.gameGateway.emitPlayerLeftGame({
         gameId,
         game: gameDto,
-        message: this.i18n.t('game.leftWithPenalty', { 
-          lang, 
-          args: { penalty: Math.floor(game.bet * 0.1) } 
+        message: this.i18n.t('game.leftWithPenalty', {
+          lang,
+          args: { penalty: Math.floor(game.bet * 0.1) },
         }),
         timestamp: new Date(),
       });
@@ -669,8 +671,35 @@ export class MultiGameService {
     };
   }
 
-
   async forfeitGameByTimeout(
+    gameId: string,
+    timeoutUserId: string,
+    lang?: string,
+  ): Promise<GameResponseDto> {
+    const maxRetries = 3;
+    let retryCount = 0;
+
+    while (retryCount < maxRetries) {
+      try {
+        return await this.attemptForfeitByTimeout(gameId, timeoutUserId, lang);
+      } catch (error) {
+        // Check if it's a write conflict error (P2034)
+        if (error.code === 'P2034' && retryCount < maxRetries - 1) {
+          retryCount++;
+          // Exponential backoff: wait 100ms, 200ms, 400ms
+          const delay = 100 * Math.pow(2, retryCount - 1);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          continue;
+        }
+        throw error;
+      }
+    }
+
+    // This should never be reached, but TypeScript requires it
+    throw new Error('Maximum retries exceeded for forfeit timeout');
+  }
+
+  private async attemptForfeitByTimeout(
     gameId: string,
     timeoutUserId: string,
     lang?: string,
@@ -744,46 +773,54 @@ export class MultiGameService {
         gameId,
       );
 
-    await this.prisma.$transaction([
-      // Update the forfeiting player
-      this.prisma.multiplayerParticipant.updateMany({
-        where: {
-          gameId,
-          playerId: forfeitUserId,
-        },
-        data: {
-          isWinner: false,
-          balanceChange: -totalLoss,
-          transactionId: forfeitDebitTransaction.id,
-        },
-      }),
-      // Update the winning player
-      this.prisma.multiplayerParticipant.updateMany({
-        where: {
-          gameId,
-          playerId: winnerId,
-        },
-        data: {
-          isWinner: true,
-          balanceChange: bet,
-          transactionId: winnerCreditTransaction.id,
-        },
-      }),
-      // Finish the game
-      this.prisma.multiplayerGame.update({
-        where: { id: gameId },
-        data: {
-          status: GameStatus.FINISHED,
-          winnerId: winnerId,
-          finishedAt: new Date(),
-        },
-      }),
-    ]);
+    await this.prisma.$transaction(
+      async (tx) => {
+        // Update the forfeiting player
+        await tx.multiplayerParticipant.updateMany({
+          where: {
+            gameId,
+            playerId: forfeitUserId,
+          },
+          data: {
+            isWinner: false,
+            balanceChange: -totalLoss,
+            transactionId: forfeitDebitTransaction.id,
+          },
+        });
+
+        // Update the winning player
+        await tx.multiplayerParticipant.updateMany({
+          where: {
+            gameId,
+            playerId: winnerId,
+          },
+          data: {
+            isWinner: true,
+            balanceChange: bet,
+            transactionId: winnerCreditTransaction.id,
+          },
+        });
+
+        // Finish the game
+        await tx.multiplayerGame.update({
+          where: { id: gameId },
+          data: {
+            status: GameStatus.FINISHED,
+            winnerId: winnerId,
+            finishedAt: new Date(),
+          },
+        });
+      },
+      {
+        maxWait: 5000, // Maximum time to wait for a transaction slot
+        timeout: 10000, // Maximum time for the transaction to run
+      },
+    );
 
     // Get the updated game and emit finish event
     const updatedGame = await this.getGameByIdOrFail(gameId);
     const gameDto = this.mapGameToDto(updatedGame);
-    
+
     this.gameGateway.emitGameFinished({
       gameId,
       game: gameDto,

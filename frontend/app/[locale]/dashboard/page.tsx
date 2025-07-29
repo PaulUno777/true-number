@@ -39,6 +39,7 @@ export default function GameDashboard() {
   const { user, refreshUser } = useAuth();
   const t = useTranslations("dashboard") as TranslationFunction;
   const [mounted, setMounted] = useState(false);
+  const [joiningGameId, setJoiningGameId] = useState<string | null>(null);
 
   // Use our custom reducer for state management
   const { state, dispatch } = useGameReducer();
@@ -134,14 +135,24 @@ export default function GameDashboard() {
         return;
       }
 
+      // Prevent multiple simultaneous join attempts
+      if (joiningGameId) {
+        return;
+      }
+
+      setJoiningGameId(game.id);
       joinGameMutation.mutate(game.id, {
         onSuccess: (data) => {
           dispatch({ type: "SET_SELECTED_GAME", payload: data.game });
           refreshUser();
+          setJoiningGameId(null);
+        },
+        onError: () => {
+          setJoiningGameId(null);
         },
       });
     },
-    [validation, joinGameMutation, dispatch, refreshUser]
+    [validation, joinGameMutation, dispatch, refreshUser, joiningGameId]
   );
 
   const handlePlayTurn = useCallback(() => {
@@ -325,7 +336,7 @@ export default function GameDashboard() {
             user={user}
             balance={balance}
             onJoinGame={handleJoinGame}
-            isLoadingJoin={joinGameMutation.isPending}
+            joiningGameId={joiningGameId}
             isLoadingBalance={isLoadingBalance}
             t={t}
           />
