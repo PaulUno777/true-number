@@ -90,7 +90,7 @@ export interface WaitingGamesListProps {
   user: User | null;
   balance: number;
   onJoinGame: (game: MultiplayerGame) => void;
-  isLoadingJoin: boolean;
+  joiningGameId: string | null;
   isLoadingBalance: boolean;
   t: TranslationFunction;
 }

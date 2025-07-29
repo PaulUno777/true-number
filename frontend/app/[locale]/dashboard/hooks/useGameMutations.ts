@@ -13,40 +13,67 @@ export const useGameMutations = (socket: UseSocketReturn) => {
   const createGameMutation = useMutation({
     mutationFn: multiplayerService.createGame,
     onSuccess: (data) => {
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["userGames"] });
-      // Join the socket room for the created game
-      if (data.game?.id) {
-        socket.joinGame(data.game.id);
+      if (data?.message) {
+        toast.success(data.message);
       }
+      queryClient.invalidateQueries({ queryKey: ["userGames"] });
+      // Broadcasting mode: No need to join rooms
+      console.log(`📡 Game created: ${data?.game?.id} - using broadcast mode`);
     },
-    onError: (error) => handleError(error, "createError"),
+    onError: (error) => {
+      console.error("Create game error:", error);
+      handleError(error, "createError");
+    },
   });
 
   const joinGameMutation = useMutation({
-    mutationFn: (gameId: string) => multiplayerService.joinGame(gameId),
-    onSuccess: (data) => {
-      toast.success(data.message);
-      // Join the socket room for the joined game
-      if (data.game?.id) {
-        socket.joinGame(data.game.id);
+    mutationFn: (gameId: string) => {
+      if (!gameId) {
+        throw new Error("Game ID is required");
       }
+      return multiplayerService.joinGame(gameId);
     },
-    onError: (error) => handleError(error, "joinError"),
+    onSuccess: (data) => {
+      if (data?.message) {
+        toast.success(data.message);
+      }
+      // Broadcasting mode: No need to join rooms
+      console.log(`📡 Game joined: ${data?.game?.id} - using broadcast mode`);
+    },
+    onError: (error) => {
+      console.error("Join game error:", error);
+      handleError(error, "joinError");
+    },
   });
 
   const playTurnMutation = useMutation({
-    mutationFn: (gameId: string) => multiplayerService.playTurn(gameId),
-    retry: (failureCount, error) => {
-      // Retry up to 3 times for network errors
-      if (failureCount < 3 && (error?.message?.includes('network') || error?.message?.includes('timeout'))) {
+    mutationFn: (gameId: string) => {
+      if (!gameId) {
+        throw new Error("Game ID is required");
+      }
+      return multiplayerService.playTurn(gameId);
+    },
+    retry: (failureCount, error: any) => {
+      // Retry up to 3 times for network errors but not for game logic errors
+      const isNetworkError = error?.message?.includes('network') || 
+                            error?.message?.includes('timeout') ||
+                            error?.code === 'NETWORK_ERROR';
+      const isRetryableStatus = error?.response?.status >= 500; // Server errors
+      
+      if (failureCount < 3 && (isNetworkError || isRetryableStatus)) {
+        console.log(`Retrying play turn (attempt ${failureCount + 1})`);
         return true;
       }
       return false;
     },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     onSuccess: (data) => {
-      toast.success(t("playedNumber", { number: data.generatedNumber }));
+      if (data?.generatedNumber !== undefined) {
+        toast.success(t("playedNumber", { 
+          number: data.generatedNumber,
+          defaultValue: `You played: ${data.generatedNumber}`
+        }));
+      }
       // Ensure socket is connected after successful play
       if (!socket.isConnected) {
         console.warn("Socket disconnected after play, attempting reconnection...");
@@ -62,45 +89,72 @@ export const useGameMutations = (socket: UseSocketReturn) => {
     mutationFn: multiplayerService.getLastCreatedGame,
     onSuccess: (data) => {
       if (data?.game) {
-        // Join the socket room for the found game
-        socket.joinGame(data.game.id);
+        // Broadcasting mode: No need to join rooms
+        console.log(`📡 Last game found: ${data.game.id} - using broadcast mode`);
         
         if (data.game.status === "WAITING") {
-          toast.success(t("backToWaiting"));
+          toast.success(t("backToWaiting", { 
+            defaultValue: "Rejoined your waiting game"
+          }));
         } else if (data.game.status === "IN_PROGRESS") {
-          toast.success(t("reconnectSuccess"));
+          toast.success(t("reconnectSuccess", {
+            defaultValue: "Reconnected to your active game"
+          }));
         }
       } else {
-        toast.error(t("noRecentGame"));
+        toast.error(t("noRecentGame", {
+          defaultValue: "No recent game found to rejoin"
+        }));
       }
     },
-    onError: (error) => handleError(error, "searchError"),
+    onError: (error) => {
+      console.error("Join last game error:", error);
+      handleError(error, "searchError");
+    },
   });
 
   const reconnectActiveGameMutation = useMutation({
     mutationFn: multiplayerService.getActiveGame,
     onSuccess: (data) => {
       if (data?.game) {
-        // Join the socket room for the active game
-        socket.joinGame(data.game.id);
-        toast.success(t("reconnectSuccess"));
+        // Broadcasting mode: No need to join rooms
+        console.log(`📡 Active game found: ${data.game.id} - using broadcast mode`);
+        toast.success(t("reconnectSuccess", {
+          defaultValue: "Reconnected to your active game"
+        }));
       } else {
-        toast.error(t("noActiveGame"));
+        toast.error(t("noActiveGame", {
+          defaultValue: "No active game found to reconnect to"
+        }));
       }
     },
-    onError: (error) => handleError(error, "reconnectError"),
+    onError: (error) => {
+      console.error("Reconnect active game error:", error);
+      handleError(error, "reconnectError");
+    },
   });
 
   const leaveGameMutation = useMutation({
-    mutationFn: (gameId: string) => multiplayerService.leaveGame(gameId),
-    onSuccess: (data) => {
-      toast.success(data.message);
-      // Leave the socket room when leaving the game
-      if (data.game?.id) {
-        socket.leaveGame(data.game.id);
+    mutationFn: (gameId: string) => {
+      if (!gameId) {
+        throw new Error("Game ID is required");
       }
+      return multiplayerService.leaveGame(gameId);
     },
-    onError: (error) => handleError(error, "leaveError"),
+    onSuccess: (data) => {
+      if (data?.message) {
+        toast.success(data.message);
+      }
+      // Broadcasting mode: No need to leave rooms
+      console.log(`📡 Game left: ${data?.game?.id} - using broadcast mode`);
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["waitingGames"] });
+      queryClient.invalidateQueries({ queryKey: ["userGames"] });
+    },
+    onError: (error) => {
+      console.error("Leave game error:", error);
+      handleError(error, "leaveError");
+    },
   });
 
   return {

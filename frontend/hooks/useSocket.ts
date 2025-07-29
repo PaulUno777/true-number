@@ -140,13 +140,15 @@ export const useSocket = (): UseSocketReturn => {
   }, [user]);
 
   const joinGame = (gameId: string) => {
-    console.log(`🚀 Joining game room: ${gameId}`);
-    socketRef.current?.emit("join-game", { gameId });
+    console.log(`📡 Broadcasting mode: No room join needed for game ${gameId}`);
+    // In broadcast mode, no need to join rooms - all events are sent to all clients
+    // Frontend will filter messages based on game participation
   };
 
   const leaveGame = (gameId: string) => {
-    console.log(`👋 Leaving game room: ${gameId}`);
-    socketRef.current?.emit("leave-game", { gameId });
+    console.log(`📡 Broadcasting mode: No room leave needed for game ${gameId}`);
+    // In broadcast mode, no need to leave rooms - all events are sent to all clients
+    // Frontend will filter messages based on game participation
   };
 
   const onPlayerJoined = (
